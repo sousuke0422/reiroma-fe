@@ -15,6 +15,7 @@ import UserSettings from './components/user_settings/user_settings.vue'
 
 import statusesModule from './modules/statuses.js'
 import usersModule from './modules/users.js'
+import groupsModule from './modules/groups.js'
 import apiModule from './modules/api.js'
 import configModule from './modules/config.js'
 
@@ -55,6 +56,7 @@ const store = new Vuex.Store({
   modules: {
     statuses: statusesModule,
     users: usersModule,
+    groups: groupsModule,
     api: apiModule,
     config: configModule
   },
