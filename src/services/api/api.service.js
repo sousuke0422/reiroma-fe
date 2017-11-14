@@ -29,6 +29,12 @@ const QVITTER_USER_TIMELINE_URL = '/api/qvitter/statuses/user_timeline.json'
 const BLOCKING_URL = '/api/blocks/create.json'
 const UNBLOCKING_URL = '/api/blocks/destroy.json'
 const USER_URL = '/api/users/show.json'
+const GROUP_TIMELINE_URL = '/api/statusnet/groups/timeline'
+const GROUP_JOINING_URL = '/api/statusnet/groups/join'
+const GROUP_LEAVING_URL = '/api/statusnet/groups/leave'
+const GROUP_CREATE_URL = '/api/statusnet/groups/create.json'
+const USER_MEMBERSHIPS_URL = '/api/statusnet/groups/list.json'
+const GROUP_MEMBERS_URL = '/api/statusnet/groups/membership'
 
 import { each, map } from 'lodash'
 import 'whatwg-fetch'
@@ -261,7 +267,8 @@ const fetchTimeline = ({timeline, credentials, since = false, until = false, use
     mentions: MENTIONS_URL,
     'publicAndExternal': PUBLIC_AND_EXTERNAL_TIMELINE_URL,
     user: QVITTER_USER_TIMELINE_URL,
-    tag: TAG_TIMELINE_URL
+    tag: TAG_TIMELINE_URL,
+    group: GROUP_TIMELINE_URL
   }
 
   let url = timelineUrls[timeline]
@@ -358,6 +365,51 @@ const fetchMutes = ({credentials}) => {
   }).then((data) => data.json())
 }
 
+const joinGroup = ({id, credentials}) => {
+  const url = `${GROUP_JOINING_URL}/id.json`
+
+  return fetch(url, {
+    headers: authHeaders(credentials)
+  }).then((data) => data.json())
+}
+
+const leaveGroup = ({id, credentials}) => {
+  const url = `${GROUP_LEAVING_URL}/id.json`
+
+  return fetch(url, {
+    headers: authHeaders(credentials)
+  }).then((data) => data.json())
+}
+
+const createGroup = ({params, credentials}) => {
+  const form = new FormData()
+
+  each(params, (value, key) => {
+    if (value) {
+      form.append(key, value)
+    }
+  })
+
+  return fetch(GROUP_CREATE_URL, {
+    method: 'POST',
+    body: form
+  })
+}
+
+const fetchMemberships = ({id, credentials}) => {
+  const url = `${USER_MEMBERSHIPS_URL}?user_id=${id}`
+
+  return fetch(url, {
+    headers: authHeaders(credentials)
+  }).then((data) => data.json())
+}
+
+const fetchMembers = (id) => {
+  const url = `${GROUP_MEMBERS_URL}/${id}.json`
+
+  return fetch(url).then((data) => data.json())
+}
+
 const apiService = {
   verifyCredentials,
   fetchTimeline,
@@ -384,7 +436,12 @@ const apiService = {
   updateBg,
   updateProfile,
   updateBanner,
-  externalProfile
+  externalProfile,
+  joinGroup,
+  leaveGroup,
+  createGroup,
+  fetchMemberships,
+  fetchMembers
 }
 
 export default apiService
