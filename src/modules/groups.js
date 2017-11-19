@@ -17,7 +17,8 @@ export const mergeOrAdd = (arr, obj, item) => {
 
 export const defaultState = {
   groups: [],
-  groupsObject: {}
+  groupsObject: {},
+  groupMemberships: {}
 }
 
 const groups = {
@@ -27,9 +28,23 @@ const groups = {
       each(statuses, (groups) => {
         each(groups, (group) => mergeOrAdd(state.groups, state.groupsObject, group))
       })
+    },
+    addNewGroup (state, group) {
+      mergeOrAdd(state.groups, state.groupsObject, group)
+    },
+    addMembership (state, {groupName, membership}) {
+      state.groupMemberships[groupName] = membership
     }
   },
   actions: {
+    fetchGroup (store, { groupName }) {
+      store.rootState.api.backendInteractor.fetchGroup({ groupName })
+        .then((group) => store.commit('addNewGroup', group))
+    },
+    fetchIsMember (store, { groupName, id }) {
+      store.rootState.api.backendInteractor.fetchIsMember({id, groupName})
+        .then((membership) => store.commit('addMembership', {groupName, 'membership': membership.is_member}))
+    },
     addNewStatuses (store, { statuses }) {
       const groups = compact(map(statuses, 'statusnet_in_groups'))
       store.commit('addNewGroups', groups)

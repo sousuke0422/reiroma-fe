@@ -158,6 +158,11 @@ const en = {
     followees: 'Following',
     per_day: 'per day'
   },
+  group_card: {
+    members: 'Members',
+    join: 'Join group',
+    leave: 'Leave group'
+  },
   timeline: {
     show_new: 'Show new',
     error_fetching: 'Error fetching updates',

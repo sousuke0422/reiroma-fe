@@ -9,6 +9,7 @@ import TagTimeline from './components/tag_timeline/tag_timeline.vue'
 import ConversationPage from './components/conversation-page/conversation-page.vue'
 import Mentions from './components/mentions/mentions.vue'
 import UserProfile from './components/user_profile/user_profile.vue'
+import GroupPage from './components/group_page/group_page.vue'
 import Settings from './components/settings/settings.vue'
 import Registration from './components/registration/registration.vue'
 import UserSettings from './components/user_settings/user_settings.vue'
@@ -72,6 +73,7 @@ const routes = [
   { path: '/tag/:tag', component: TagTimeline },
   { name: 'conversation', path: '/notice/:id', component: ConversationPage, meta: { dontScroll: true } },
   { name: 'user-profile', path: '/users/:id', component: UserProfile },
+  { name: 'group-page', path: '/groups/:name', component: GroupPage },
   { name: 'mentions', path: '/:username/mentions', component: Mentions },
   { name: 'settings', path: '/settings', component: Settings },
   { name: 'registration', path: '/registration', component: Registration },
