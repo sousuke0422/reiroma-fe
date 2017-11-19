@@ -54,6 +54,11 @@
                       {{status.in_reply_to_screen_name}}
                     </router-link>
                   </small>
+                  <small v-for="group in status.statusnet_in_groups"> |
+                    <router-link :to="{ name: 'group-page', params: { name: group.nickname } }">
+                      {{group.nickname}}
+                    </router-link>
+                  </small>
                   <template v-if="isReply">
                     <small>
                       <a href="#" @click.prevent="gotoOriginal(status.in_reply_to_status_id)"><i class="icon-reply" @mouseenter="replyEnter(status.in_reply_to_status_id, $event)" @mouseout="replyLeave()"></i></a>
