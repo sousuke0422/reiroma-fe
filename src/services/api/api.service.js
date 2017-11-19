@@ -367,19 +367,27 @@ const fetchMutes = ({credentials}) => {
   }).then((data) => data.json())
 }
 
-const joinGroup = ({id, credentials}) => {
-  const url = `${GROUP_JOINING_URL}/id.json`
+const fetchGroup = ({ groupName }) => {
+  const url = `${GROUP_URL}/${groupName}.json`
+
+  return fetch(url).then((data) => data.json())
+}
+
+const joinGroup = ({groupName, credentials}) => {
+  const url = `${GROUP_JOINING_URL}/${groupName}.json`
 
   return fetch(url, {
-    headers: authHeaders(credentials)
+    headers: authHeaders(credentials),
+    method: 'POST'
   }).then((data) => data.json())
 }
 
-const leaveGroup = ({id, credentials}) => {
-  const url = `${GROUP_LEAVING_URL}/id.json`
+const leaveGroup = ({groupName, credentials}) => {
+  const url = `${GROUP_LEAVING_URL}/${groupName}.json`
 
   return fetch(url, {
-    headers: authHeaders(credentials)
+    headers: authHeaders(credentials),
+    method: 'POST'
   }).then((data) => data.json())
 }
 
@@ -406,8 +414,14 @@ const fetchMemberships = ({id, credentials}) => {
   }).then((data) => data.json())
 }
 
-const fetchMembers = (id) => {
-  const url = `${GROUP_MEMBERS_URL}/${id}.json`
+const fetchMembers = ({ groupName }) => {
+  const url = `${GROUP_MEMBERS_URL}/${groupName}.json`
+
+  return fetch(url).then((data) => data.json())
+}
+
+const fetchIsMember = ({id, groupName}) => {
+  const url = `${GROUP_IS_MEMBER_URL}?user_id=${id}&group_name=${groupName}`
 
   return fetch(url).then((data) => data.json())
 }
@@ -439,11 +453,13 @@ const apiService = {
   updateProfile,
   updateBanner,
   externalProfile,
+  fetchGroup,
   joinGroup,
   leaveGroup,
   createGroup,
   fetchMemberships,
-  fetchMembers
+  fetchMembers,
+  fetchIsMember
 }
 
 export default apiService

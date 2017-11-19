@@ -50,20 +50,28 @@ const backendInteractorService = (credentials) => {
     return apiService.setUserMute({id, muted, credentials})
   }
 
-  const joinGroup = (id) => {
-    return apiService.joinGroup({id, credentials})
+  const fetchGroup = ({ groupName }) => {
+    return apiService.fetchGroup({ groupName })
   }
 
-  const leaveGroup = (id) => {
-    return apiService.leaveGroup({id, credentials})
+  const joinGroup = ({ groupName }) => {
+    return apiService.joinGroup({groupName, credentials})
   }
 
-  const fetchMemberships = (id) => {
+  const leaveGroup = ({ groupName }) => {
+    return apiService.leaveGroup({groupName, credentials})
+  }
+
+  const fetchMemberships = ({ id }) => {
     return apiService.fetchMemberships({id, credentials})
   }
 
-  const fetchMembers = (id) => {
-    return apiService.fetchMemberships({id, credentials})
+  const fetchMembers = ({ groupName }) => {
+    return apiService.fetchMembers({ groupName })
+  }
+
+  const fetchIsMember = ({id, groupName}) => {
+    return apiService.fetchIsMember({id, groupName})
   }
 
   const createGroup = (params) => apiService.createGroup({params, credentials})
@@ -99,11 +107,13 @@ const backendInteractorService = (credentials) => {
     updateBanner,
     updateProfile,
     externalProfile,
+    fetchGroup,
     joinGroup,
     leaveGroup,
     createGroup,
     fetchMemberships,
-    fetchMembers
+    fetchMembers,
+    fetchIsMember
   }
 
   return backendInteractorServiceInstance
