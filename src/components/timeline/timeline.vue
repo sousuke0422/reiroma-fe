@@ -48,6 +48,18 @@
       </div>
     </div>
   </div>
+  <div class="timeline panel panel-default" v-else-if="viewing == 'members'">
+    <div class="panel-heading timeline-heading base01-background base04">
+      <div class="title">
+        {{$t('group_card.members')}}
+      </div>
+    </div>
+    <div class="panel-body base02-background">
+      <div class="timeline">
+        <user-card v-for="member in members" :user="member" :showFollows="false"></user-card>
+      </div>
+    </div>
+  </div>
 </template>
 <script src="./timeline.js"></script>
 

@@ -25,6 +25,9 @@ const Timeline = {
     friends () {
       return this.timeline.friends
     },
+    members () {
+      return this.timeline.members
+    },
     viewing () {
       return this.timeline.viewing
     },
@@ -58,6 +61,9 @@ const Timeline = {
       this.fetchFriends()
       this.fetchFollowers()
     }
+    if (this.timelineName === 'group') {
+      this.fetchGroup()
+    }
   },
   destroyed () {
     window.removeEventListener('scroll', this.scrollLoad)
@@ -90,6 +96,13 @@ const Timeline = {
       const id = this.userId
       this.$store.state.api.backendInteractor.fetchFriends({ id })
         .then((friends) => this.$store.dispatch('addFriends', { friends }))
+    },
+    fetchGroup () {
+      const ident = this.groupName
+      this.$store.dispatch('fetchGroup', { 'groupName': ident })
+      this.$store.dispatch('fetchIsMember', { 'groupName': ident, 'id': this.$store.state.users.currentUser.id })
+      this.$store.state.api.backendInteractor.fetchMembers({ 'groupName': ident })
+        .then((members) => this.$store.dispatch('addMembers', { members }))
     },
     scrollLoad (e) {
       let height = Math.max(document.body.offsetHeight, document.body.scrollHeight)

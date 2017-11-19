@@ -412,11 +412,17 @@ export const mutations = {
     // load followers / friends only when needed
     state.timelines['user'].viewing = v
   },
+  setGroupView (state, { v }) {
+    state.timelines['group'].viewing = v
+  },
   addFriends (state, { friends }) {
     state.timelines['user'].friends = friends
   },
   addFollowers (state, { followers }) {
     state.timelines['user'].followers = followers
+  },
+  addMembers (state, { members }) {
+    state.timelines['group'].members = members
   },
   markNotificationsAsSeen (state, notifications) {
     each(notifications, (notification) => {
@@ -439,6 +445,9 @@ const statuses = {
     },
     addFollowers ({ rootState, commit }, { followers }) {
       commit('addFollowers', { followers })
+    },
+    addMembers ({ rootState, commit }, { members }) {
+      commit('addMembers', { members })
     },
     deleteStatus ({ rootState, commit }, status) {
       commit('setDeleted', { status })
