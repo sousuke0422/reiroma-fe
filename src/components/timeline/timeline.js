@@ -9,6 +9,7 @@ const Timeline = {
     'timelineName',
     'title',
     'userId',
+    'groupName',
     'tag'
   ],
   data () {
@@ -49,7 +50,7 @@ const Timeline = {
       timeline: this.timelineName,
       showImmediately,
       userId: this.userId,
-      tag: this.tag
+      identifier: this.tag || this.groupName
     })
 
     // don't fetch followers for public, friend, twkn
@@ -77,7 +78,7 @@ const Timeline = {
         older: true,
         showImmediately: true,
         userId: this.userId,
-        tag: this.tag
+        identifier: this.tag || this.groupName
       }).then(() => store.commit('setLoading', { timeline: this.timelineName, value: false }))
     },
     fetchFollowers () {

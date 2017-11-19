@@ -14,7 +14,7 @@ const update = ({store, statuses, timeline, showImmediately}) => {
   })
 }
 
-const fetchAndUpdate = ({store, credentials, timeline = 'friends', older = false, showImmediately = false, userId = false, tag = false}) => {
+const fetchAndUpdate = ({store, credentials, timeline = 'friends', older = false, showImmediately = false, userId = false, identifier = false}) => {
   const args = { timeline, credentials }
   const rootState = store.rootState || store.state
   const timelineData = rootState.statuses.timelines[camelCase(timeline)]
@@ -26,16 +26,16 @@ const fetchAndUpdate = ({store, credentials, timeline = 'friends', older = false
   }
 
   args['userId'] = userId
-  args['tag'] = tag
+  args['identifier'] = identifier
 
   return apiService.fetchTimeline(args)
     .then((statuses) => update({store, statuses, timeline, showImmediately}),
       () => store.dispatch('setError', { value: true }))
 }
 
-const startFetching = ({timeline = 'friends', credentials, store, userId = false, tag = false}) => {
-  fetchAndUpdate({timeline, credentials, store, showImmediately: true, userId, tag})
-  const boundFetchAndUpdate = () => fetchAndUpdate({ timeline, credentials, store, userId, tag })
+const startFetching = ({timeline = 'friends', credentials, store, userId = false, identifier = false}) => {
+  fetchAndUpdate({timeline, credentials, store, showImmediately: true, userId, identifier})
+  const boundFetchAndUpdate = () => fetchAndUpdate({ timeline, credentials, store, showImmediately: false, userId, identifier })
   return setInterval(boundFetchAndUpdate, 10000)
 }
 const timelineFetcher = {
