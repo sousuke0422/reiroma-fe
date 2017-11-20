@@ -102,7 +102,11 @@ const Timeline = {
       this.$store.dispatch('fetchGroup', { 'groupName': ident })
       this.$store.dispatch('fetchIsMember', { 'groupName': ident, 'id': this.$store.state.users.currentUser.id })
       this.$store.state.api.backendInteractor.fetchMembers({ 'groupName': ident })
-        .then((members) => this.$store.dispatch('addMembers', { members }))
+        .then((members) => {
+          this.$store.dispatch('addMembers', { members })
+          this.$router.push('/groups/temp') // TODO FIX THIS
+          this.$router.push(`/groups/${ident}`) // ;_;
+        })
     },
     scrollLoad (e) {
       let height = Math.max(document.body.offsetHeight, document.body.scrollHeight)

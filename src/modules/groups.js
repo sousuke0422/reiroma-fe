@@ -31,6 +31,10 @@ const groups = {
     },
     addNewGroup (state, group) {
       mergeOrAdd(state.groups, state.groupsObject, group)
+      if (!state.groupMemberships[group.nickname]) {
+        // insert some fake placeholder data
+        state.groupMemberships[group.nickname] = {'is_member': false}
+      }
     },
     addMembership (state, {groupName, membership}) {
       state.groupMemberships[groupName] = membership

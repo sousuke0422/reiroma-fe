@@ -48,10 +48,10 @@
 
 <script>
   export default {
-    props: [ 'groupName' ],
+    props: [ 'group', 'isMember' ],
     computed: {
-      group () {
-        return this.$store.state.groups.groupsObject[this.groupName]
+      groupName () {
+        return this.group.nickname
       },
       headingStyle () {
         let color = this.$store.state.config.colors['base00']
@@ -65,9 +65,6 @@
       },
       loggedIn () {
         return !!this.$store.state.users.currentUser
-      },
-      isMember () {
-        return this.$store.state.groups.groupMemberships[this.groupName]
       }
     },
     methods: {
@@ -76,7 +73,7 @@
       },
       joinGroup () {
         const store = this.$store
-        store.state.api.backendInteractor.joinGroup({'groupName': this.group.nickname})
+        store.state.api.backendInteractor.joinGroup({'groupName': this.groupName})
           .then((joinedGroup) => {
             store.commit('addNewGroup', joinedGroup)
             this.setMember(true)
@@ -84,7 +81,7 @@
       },
       leaveGroup () {
         const store = this.$store
-        store.state.api.backendInteractor.leaveGroup({'groupName': this.group.nickname})
+        store.state.api.backendInteractor.leaveGroup({'groupName': this.groupName})
           .then((leftGroup) => {
             store.commit('addNewGroup', leftGroup)
             this.setMember(false)

@@ -1,9 +1,9 @@
 <template>
   <div>
     <div v-if="group" class="group-page panel panel-default base00-background">
-      <group-card-content :groupName="groupName"></group-card-content>
+      <group-card-content :group="group" :isMember="isMember"></group-card-content>
     </div>
-    <Timeline :title="'Group Timeline'" v-bind:timeline="timeline" v-bind:timeline-name="'group'" :groupName="groupName" />
+    <Timeline :title="'Group Timeline'" :group="group" v-bind:timeline="timeline" v-bind:timeline-name="'group'" :groupName="groupName" />
   </div>
 </template>
 
