@@ -79,12 +79,13 @@ const PostStatusForm = {
         if (matchedGroups.length <= 0) {
           return false
         }
+        /* eslint-disable */
         return map(take(matchedGroups, 5), ({nickname, original_logo}) => ({
-          // eslint-disable-next-line camelcase
           screen_name: `!${nickname}`,
           name: '',
           img: original_logo || 'https://placehold.it/48x48'
         }))
+        /* eslint-enable */
       } else {
         return false
       }
