@@ -74,6 +74,17 @@ const PostStatusForm = {
           name: '',
           img: image_url
         }))
+      } else if (firstchar === '!') {
+        const matchedGroups = filter(this.groups, (group) => group.nickname.match(this.textAtCaret.slice(1)))
+        if (matchedGroups.length <= 0) {
+          return false
+        }
+        return map(take(matchedGroups, 5), ({nickname, original_logo}) => ({
+          // eslint-disable-next-line camelcase
+          screen_name: `!${nickname}`,
+          name: '',
+          img: original_logo || 'https://placehold.it/48x48'
+        }))
       } else {
         return false
       }
@@ -90,6 +101,9 @@ const PostStatusForm = {
     },
     emoji () {
       return this.$store.state.config.emoji || []
+    },
+    groups () {
+      return this.$store.state.groups.groups
     }
   },
   methods: {
