@@ -34,6 +34,9 @@ const Status = {
     muteWords () {
       return this.$store.state.config.muteWords
     },
+    muteUsers () {
+      return this.$store.state.config.muteUsers
+    },
     hideAttachments () {
       return (this.$store.state.config.hideAttachments && !this.inConversation) ||
         (this.$store.state.config.hideAttachmentsInConv && this.inConversation)
@@ -58,7 +61,7 @@ const Status = {
 
       return hits
     },
-    muted () { return !this.unmuted && (this.status.user.muted || this.muteWordHits.length > 0) },
+    muted () { return !this.unmuted && (this.muteUsers[this.status.user.screen_name] || this.status.user.muted || this.muteWordHits.length > 0) },
     isReply () { return !!this.status.in_reply_to_status_id },
     isFocused () {
       // retweet or root of an expanded conversation

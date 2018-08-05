@@ -1,6 +1,5 @@
 import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
 import { compact, map, each, merge } from 'lodash'
-import { set } from 'vue'
 
 // TODO: Unify with mergeOrAdd in statuses.js
 export const mergeOrAdd = (arr, obj, item) => {
@@ -19,10 +18,6 @@ export const mergeOrAdd = (arr, obj, item) => {
 }
 
 export const mutations = {
-  setMuted (state, { user: {id}, muted }) {
-    const user = state.usersObject[id]
-    set(user, 'muted', muted)
-  },
   setCurrentUser (state, user) {
     state.lastLoginName = user.screen_name
     state.currentUser = merge(state.currentUser || {}, user)

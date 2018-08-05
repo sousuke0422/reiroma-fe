@@ -52,6 +52,7 @@ const persistedStateOptions = {
     'config.hoverPreview',
     'config.streaming',
     'config.muteWords',
+    'config.muteUsers',
     'config.customTheme',
     'users.lastLoginName'
   ]

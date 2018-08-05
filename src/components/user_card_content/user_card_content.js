@@ -26,6 +26,9 @@ export default {
     isOtherUser () {
       return this.user.id !== this.$store.state.users.currentUser.id
     },
+    isMuted () {
+      return this.user.muted || this.$store.state.config.muteUsers[this.user.screen_name]
+    },
     subscribeUrl () {
       // eslint-disable-next-line no-undef
       const serverUrl = new URL(this.user.statusnet_profile_url)
@@ -65,7 +68,7 @@ export default {
     },
     toggleMute () {
       const store = this.$store
-      store.commit('setMuted', {user: this.user, muted: !this.user.muted})
+      store.commit('setMute', {user: this.user.screen_name, value: !this.isMuted})
       store.state.api.backendInteractor.setUserMute(this.user)
     },
     setProfileView (v) {
