@@ -58,6 +58,12 @@ const setColors = (col, commit) => {
   const body = document.body
   body.style.display = 'none'
 
+  // This prevents white screen with v2 themes on v1 engine
+  if (!col.text) {
+    body.style.display = 'initial'
+    return
+  }
+
   const styleEl = document.createElement('style')
   head.appendChild(styleEl)
   const styleSheet = styleEl.sheet
