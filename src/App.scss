@@ -237,11 +237,9 @@ nav {
 
   .logo {
     display: flex;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    position: relative;
+
+    margin-right: .5em;
 
     align-items: stretch;
     justify-content: center;

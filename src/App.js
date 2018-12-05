@@ -53,7 +53,8 @@ export default {
     },
     logoBgStyle () {
       return Object.assign({
-        'margin': `${this.$store.state.instance.logoMargin} 0`
+        'margin-top': `${this.$store.state.instance.logoMargin}`,
+        'margin-bottom': `${this.$store.state.instance.logoMargin}`
       }, this.enableMask ? {} : {
         'background-color': this.enableMask ? '' : 'transparent'
       })
