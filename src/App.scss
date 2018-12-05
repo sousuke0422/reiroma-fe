@@ -220,7 +220,7 @@ i[class*=icon-] {
   }
 
   &.right {
-    justify-content: right;
+    justify-content: flex-end;
     padding-right: 20px;
   }
 }
@@ -460,9 +460,6 @@ nav {
   nav {
     .back-button {
       display: none;
-    }
-    .site-name {
-      padding-left: 20px;
     }
   }
 
