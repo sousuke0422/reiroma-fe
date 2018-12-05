@@ -6,11 +6,15 @@
           <router-link class="back-button" @click.native="activatePanel('timeline')" :to="{ name: 'root' }" active-class="hidden">
             <i class="icon-left-open" :title="$t('nav.back')"></i>
           </router-link>
-          <div class='logo' :style='logoBgStyle'>
-            <div class='mask' :style='logoMaskStyle'></div>
-            <img :src='logo' :style='logoStyle'>
-          </div>
-          <router-link class="site-name" :to="{ name: 'root' }" active-class="home">{{sitename}}</router-link>
+          <router-link  class="site-name" :to="{ name: 'root' }" active-class="home">
+            <div class='logo' :style='logoBgStyle'>
+              <div class='mask' :style='logoMaskStyle'></div>
+              <img :src='logo' :style='logoStyle'>
+            </div>
+            <span v-if="sitenameEnabled" class="site-name_text">
+              {{sitename}}
+            </span>
+          </router-link>
         </div>
         <div class='item right'>
           <user-finder class="nav-icon"></user-finder>

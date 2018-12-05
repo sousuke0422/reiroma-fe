@@ -25,6 +25,7 @@ const defaultState = {
   scopeCopy: true,
   subjectLineBehavior: 'email',
   loginMethod: 'password',
+  sitenameEnabled: true,
 
   // Nasty stuff
   pleromaBackend: true,

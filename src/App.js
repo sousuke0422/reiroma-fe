@@ -63,6 +63,7 @@ export default {
     style () { return { 'background-image': `url(${this.background})` } },
     sitename () { return this.$store.state.instance.name },
     chat () { return this.$store.state.chat.channel.state === 'joined' },
+    sitenameEnabled () { return this.$store.state.instance.sitenameEnabled },
     suggestionsEnabled () { return this.$store.state.instance.suggestionsEnabled },
     showInstanceSpecificPanel () { return this.$store.state.instance.showInstanceSpecificPanel }
   },
