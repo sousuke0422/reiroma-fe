@@ -242,13 +242,13 @@ nav {
     margin-right: .5em;
 
     align-items: stretch;
-    justify-content: center;
+    justify-content: flex-start;
     flex: 0 0 auto;
     z-index: -1;
 
     .mask {
       mask-repeat: no-repeat;
-      mask-position: center;
+      mask-position: left center;
       mask-size: contain;
       background-color: $fallback--fg;
       background-color: var(--fg, $fallback--fg);
