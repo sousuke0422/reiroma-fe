@@ -1,6 +1,7 @@
 import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
 import { compact, map, each, merge } from 'lodash'
 import { set } from 'vue'
+import registerPushNotifications from '../services/push/push.js'
 
 // TODO: Unify with mergeOrAdd in statuses.js
 export const mergeOrAdd = (arr, obj, item) => {
@@ -65,6 +66,9 @@ const users = {
       store.rootState.api.backendInteractor.fetchUser({id})
         .then((user) => store.commit('addNewUsers', user))
     },
+    registerPushNotifications (store) {
+      registerPushNotifications(store)
+    },
     addNewStatuses (store, { statuses }) {
       const users = map(statuses, 'user')
       const retweetedUsers = compact(map(statuses, 'retweeted_status.user'))
@@ -116,10 +120,11 @@ const users = {
                   store.dispatch('startFetching', ['own', user.id])
 
                   // Get user mutes and follower info
-                  store.rootState.api.backendInteractor.fetchMutes().then((mutedUsers) => {
-                    each(mutedUsers, (user) => { user.muted = true })
-                    store.commit('addNewUsers', mutedUsers)
-                  })
+                  store.rootState.api.backendInteractor.fetchMutes()
+                    .then((mutedUsers) => {
+                      each(mutedUsers, (user) => { user.muted = true })
+                      store.commit('addNewUsers', mutedUsers)
+                    })
 
                   // Fetch our friends
                   store.rootState.api.backendInteractor.fetchFriends({id: user.id})
