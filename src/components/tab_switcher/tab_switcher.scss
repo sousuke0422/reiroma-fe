@@ -9,51 +9,72 @@
   .tabs {
     display: flex;
     position: relative;
-    justify-content: center;
     width: 100%;
-    overflow-y: hidden;
-    overflow-x: auto;
     padding-top: 5px;
-    height: 32px;
     box-sizing: border-box;
 
-    &::after, &::before {
-      display: block;
-      content: '';
-      flex: 1 1 auto;
-    }
-
-    .tab, &::after, &::before {
+    .scroll-buttons {
       border-bottom: 1px solid;
       border-bottom-color: $fallback--border;
       border-bottom-color: var(--border, $fallback--border);
+      display: none;
+
+      &.display {
+        display: flex;
+      }
     }
 
-    .tab {
-      position: relative;
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-      padding: 5px 1em 99px;
-      white-space: nowrap;
+    .tab-handles{
+      display: flex;
+      flex: 1 1 auto;
+      justify-content: flex-start;
 
-      &:not(.active) {
-        z-index: 4;
+      overflow-y: hidden;
+      overflow-x: auto;
 
-        &:hover {
-          z-index: 6;
-        }
-
-        &::after {
-          content: '';
-          position: absolute;
-          left: 0;
-          right: 0;
-          top: 26px;
-          border-bottom: 1px solid;
-          border-bottom-color: $fallback--border;
-          border-bottom-color: var(--border, $fallback--border);
-        }
+      &::after, &::before {
+        display: block;
+        content: '';
+        flex: 1 1 auto;
       }
+
+      .tab, &::after, &::before {
+        border-bottom: 1px solid;
+        border-bottom-color: $fallback--border;
+        border-bottom-color: var(--border, $fallback--border);
+      }
+
+      .tab {
+        position: relative;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        padding: 5px 1em;
+        white-space: nowrap;
+
+        &:not(.active) {
+          z-index: 4;
+
+          &:hover {
+            z-index: 6;
+          }
+
+          &::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 26px;
+            border-bottom: 1px solid;
+            border-bottom-color: $fallback--border;
+            border-bottom-color: var(--border, $fallback--border);
+          }
+        }
+
+      }
+
+    .tab-handle-wrapper {
+      oveflow: hidden;
+    }
 
       &.active {
         background: transparent;
