@@ -20,7 +20,7 @@
 
           <router-link @click.native="activatePanel && activatePanel('timeline')" class='user-screen-name' :to="userProfileLink(user)">
             <span class="handle">@{{user.screen_name}}</span><span v-if="user.locked"><i class="icon icon-lock"></i></span>
-            <span v-if="!hideUserStatsLocal" class="dailyAvg">{{dailyAvg}} {{ $t('user_card.per_day') }}</span>
+            <span v-if="!hideUserStatsLocal && !hideBio" class="dailyAvg">{{dailyAvg}} {{ $t('user_card.per_day') }}</span>
           </router-link>
         </div>
       </div>
