@@ -34,22 +34,40 @@
           </div>
           <div v-if="!noHeading" class="media-body container media-heading">
             <div class="media-heading-left">
-              <div class="name-and-links">
+              <div class="name-and-links" style="flex-grow: 1;">
                 <h4 class="user-name" v-if="status.user.name_html" v-html="status.user.name_html"></h4>
                 <h4 class="user-name" v-else>{{status.user.name}}</h4>
-                <span class="links">
-                  <router-link :to="userProfileLink">
-                    {{status.user.screen_name}}
+                <router-link class="account-name links" :to="userProfileLink">
+                  {{status.user.screen_name}}
+                </router-link>
+
+                <span style="align-items: baseline; flex-grow: 1; display: flex; justify-content: flex-end;">
+                  <router-link style="whitespace: nowrap; flex-shrink: 0;" class="links timeago" :to="{ name: 'conversation', params: { id: status.id } }">
+                    <timeago :since="status.created_at" :auto-update="60"></timeago>
                   </router-link>
-                  <span v-if="isReply" class="faint reply-info">
-                    <i class="icon-right-open"></i>
-                    <router-link :to="replyProfileLink">
-                      {{replyToName}}
-                    </router-link>
-                  </span>
-                  <a v-if="isReply && !noReplyLinks" href="#" @click.prevent="gotoOriginal(status.in_reply_to_status_id)" :aria-label="$t('tool_tip.reply')">
-                    <i class="button-icon icon-reply" @mouseenter="replyEnter(status.in_reply_to_status_id, $event)" @mouseout="replyLeave()"></i>
+                  <div class="button-icon visibility-icon" v-if="status.visibility">
+                    <i :class="visibilityIcon(status.visibility)" :title="status.visibility | capitalize"></i>
+                  </div>
+                  <a :href="status.external_url" target="_blank" v-if="!status.is_local" class="source_url" title="Source">
+                    <i class="button-icon icon-link-ext-alt"></i>
                   </a>
+                  <template v-if="expandable">
+                    <a href="#" @click.prevent="toggleExpanded" title="Expand">
+                      <i class="button-icon icon-plus-squared"></i>
+                    </a>
+                  </template>
+                  <a href="#" @click.prevent="toggleMute" v-if="unmuted"><i class="button-icon icon-eye-off"></i></a>
+                </span>
+              </div>
+              <div class="links">
+                <a v-if="isReply && !noReplyLinks" href="#" @click.prevent="gotoOriginal(status.in_reply_to_status_id)" :aria-label="$t('tool_tip.reply')">
+                  <i class="button-icon icon-reply" @mouseenter="replyEnter(status.in_reply_to_status_id, $event)" @mouseout="replyLeave()"></i>
+                  <span class="faint reply-to-text">Reply to </span>
+                </a>
+                <span v-if="isReply" class="faint">
+                  <router-link :to="replyProfileLink">
+                    {{replyToName}}
+                  </router-link>
                 </span>
               </div>
               <h4 class="replies" v-if="inConversation && !noReplyLinks">
@@ -58,23 +76,6 @@
                   <a href="#" @click.prevent="gotoOriginal(reply.id)" @mouseenter="replyEnter(reply.id, $event)" @mouseout="replyLeave()">{{reply.name}}&nbsp;</a>
                 </small>
               </h4>
-            </div>
-            <div class="media-heading-right">
-              <router-link class="timeago" :to="{ name: 'conversation', params: { id: status.id } }">
-                <timeago :since="status.created_at" :auto-update="60"></timeago>
-              </router-link>
-              <div class="button-icon visibility-icon" v-if="status.visibility">
-                <i :class="visibilityIcon(status.visibility)" :title="status.visibility | capitalize"></i>
-              </div>
-              <a :href="status.external_url" target="_blank" v-if="!status.is_local" class="source_url" title="Source">
-                <i class="button-icon icon-link-ext-alt"></i>
-              </a>
-              <template v-if="expandable">
-                <a href="#" @click.prevent="toggleExpanded" title="Expand">
-                  <i class="button-icon icon-plus-squared"></i>
-                </a>
-              </template>
-              <a href="#" @click.prevent="toggleMute" v-if="unmuted"><i class="button-icon icon-eye-off"></i></a>
             </div>
           </div>
 
@@ -216,6 +217,23 @@
     line-height: 18px;
   }
 
+  .user-name {
+    white-space: nowrap;
+    font-size: 14px;
+    overflow: hidden;
+    flex-shrink: 0;
+    max-width: 85%;
+    font-weight: bold;
+    margin-right: .2em;
+
+    img {
+      width: 14px;
+      height: 14px;
+      vertical-align: middle;
+      object-fit: contain
+    }
+  }
+
   .media-heading-left {
     padding: 0;
     vertical-align: bottom;
@@ -224,29 +242,21 @@
     small {
       font-weight: lighter;
     }
-    h4 {
-      white-space: nowrap;
-      font-size: 14px;
-      margin-right: 0.25em;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+
     .name-and-links {
       padding: 0;
       flex: 1 0;
       display: flex;
-      flex-wrap: wrap;
       align-items: baseline;
 
-      .user-name {
-        margin-right: .45em;
+      .account-name {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
 
-        img {
-          width: 14px;
-          height: 14px;
-          vertical-align: middle;
-          object-fit: contain
-        }
+      .user-name {
+        margin-right: .4em;
       }
     }
 
@@ -262,6 +272,9 @@
         overflow: hidden;
         white-space: nowrap;
       }
+    }
+    .reply-to-text {
+      margin-right: 0.5em;
     }
     .reply-info {
       display: flex;
@@ -398,17 +411,6 @@
       display: flex;
       align-content: center;
       flex-wrap: wrap;
-
-      .user-name {
-        font-weight: bold;
-
-        img {
-          width: 14px;
-          height: 14px;
-          vertical-align: middle;
-          object-fit: contain
-        }
-      }
 
       i {
         padding: 0 0.2em;
