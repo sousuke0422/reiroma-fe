@@ -66,7 +66,9 @@ const settings = {
         Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'webkitAudioDecodedByteCount') ||
         // Future spec, still not supported in Nightly 63 as of 08/2018
         Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'audioTracks'),
-      playVideosInline: user.playVideosInline,
+      playVideosInline: typeof user.playVideosInline === 'undefined'
+        ? instance.playVideosInline
+        : user.playVideosInline,
       useContainFit: user.useContainFit
     }
   },
