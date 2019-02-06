@@ -88,7 +88,7 @@
 
   .attachment {
     position: relative;
-    margin: 0.5em 0.5em 0em 0em;
+    // margin: 0.5em 0.5em 0em 0em;
     align-self: flex-start;
     line-height: 0;
 

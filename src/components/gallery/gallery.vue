@@ -30,7 +30,7 @@
   margin-bottom: 0.25em;
 
   .attachments, .attachment {
-    margin: 0 0.5em 0 0;
+    // margin: 0 0.5em 0 0;
     flex-grow: 1;
     height: 100%;
     box-sizing: border-box;

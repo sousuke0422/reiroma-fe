@@ -32,20 +32,20 @@
           </router-link>
         </div>
         <div class="status-body">
-          <div class="usercard media-body" v-if="userExpanded">
+          <div class="usercard" v-if="userExpanded">
             <user-card-content :user="status.user" :switcher="false"></user-card-content>
           </div>
-          <div v-if="!noHeading" class="media-body container media-heading">
-            <div class="media-heading-left">
-              <div class="name-and-links" style="flex-grow: 1;">
+          <!-- <div v-if="!noHeading" class="media-body container media-heading"> -->
+            <div v-if="!noHeading" class="media-heading">
+              <div class="heading-name-row">
                 <h4 class="user-name" v-if="status.user.name_html" v-html="status.user.name_html"></h4>
                 <h4 class="user-name" v-else>{{status.user.name}}</h4>
-                <router-link class="account-name links" :to="userProfileLink">
+                <router-link class="account-name" :to="userProfileLink">
                   {{status.user.screen_name}}
                 </router-link>
 
-                <span style="align-items: baseline; flex-grow: 1; display: flex; justify-content: flex-end;">
-                  <router-link style="whitespace: nowrap; flex-shrink: 0;" class="links timeago" :to="{ name: 'conversation', params: { id: status.id } }">
+                <span class="heading-right">
+                  <router-link class="timeago" :to="{ name: 'conversation', params: { id: status.id } }">
                     <timeago :since="status.created_at" :auto-update="60"></timeago>
                   </router-link>
                   <div class="button-icon visibility-icon" v-if="status.visibility">
@@ -62,9 +62,9 @@
                   <a href="#" @click.prevent="toggleMute" v-if="unmuted"><i class="button-icon icon-eye-off"></i></a>
                 </span>
               </div>
-              <div class="links">
-                <a v-if="isReply && !noReplyLinks" href="#" @click.prevent="gotoOriginal(status.in_reply_to_status_id)" :aria-label="$t('tool_tip.reply')">
-                  <i class="button-icon icon-reply" @mouseenter="replyEnter(status.in_reply_to_status_id, $event)" @mouseout="replyLeave()"></i>
+              <div class="heading-reply-row">
+                <a v-if="isReply && !noReplyLinks" href="#" @click.prevent="gotoOriginal(status.in_reply_to_status_id)" :aria-label="$t('tool_tip.reply')" @mouseenter="replyEnter(status.in_reply_to_status_id, $event)" @mouseout="replyLeave()">
+                  <!-- <i class="button-icon icon-reply" @mouseenter="replyEnter(status.in_reply_to_status_id, $event)" @mouseout="replyLeave()"></i> -->
                   <span class="faint reply-to-text">Reply to </span>
                 </a>
                 <span v-if="isReply" class="faint">
@@ -80,7 +80,7 @@
                 </small>
               </h4>
             </div>
-          </div>
+          <!-- </div> -->
 
           <div v-if="showPreview" class="status-preview-container">
             <status class="status-preview" v-if="preview" :noReplyLinks="true" :statusoid="preview" :compact=true></status>
@@ -204,6 +204,10 @@
   }
 }
 
+.media-left {
+  margin-right: 0.75em;
+}
+
 .status-el {
   hyphens: auto;
   overflow-wrap: break-word;
@@ -231,16 +235,12 @@
   .media-body {
     flex: 1;
     padding: 0;
-    margin: 0 0 0.25em 0.8em;
+    // margin: 0 0 0.25em 0.8em;
   }
 
   .usercard {
-    margin-bottom: .7em
-  }
-
-  .media-heading {
-    flex-wrap: nowrap;
-    line-height: 18px;
+    margin: 0;
+    margin-bottom: 0.75em;
   }
 
   .user-name {
@@ -250,7 +250,7 @@
     flex-shrink: 0;
     max-width: 85%;
     font-weight: bold;
-    margin-right: .2em;
+    // margin-right: .2em;
 
     img {
       width: 14px;
@@ -260,10 +260,13 @@
     }
   }
 
-  .media-heading-left {
+  .media-heading {
     padding: 0;
     vertical-align: bottom;
     flex-basis: 100%;
+    margin-bottom: 0.5em;
+
+    line-height: 2em;
 
     a {
       display: inline-block;
@@ -274,24 +277,30 @@
       font-weight: lighter;
     }
 
-    .name-and-links {
+    .heading-name-row {
       padding: 0;
       flex: 1 0;
       display: flex;
       align-items: baseline;
 
+      .user-name {
+        margin-right: 0.5em;
+      }
+
       .account-name {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-      }
-
-      .user-name {
-        margin-right: .4em;
+        flex: 1 1 0;
       }
     }
 
-    .links {
+    .heading-right {
+      display: flex;
+    }
+
+    .heading-reply-row {
+      align-content: baseline;
       display: flex;
       font-size: 12px;
       color: $fallback--link;
@@ -313,7 +322,7 @@
       }
     }
     .reply-to-text {
-      margin-right: 0.5em;
+      // margin-right: 0.5em;
     }
     .reply-info {
       display: flex;
@@ -322,7 +331,7 @@
       line-height: 16px;
     }
     .reply-link {
-      margin-right: 0.2em;
+      //margin-right: 0.2em;
     }
   }
 
@@ -330,17 +339,17 @@
     display: inline-flex;
     flex-shrink: 0;
     flex-wrap: nowrap;
-    margin-left: .25em;
+    // margin-left: .25em;
     align-self: baseline;
 
     .timeago {
-      margin-right: 0.2em;
+      // margin-right: 0.2em;
       font-size: 12px;
       align-self: last baseline;
     }
 
     > * {
-      margin-left: 0.2em;
+      // margin-left: 0.2em;
     }
     a:hover i {
       color: $fallback--text;
@@ -380,7 +389,7 @@
   }
 
   .status-content {
-    margin-right: 0.5em;
+    // margin-right: 0.5em;
     font-family: var(--postFont, sans-serif);
 
     img, video {
@@ -491,8 +500,8 @@
   display: flex;
 
   div, favorite-button {
-    padding-top: 0.25em;
-    max-width: 6em;
+    // padding-top: 0.25em;
+    max-width: 4em;
     flex: 1;
   }
 }
@@ -518,7 +527,8 @@
 
 .status {
   display: flex;
-  padding: 0.6em;
+  padding: 0.75em;
+  // padding: 0.6em;
   &.is-retweet {
     padding-top: 0.1em;
   }

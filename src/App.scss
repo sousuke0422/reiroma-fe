@@ -660,6 +660,10 @@ nav {
   border-radius: var(--inputRadius, $fallback--inputRadius);
 }
 
+.button-icon {
+  font-size: 1.2em;
+}
+
 @keyframes shakeError {
   0% {
     transform: translateX(0);
@@ -702,10 +706,6 @@ nav {
 
   .panel {
     margin: 0.5em 0 0.5em 0;
-  }
-
-  .button-icon {
-    font-size: 1.2em;
   }
 
   .status .status-actions {
