@@ -4,10 +4,14 @@ import RetweetButton from '../retweet_button/retweet_button.vue'
 import DeleteButton from '../delete_button/delete_button.vue'
 import PostStatusForm from '../post_status_form/post_status_form.vue'
 import UserCardContent from '../user_card_content/user_card_content.vue'
-import StillImage from '../still-image/still-image.vue'
-import { filter, find } from 'lodash'
-import { highlightClass, highlightStyle } from '../../services/user_highlighter/user_highlighter.js'
+import UserAvatar from '../user_avatar/user_avatar.vue'
+import Gallery from '../gallery/gallery.vue'
+import LinkPreview from '../link-preview/link-preview.vue'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
+import fileType from 'src/services/file_type/file_type.service'
+import { highlightClass, highlightStyle } from '../../services/user_highlighter/user_highlighter.js'
+import { mentionMatchesUrl } from 'src/services/mention_matcher/mention_matcher.js'
+import { filter, find } from 'lodash'
 
 const Status = {
   name: 'Status',
@@ -31,11 +35,13 @@ const Status = {
       userExpanded: false,
       preview: null,
       showPreview: false,
-      showingTall: false,
+      showingTall: this.inConversation && this.focused,
+      showingLongSubject: false,
       expandingSubject: typeof this.$store.state.config.collapseMessageWithSubject === 'undefined'
         ? !this.$store.state.instance.collapseMessageWithSubject
         : !this.$store.state.config.collapseMessageWithSubject,
-      betterShadow: this.$store.state.interface.browserSupport.cssFilter
+      betterShadow: this.$store.state.interface.browserSupport.cssFilter,
+      maxAttachments: 9
     }
   },
   computed: {
@@ -78,12 +84,13 @@ const Status = {
     },
     replyProfileLink () {
       if (this.isReply) {
-        return this.generateUserProfileLink(this.status.in_reply_to_status_id, this.replyToName)
+        return this.generateUserProfileLink(this.status.in_reply_to_user_id, this.replyToName)
       }
     },
     retweet () { return !!this.statusoid.retweeted_status },
-    retweeter () { return this.statusoid.user.name },
+    retweeter () { return this.statusoid.user.name || this.statusoid.user.screen_name },
     retweeterHtml () { return this.statusoid.user.name_html },
+    retweeterProfileLink () { return this.generateUserProfileLink(this.statusoid.user.id, this.statusoid.user.screen_name) },
     status () {
       if (this.retweet) {
         return this.statusoid.retweeted_status
@@ -124,8 +131,11 @@ const Status = {
       const lengthScore = this.status.statusnet_html.split(/<p|<br/).length + this.status.text.length / 80
       return lengthScore > 20
     },
+    longSubject () {
+      return this.status.summary.length > 900
+    },
     isReply () {
-      return !!this.status.in_reply_to_status_id
+      return !!(this.status.in_reply_to_status_id && this.status.in_reply_to_user_id)
     },
     replyToName () {
       const user = this.$store.state.users.usersObject[this.status.in_reply_to_user_id]
@@ -178,7 +188,7 @@ const Status = {
       return this.tallStatus
     },
     showingMore () {
-      return this.showingTall || (this.status.summary && this.expandingSubject)
+      return (this.tallStatus && this.showingTall) || (this.status.summary && this.expandingSubject)
     },
     nsfwClickthrough () {
       if (!this.status.nsfw) {
@@ -205,12 +215,31 @@ const Status = {
     },
     attachmentSize () {
       if ((this.$store.state.config.hideAttachments && !this.inConversation) ||
-        (this.$store.state.config.hideAttachmentsInConv && this.inConversation)) {
+        (this.$store.state.config.hideAttachmentsInConv && this.inConversation) ||
+        (this.status.attachments.length > this.maxAttachments)) {
         return 'hide'
       } else if (this.compact) {
         return 'small'
       }
       return 'normal'
+    },
+    galleryTypes () {
+      if (this.attachmentSize === 'hide') {
+        return []
+      }
+      return this.$store.state.config.playVideosInModal
+        ? ['image', 'video']
+        : ['image']
+    },
+    galleryAttachments () {
+      return this.status.attachments.filter(
+        file => fileType.fileMatchesSomeType(this.galleryTypes, file)
+      )
+    },
+    nonGalleryAttachments () {
+      return this.status.attachments.filter(
+        file => !fileType.fileMatchesSomeType(this.galleryTypes, file)
+      )
     }
   },
   components: {
@@ -220,7 +249,9 @@ const Status = {
     DeleteButton,
     PostStatusForm,
     UserCardContent,
-    StillImage
+    UserAvatar,
+    Gallery,
+    LinkPreview
   },
   methods: {
     visibilityIcon (visibility) {
@@ -235,11 +266,23 @@ const Status = {
           return 'icon-globe'
       }
     },
-    linkClicked ({target}) {
+    linkClicked (event) {
+      let { target } = event
       if (target.tagName === 'SPAN') {
         target = target.parentNode
       }
       if (target.tagName === 'A') {
+        if (target.className.match(/mention/)) {
+          const href = target.getAttribute('href')
+          const attn = this.status.attentions.find(attn => mentionMatchesUrl(attn, href))
+          if (attn) {
+            event.stopPropagation()
+            event.preventDefault()
+            const link = this.generateUserProfileLink(attn.id, attn.screen_name)
+            this.$router.push(link)
+            return
+          }
+        }
         window.open(target.href, '_blank')
       }
     },
@@ -264,11 +307,11 @@ const Status = {
     toggleShowMore () {
       if (this.showingTall) {
         this.showingTall = false
-      } else if (this.expandingSubject) {
+      } else if (this.expandingSubject && this.status.summary) {
         this.expandingSubject = false
       } else if (this.hideTallStatus) {
         this.showingTall = true
-      } else if (this.hideSubjectStatus) {
+      } else if (this.hideSubjectStatus && this.status.summary) {
         this.expandingSubject = true
       }
     },
@@ -295,6 +338,10 @@ const Status = {
     },
     generateUserProfileLink (id, name) {
       return generateProfileLink(id, name, this.$store.state.instance.restrictedNicknames)
+    },
+    setMedia () {
+      const attachments = this.attachmentSize === 'hide' ? this.status.attachments : this.galleryAttachments
+      return () => this.$store.dispatch('setMedia', attachments)
     }
   },
   watch: {
@@ -302,8 +349,13 @@ const Status = {
       if (this.status.id === id) {
         let rect = this.$el.getBoundingClientRect()
         if (rect.top < 100) {
-          window.scrollBy(0, rect.top - 200)
+          // Post is above screen, match its top to screen top
+          window.scrollBy(0, rect.top - 100)
+        } else if (rect.height >= (window.innerHeight - 50)) {
+          // Post we want to see is taller than screen so match its top to screen top
+          window.scrollBy(0, rect.top - 100)
         } else if (rect.bottom > window.innerHeight - 50) {
+          // Post is below screen, match its bottom to screen bottom
           window.scrollBy(0, rect.bottom - window.innerHeight + 50)
         }
       }

@@ -30,13 +30,18 @@
               <label for="account-no-rich-text">{{$t('settings.no_rich_text_description')}}</label>
             </p>
             <p>
-              <input type="checkbox" v-model="newHideNetwork" id="account-hide-network">
-              <label for="account-hide-network">{{$t('settings.hide_network_description')}}</label>
+              <input type="checkbox" v-model="hideFollows" id="account-hide-follows">
+              <label for="account-hide-follows">{{$t('settings.hide_follows_description')}}</label>
             </p>
-            <button :disabled='newName.length <= 0' class="btn btn-default" @click="updateProfile">{{$t('general.submit')}}</button>
+            <p>
+              <input type="checkbox" v-model="hideFollowers" id="account-hide-followers">
+              <label for="account-hide-followers">{{$t('settings.hide_followers_description')}}</label>
+            </p>
+            <button :disabled='newName && newName.length === 0' class="btn btn-default" @click="updateProfile">{{$t('general.submit')}}</button>
           </div>
           <div class="setting-item">
             <h2>{{$t('settings.avatar')}}</h2>
+            <p class="visibility-notice">{{$t('settings.avatar_size_instruction')}}</p>
             <p>{{$t('settings.current_avatar')}}</p>
             <img :src="user.profile_image_url_original" class="old-avatar"></img>
             <p>{{$t('settings.set_new_avatar')}}</p>
@@ -126,7 +131,7 @@
           <div class="setting-item">
             <h2>{{$t('settings.follow_import')}}</h2>
             <p>{{$t('settings.import_followers_from_a_csv_file')}}</p>
-            <form v-model="followImportForm">
+            <form>
               <input type="file" ref="followlist" v-on:change="followListChange"></input>
             </form>
             <i class=" icon-spin4 animate-spin uploading" v-if="followListUploading"></i>
@@ -174,6 +179,10 @@
   .uploading {
     font-size: 1.5em;
     margin: 0.25em;
+  }
+
+  .name-changer {
+    width: 100%;
   }
 }
 </style>

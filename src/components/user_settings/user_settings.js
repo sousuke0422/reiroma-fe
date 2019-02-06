@@ -1,4 +1,6 @@
-import TabSwitcher from '../tab_switcher/tab_switcher.jsx'
+import { unescape } from 'lodash'
+
+import TabSwitcher from '../tab_switcher/tab_switcher.js'
 import StyleSwitcher from '../style_switcher/style_switcher.vue'
 import fileSizeFormatService from '../../services/file_size_format/file_size_format.js'
 
@@ -6,11 +8,12 @@ const UserSettings = {
   data () {
     return {
       newName: this.$store.state.users.currentUser.name,
-      newBio: this.$store.state.users.currentUser.description,
+      newBio: unescape(this.$store.state.users.currentUser.description),
       newLocked: this.$store.state.users.currentUser.locked,
       newNoRichText: this.$store.state.users.currentUser.no_rich_text,
       newDefaultScope: this.$store.state.users.currentUser.default_scope,
-      newHideNetwork: this.$store.state.users.currentUser.hide_network,
+      hideFollows: this.$store.state.users.currentUser.hide_follows,
+      hideFollowers: this.$store.state.users.currentUser.hide_followers,
       followList: null,
       followImportError: false,
       followsImported: false,
@@ -66,7 +69,8 @@ const UserSettings = {
       /* eslint-disable camelcase */
       const default_scope = this.newDefaultScope
       const no_rich_text = this.newNoRichText
-      const hide_network = this.newHideNetwork
+      const hide_follows = this.hideFollows
+      const hide_followers = this.hideFollowers
       /* eslint-enable camelcase */
       this.$store.state.api.backendInteractor
         .updateProfile({
@@ -78,7 +82,8 @@ const UserSettings = {
             /* eslint-disable camelcase */
             default_scope,
             no_rich_text,
-            hide_network
+            hide_follows,
+            hide_followers
             /* eslint-enable camelcase */
           }}).then((user) => {
             if (!user.error) {

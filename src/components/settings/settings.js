@@ -1,5 +1,5 @@
 /* eslint-env browser */
-import TabSwitcher from '../tab_switcher/tab_switcher.jsx'
+import TabSwitcher from '../tab_switcher/tab_switcher.js'
 import StyleSwitcher from '../style_switcher/style_switcher.vue'
 import InterfaceLanguageSwitcher from '../interface_language_switcher/interface_language_switcher.vue'
 import { filter, trim } from 'lodash'
@@ -13,6 +13,7 @@ const settings = {
       hideAttachmentsLocal: user.hideAttachments,
       hideAttachmentsInConvLocal: user.hideAttachmentsInConv,
       hideNsfwLocal: user.hideNsfw,
+      useOneClickNsfw: user.useOneClickNsfw,
       hideISPLocal: user.hideISP,
       preloadImage: user.preloadImage,
 
@@ -29,7 +30,6 @@ const settings = {
       notificationVisibilityLocal: user.notificationVisibility,
       replyVisibilityLocal: user.replyVisibility,
       loopVideoLocal: user.loopVideo,
-      loopVideoSilentOnlyLocal: user.loopVideoSilentOnly,
       muteWordsString: user.muteWords.join('\n'),
       autoLoadLocal: user.autoLoad,
       streamingLocal: user.streaming,
@@ -58,13 +58,16 @@ const settings = {
 
       stopGifs: user.stopGifs,
       webPushNotificationsLocal: user.webPushNotifications,
+      loopVideoSilentOnlyLocal: user.loopVideosSilentOnly,
       loopSilentAvailable:
         // Firefox
         Object.getOwnPropertyDescriptor(HTMLVideoElement.prototype, 'mozHasAudio') ||
         // Chrome-likes
         Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'webkitAudioDecodedByteCount') ||
         // Future spec, still not supported in Nightly 63 as of 08/2018
-        Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'audioTracks')
+        Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'audioTracks'),
+      playVideosInModal: user.playVideosInModal,
+      useContainFit: user.useContainFit
     }
   },
   components: {
@@ -95,6 +98,9 @@ const settings = {
     },
     hideNsfwLocal (value) {
       this.$store.dispatch('setOption', { name: 'hideNsfw', value })
+    },
+    useOneClickNsfw (value) {
+      this.$store.dispatch('setOption', { name: 'useOneClickNsfw', value })
     },
     preloadImage (value) {
       this.$store.dispatch('setOption', { name: 'preloadImage', value })
@@ -157,6 +163,12 @@ const settings = {
     webPushNotificationsLocal (value) {
       this.$store.dispatch('setOption', { name: 'webPushNotifications', value })
       if (value) this.$store.dispatch('registerPushNotifications')
+    },
+    playVideosInModal (value) {
+      this.$store.dispatch('setOption', { name: 'playVideosInModal', value })
+    },
+    useContainFit (value) {
+      this.$store.dispatch('setOption', { name: 'useContainFit', value })
     }
   }
 }

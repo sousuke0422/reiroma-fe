@@ -4,7 +4,7 @@
     <div class='user-info'>
       <div class='container'>
         <router-link :to="userProfileLink(user)">
-          <StillImage class="avatar" :class='{ "better-shadow": betterShadow }' :src="user.profile_image_url_original"/>
+          <UserAvatar :betterShadow="betterShadow" :src="user.profile_image_url_original"/>
         </router-link>
         <div class="name-and-screen-name">
           <div class="top-line">
@@ -107,18 +107,18 @@
     </div>
   </div>
   <div class="panel-body profile-panel-body" v-if="!hideBio">
-    <div v-if="!hideUserStatsLocal || switcher" class="user-counts">
+    <div v-if="!hideUserStatsLocal && switcher" class="user-counts">
       <div class="user-count" v-on:click.prevent="setProfileView('statuses')">
         <h5>{{ $t('user_card.statuses') }}</h5>
-        <span v-if="!hideUserStatsLocal">{{user.statuses_count}} <br></span>
+        <span>{{user.statuses_count}} <br></span>
       </div>
       <div class="user-count" v-on:click.prevent="setProfileView('friends')">
         <h5>{{ $t('user_card.followees') }}</h5>
-        <span v-if="!hideUserStatsLocal">{{user.friends_count}}</span>
+        <span>{{user.friends_count}}</span>
       </div>
       <div class="user-count" v-on:click.prevent="setProfileView('followers')">
         <h5>{{ $t('user_card.followers') }}</h5>
-        <span v-if="!hideUserStatsLocal">{{user.followers_count}}</span>
+        <span>{{user.followers_count}}</span>
       </div>
     </div>
     <p @click.prevent="linkClicked" v-if="!hideBio && user.description_html" class="profile-bio" v-html="user.description_html"></p>
@@ -169,23 +169,12 @@
     max-height: 56px;
 
     .avatar {
-      border-radius: $fallback--avatarRadius;
-      border-radius: var(--avatarRadius, $fallback--avatarRadius);
       flex: 1 0 100%;
       width: 56px;
       height: 56px;
       box-shadow: 0px 1px 8px rgba(0,0,0,0.75);
       box-shadow: var(--avatarShadow);
       object-fit: cover;
-
-      &.better-shadow {
-        box-shadow: var(--avatarShadowInset);
-        filter: var(--avatarShadowFilter)
-      }
-
-      &.animated::before {
-        display: none;
-      }
     }
   }
 

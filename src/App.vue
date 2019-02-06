@@ -29,7 +29,7 @@
               <user-panel></user-panel>
               <nav-panel></nav-panel>
               <instance-specific-panel v-if="showInstanceSpecificPanel"></instance-specific-panel>
-              <features-panel v-if="!currentUser"></features-panel>
+              <features-panel v-if="!currentUser && showFeaturesPanel"></features-panel>
               <who-to-follow-panel v-if="currentUser && suggestionsEnabled"></who-to-follow-panel>
               <notifications v-if="currentUser"></notifications>
             </div>
@@ -41,6 +41,7 @@
           <router-view></router-view>
         </transition>
       </div>
+      <media-modal></media-modal>
     </div>
     <chat-panel :floating="true" v-if="currentUser && chat" class="floating-chat mobile-hidden"></chat-panel>
   </div>

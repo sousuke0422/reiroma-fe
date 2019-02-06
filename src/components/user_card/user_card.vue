@@ -1,8 +1,8 @@
 <template>
   <div class="card">
-    <a href="#">
-      <StillImage @click.prevent="toggleUserExpanded" class="avatar" :src="user.profile_image_url"/>
-    </a>
+    <router-link :to="userProfileLink(user)">
+      <UserAvatar class="avatar" :compact="true" @click.prevent.native="toggleUserExpanded" :src="user.profile_image_url"/>
+    </router-link>
     <div class="usercard" v-if="userExpanded">
       <user-card-content :user="user" :switcher="false"></user-card-content>
     </div>
@@ -69,17 +69,13 @@
 	border-bottom-color: var(--border, $fallback--border);
 
   .avatar {
-    margin-top: 0.2em;
-    width:32px;
-    height: 32px;
-    border-radius: $fallback--avatarAltRadius;
-    border-radius: var(--avatarAltRadius, $fallback--avatarAltRadius);
+    padding: 0;
   }
 }
 
 .usercard {
   width: fill-available;
-  margin: 0.2em 0 0.7em 0;
+  margin: 0.2em 0 0 0.7em;
   border-radius: $fallback--panelRadius;
   border-radius: var(--panelRadius, $fallback--panelRadius);
   border-style: solid;

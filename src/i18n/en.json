@@ -17,7 +17,9 @@
   },
   "general": {
     "apply": "Apply",
-    "submit": "Submit"
+    "submit": "Submit",
+    "more": "More",
+    "generic_error": "An error occured"
   },
   "login": {
     "login": "Log in",
@@ -49,7 +51,8 @@
     "load_older": "Load older notifications",
     "notifications": "Notifications",
     "read": "Read!",
-    "repeated_you": "repeated your status"
+    "repeated_you": "repeated your status",
+    "no_more_notifications": "No more notifications"
   },
   "post_status": {
     "new_status": "Post new status",
@@ -117,6 +120,7 @@
     "delete_account_description": "Permanently delete your account and all your messages.",
     "delete_account_error": "There was an issue deleting your account. If this persists please contact your instance administrator.",
     "delete_account_instructions": "Type your password in the input below to confirm account deletion.",
+    "avatar_size_instruction": "The recommended minimum size for avatar images is 150x150 pixels.",
     "export_theme": "Save preset",
     "filtering": "Filtering",
     "filtering_explanation": "All statuses containing these words will be muted, one per line",
@@ -132,6 +136,7 @@
     "hide_attachments_in_tl": "Hide attachments in timeline",
     "hide_isp": "Hide instance-specific panel",
     "preload_images": "Preload images",
+    "use_one_click_nsfw": "Open NSFW attachments with just one click",
     "hide_post_stats": "Hide post statistics (e.g. the number of favorites)",
     "hide_user_stats": "Hide user statistics (e.g. the number of followers)",
     "import_followers_from_a_csv_file": "Import follows from a csv file",
@@ -148,6 +153,8 @@
     "lock_account_description": "Restrict your account to approved followers only",
     "loop_video": "Loop videos",
     "loop_video_silent_only": "Loop only videos without sound (i.e. Mastodon's \"gifs\")",
+    "play_videos_in_modal": "Play videos directly in the media viewer",
+    "use_contain_fit": "Don't crop the attachment in thumbnails",
     "name": "Name",
     "name_bio": "Name & Bio",
     "new_password": "New password",
@@ -157,7 +164,8 @@
     "notification_visibility_mentions": "Mentions",
     "notification_visibility_repeats": "Repeats",
     "no_rich_text_description": "Strip rich text formatting from all posts",
-    "hide_network_description": "Don't show who I'm following and who's following me",
+    "hide_follows_description": "Don't show who I'm following",
+    "hide_followers_description": "Don't show who's following me",
     "nsfw_clickthrough": "Enable clickthrough NSFW attachment hiding",
     "panelRadius": "Panels",
     "pause_on_unfocused": "Pause streaming when tab is not focused",
@@ -317,7 +325,8 @@
     "no_retweet_hint": "Post is marked as followers-only or direct and cannot be repeated",
     "repeated": "repeated",
     "show_new": "Show new",
-    "up_to_date": "Up-to-date"
+    "up_to_date": "Up-to-date",
+    "no_more_statuses": "No more statuses"
   },
   "user_card": {
     "approve": "Approve",
@@ -358,9 +367,9 @@
   },
   "upload":{
     "error": {
-    "base": "Upload failed.",
-    "file_too_big": "File too big [{filesize}{filesizeunit} / {allowedsize}{allowedsizeunit}]",
-    "default": "Try again later"
+      "base": "Upload failed.",
+      "file_too_big": "File too big [{filesize}{filesizeunit} / {allowedsize}{allowedsizeunit}]",
+      "default": "Try again later"
     },
     "file_size_units": {
       "B": "B",

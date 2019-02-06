@@ -1,6 +1,7 @@
 import UserCardContent from '../user_card_content/user_card_content.vue'
 import UserCard from '../user_card/user_card.vue'
 import Timeline from '../timeline/timeline.vue'
+import FollowList from '../follow_list/follow_list.vue'
 
 const UserProfile = {
   created () {
@@ -8,16 +9,14 @@ const UserProfile = {
     this.$store.commit('clearTimeline', { timeline: 'favorites' })
     this.$store.commit('clearTimeline', { timeline: 'media' })
     this.$store.dispatch('startFetching', ['user', this.fetchBy])
-    this.$store.dispatch('startFetching', ['favorites', this.fetchBy])
     this.$store.dispatch('startFetching', ['media', this.fetchBy])
+    this.startFetchFavorites()
     if (!this.user.id) {
       this.$store.dispatch('fetchUser', this.fetchBy)
     }
   },
   destroyed () {
-    this.$store.dispatch('stopFetching', 'user')
-    this.$store.dispatch('stopFetching', 'favorites')
-    this.$store.dispatch('stopFetching', 'media')
+    this.cleanUp(this.userId)
   },
   computed: {
     timeline () {
@@ -36,13 +35,8 @@ const UserProfile = {
       return this.$route.params.name || this.user.screen_name
     },
     isUs () {
-      return this.userId === this.$store.state.users.currentUser.id
-    },
-    friends () {
-      return this.user.friends
-    },
-    followers () {
-      return this.user.followers
+      return this.userId && this.$store.state.users.currentUser.id &&
+        this.userId === this.$store.state.users.currentUser.id
     },
     userInStore () {
       if (this.isExternal) {
@@ -67,56 +61,47 @@ const UserProfile = {
     }
   },
   methods: {
-    fetchFollowers () {
-      const id = this.userId
-      this.$store.dispatch('addFollowers', { id })
-    },
-    fetchFriends () {
-      const id = this.userId
-      this.$store.dispatch('addFriends', { id })
-    }
-  },
-  watch: {
-    // TODO get rid of this copypasta
-    userName () {
-      if (this.isExternal) {
-        return
+    startFetchFavorites () {
+      if (this.isUs) {
+        this.$store.dispatch('startFetching', ['favorites', this.fetchBy])
       }
+    },
+    startUp () {
+      this.$store.dispatch('startFetching', ['user', this.fetchBy])
+      this.$store.dispatch('startFetching', ['media', this.fetchBy])
+
+      this.startFetchFavorites()
+    },
+    cleanUp () {
       this.$store.dispatch('stopFetching', 'user')
       this.$store.dispatch('stopFetching', 'favorites')
       this.$store.dispatch('stopFetching', 'media')
       this.$store.commit('clearTimeline', { timeline: 'user' })
       this.$store.commit('clearTimeline', { timeline: 'favorites' })
       this.$store.commit('clearTimeline', { timeline: 'media' })
-      this.$store.dispatch('startFetching', ['user', this.fetchBy])
-      this.$store.dispatch('startFetching', ['favorites', this.fetchBy])
-      this.$store.dispatch('startFetching', ['media', this.fetchBy])
+    }
+  },
+  watch: {
+    userName () {
+      if (this.isExternal) {
+        return
+      }
+      this.cleanUp()
+      this.startUp()
     },
     userId () {
       if (!this.isExternal) {
         return
       }
-      this.$store.dispatch('stopFetching', 'user')
-      this.$store.dispatch('stopFetching', 'favorites')
-      this.$store.dispatch('stopFetching', 'media')
-      this.$store.commit('clearTimeline', { timeline: 'user' })
-      this.$store.commit('clearTimeline', { timeline: 'favorites' })
-      this.$store.commit('clearTimeline', { timeline: 'media' })
-      this.$store.dispatch('startFetching', ['user', this.fetchBy])
-      this.$store.dispatch('startFetching', ['favorites', this.fetchBy])
-      this.$store.dispatch('startFetching', ['media', this.fetchBy])
-    },
-    user () {
-      if (this.user.id && !this.user.followers) {
-        this.fetchFollowers()
-        this.fetchFriends()
-      }
+      this.cleanUp()
+      this.startUp()
     }
   },
   components: {
     UserCardContent,
     UserCard,
-    Timeline
+    Timeline,
+    FollowList
   }
 }
 

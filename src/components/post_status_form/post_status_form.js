@@ -16,7 +16,7 @@ const buildMentionsString = ({user, attentions}, currentUser) => {
     return `@${attention.screen_name}`
   })
 
-  return mentions.join(' ') + ' '
+  return mentions.length > 0 ? mentions.join(' ') + ' ' : ''
 }
 
 const PostStatusForm = {
@@ -250,6 +250,7 @@ const PostStatusForm = {
             visibility: newStatus.visibility,
             contentType: newStatus.contentType
           }
+          this.$refs.mediaUpload.clearFile()
           this.$emit('posted')
           let el = this.$el.querySelector('textarea')
           el.style.height = 'auto'

@@ -13,10 +13,13 @@
     </template>
     <template v-else>
       <div v-if="retweet && !noHeading" :class="[repeaterClass, { highlighted: repeaterStyle }]" :style="[repeaterStyle]" class="media container retweet-info">
-        <StillImage v-if="retweet" class='avatar' :class='{ "better-shadow": betterShadow }' :src="statusoid.user.profile_image_url_original"/>
+        <UserAvatar v-if="retweet" :betterShadow="betterShadow" :src="statusoid.user.profile_image_url_original"/>
         <div class="media-body faint">
-          <a v-if="retweeterHtml" :href="statusoid.user.statusnet_profile_url" class="user-name" :title="'@'+statusoid.user.screen_name" v-html="retweeterHtml"></a>
-          <a v-else :href="statusoid.user.statusnet_profile_url" class="user-name" :title="'@'+statusoid.user.screen_name">{{retweeter}}</a>
+          <span class="user-name">
+            <router-link :to="retweeterProfileLink">
+              {{retweeterHtml || retweeter}}
+            </router-link>
+          </span>
           <i class='fa icon-retweet retweeted' :title="$t('tool_tip.repeat')"></i>
           {{$t('timeline.repeated')}}
         </div>
@@ -24,9 +27,9 @@
 
       <div :class="[userClass, { highlighted: userStyle, 'is-retweet': retweet }]" :style="[ userStyle ]" class="media status">
         <div v-if="!noHeading" class="media-left">
-          <a :href="status.user.statusnet_profile_url" @click.stop.prevent.capture="toggleUserExpanded">
-            <StillImage class='avatar' :class="{'avatar-compact': compact, 'better-shadow': betterShadow}"  :src="status.user.profile_image_url_original"/>
-          </a>
+          <router-link :to="userProfileLink" @click.stop.prevent.capture.native="toggleUserExpanded">
+            <UserAvatar :compact="compact" :betterShadow="betterShadow" :src="status.user.profile_image_url_original"/>
+          </router-link>
         </div>
         <div class="status-body">
           <div class="usercard media-body" v-if="userExpanded">
@@ -86,7 +89,12 @@
             </div>
           </div>
 
-          <div :class="{'tall-status': hideTallStatus}" class="status-content-wrapper">
+          <div class="status-content-wrapper" :class="{ 'tall-status': !showingLongSubject }" v-if="longSubject">
+            <a class="tall-status-hider" :class="{ 'tall-status-hider_focused': isFocused }" v-if="!showingLongSubject" href="#" @click.prevent="showingLongSubject=true">Show more</a>
+            <div @click.prevent="linkClicked" class="status-content media-body" v-html="status.statusnet_html"></div>
+            <a v-if="showingLongSubject" href="#" class="status-unhider" @click.prevent="showingLongSubject=false">Show less</a>
+          </div>
+          <div :class="{'tall-status': hideTallStatus}" class="status-content-wrapper" v-else>
             <a class="tall-status-hider" :class="{ 'tall-status-hider_focused': isFocused }" v-if="hideTallStatus" href="#" @click.prevent="toggleShowMore">Show more</a>
             <div @click.prevent="linkClicked" class="status-content media-body" v-html="status.statusnet_html" v-if="!hideSubjectStatus"></div>
             <div @click.prevent="linkClicked" class="status-content media-body" v-html="status.summary_html" v-else></div>
@@ -94,9 +102,27 @@
             <a v-if="showingMore" href="#" class="status-unhider" @click.prevent="toggleShowMore">Show less</a>
           </div>
 
-          <div v-if='status.attachments && !hideSubjectStatus' class='attachments media-body'>
-            <attachment :size="attachmentSize" :status-id="status.id" :nsfw="nsfwClickthrough" :attachment="attachment" v-for="attachment in status.attachments" :key="attachment.id">
-            </attachment>
+          <div v-if="status.attachments && (!hideSubjectStatus || showingLongSubject)" class="attachments media-body">
+            <attachment
+              class="non-gallery"
+              v-for="attachment in nonGalleryAttachments"
+              :size="attachmentSize"
+              :nsfw="nsfwClickthrough"
+              :attachment="attachment"
+              :allowPlay="true"
+              :setMedia="setMedia()"
+              :key="attachment.id"
+            />
+            <gallery
+              v-if="galleryAttachments.length > 0"
+              :nsfw="nsfwClickthrough"
+              :attachments="galleryAttachments"
+              :setMedia="setMedia()"
+            />
+          </div>
+
+          <div v-if="status.card && !hideSubjectStatus && !noHeading" class="link-preview media-body">
+            <link-preview :card="status.card" :size="attachmentSize" :nsfw="nsfwClickthrough" />
           </div>
 
           <div v-if="!noHeading && !noReplyLinks" class='status-actions media-body'>
@@ -239,6 +265,11 @@
     vertical-align: bottom;
     flex-basis: 100%;
 
+    a {
+      display: inline-block;
+      word-break: break-all;
+    }
+
     small {
       font-weight: lighter;
     }
@@ -271,6 +302,14 @@
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
+      }
+      & > span {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      & > a:last-child {
+        flex-shrink: 0;
       }
     }
     .reply-to-text {
@@ -309,11 +348,6 @@
     }
   }
 
-  a {
-    display: inline-block;
-    word-break: break-all;
-  }
-
   .tall-status {
     position: relative;
     height: 220px;
@@ -322,6 +356,8 @@
   }
 
   .tall-status-hider {
+    display: inline-block;
+    word-break: break-all;
     position: absolute;
     height: 70px;
     margin-top: 150px;
@@ -339,6 +375,8 @@
   .status-unhider, .cw-status-hider {
     width: 100%;
     text-align: center;
+    display: inline-block;
+    word-break: break-all;
   }
 
   .status-content {
@@ -396,7 +434,7 @@
     padding: 0.4em 0.6em 0 0.6em;
     margin: 0;
 
-    .avatar {
+    .avatar.still-image {
       border-radius: $fallback--avatarAltRadius;
       border-radius: var(--avatarAltRadius, $fallback--avatarAltRadius);
       margin-left: 28px;
@@ -469,46 +507,6 @@
   color: var(--cBlue, $fallback--cBlue);
 }
 
-.status .avatar-compact {
-  width: 32px;
-  height: 32px;
-  box-shadow: var(--avatarStatusShadow);
-  border-radius: $fallback--avatarAltRadius;
-  border-radius: var(--avatarAltRadius, $fallback--avatarAltRadius);
-
-  &.better-shadow {
-    box-shadow: var(--avatarStatusShadowInset);
-    filter: var(--avatarStatusShadowFilter)
-  }
-}
-
-.avatar.still-image {
-  width: 48px;
-  height: 48px;
-  box-shadow: var(--avatarStatusShadow);
-  border-radius: $fallback--avatarRadius;
-  border-radius: var(--avatarRadius, $fallback--avatarRadius);
-  overflow: hidden;
-  position: relative;
-
-  &.better-shadow {
-    box-shadow: var(--avatarStatusShadowInset);
-    filter: var(--avatarStatusShadowFilter)
-  }
-
-  img {
-    width: 100%;
-    height: 100%;
-  }
-
-  &.animated::before {
-    display: none;
-  }
-
-  &.retweeted {
-  }
-}
-
 .status:hover .animated.avatar {
   canvas {
     display: none;
@@ -563,10 +561,10 @@ a.unmute {
   }
 }
 
-@media all and (max-width: 960px) {
+@media all and (max-width: 800px) {
   .status-el {
     .retweet-info {
-      .avatar {
+      .avatar.still-image {
         margin-left: 20px;
       }
     }
@@ -575,14 +573,14 @@ a.unmute {
     max-width: 100%;
   }
 
-  .status .avatar {
+  .status .avatar.still-image {
     width: 40px;
     height: 40px;
-  }
 
-  .status .avatar-compact {
-    width: 32px;
-    height: 32px;
+    &.avatar-compact {
+      width: 32px;
+      height: 32px;
+    }
   }
 }
 
