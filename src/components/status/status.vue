@@ -266,7 +266,7 @@
     flex-basis: 100%;
     margin-bottom: 0.5em;
 
-    line-height: 2em;
+    // line-height: 2em;
 
     a {
       display: inline-block;
@@ -279,15 +279,20 @@
 
     .heading-name-row {
       padding: 0;
-      flex: 1 0;
+      flex-shrink: 1;
       display: flex;
       align-items: baseline;
 
       .user-name {
+        flex-shrink: 1;
         margin-right: 0.5em;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .account-name {
+        min-width: 1.6em;
+        margin-right: 0.5em;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -297,12 +302,13 @@
 
     .heading-right {
       display: flex;
+      flex-shrink: 0;
     }
 
     .heading-reply-row {
       align-content: baseline;
-      display: flex;
       font-size: 12px;
+      height: 1.5em;
       color: $fallback--link;
       color: var(--link, $fallback--link);
       max-width: 100%;
@@ -345,6 +351,7 @@
     .timeago {
       // margin-right: 0.2em;
       font-size: 12px;
+      flex: 1 0;
       align-self: last baseline;
     }
 
@@ -498,6 +505,7 @@
 .status-actions {
   width: 100%;
   display: flex;
+  margin-top: 0.5em;
 
   div, favorite-button {
     // padding-top: 0.25em;
