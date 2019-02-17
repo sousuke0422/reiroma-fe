@@ -62,8 +62,8 @@
                   <a href="#" @click.prevent="toggleMute" v-if="unmuted"><i class="button-icon icon-eye-off"></i></a>
                 </span>
               </div>
-              <div class="heading-reply-row">
-                <a v-if="isReply && !noReplyLinks" href="#" @click.prevent="gotoOriginal(status.in_reply_to_status_id)" :aria-label="$t('tool_tip.reply')" @mouseenter="replyEnter(status.in_reply_to_status_id, $event)" @mouseout="replyLeave()">
+              <div class="heading-reply-row"  @mouseenter.prevent.stop="replyEnter(status.in_reply_to_status_id, $event)" @mouseout.prevent.stop="replyLeave()">
+                <a v-if="isReply && !noReplyLinks" href="#" @click.prevent="gotoOriginal(status.in_reply_to_status_id)" :aria-label="$t('tool_tip.reply')">
                   <!-- <i class="button-icon icon-reply" @mouseenter="replyEnter(status.in_reply_to_status_id, $event)" @mouseout="replyLeave()"></i> -->
                   <span class="faint reply-to-text">Reply to </span>
                 </a>
@@ -308,7 +308,7 @@
     .heading-reply-row {
       align-content: baseline;
       font-size: 12px;
-      height: 1.5em;
+      max-height: 1.5em;
       color: $fallback--link;
       color: var(--link, $fallback--link);
       max-width: 100%;
