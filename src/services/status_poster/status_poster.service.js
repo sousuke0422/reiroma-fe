@@ -1,10 +1,10 @@
 import { map } from 'lodash'
 import apiService from '../api/api.service.js'
 
-const postStatus = ({ store, status, spoilerText, visibility, sensitive, media = [], inReplyToStatusId = undefined, contentType = 'text/plain', imageDescriptions = {} }) => {
+const postStatus = ({ store, status, spoilerText, visibility, sensitive, media = [], inReplyToStatusId = undefined, contentType = 'text/plain', mediaDescriptions = {} }) => {
   const mediaIds = map(media, 'id')
 
-  return apiService.postStatus({credentials: store.state.users.currentUser.credentials, status, spoilerText, visibility, sensitive, mediaIds, inReplyToStatusId, contentType, noAttachmentLinks: store.state.instance.noAttachmentLinks, imageDescriptions})
+  return apiService.postStatus({credentials: store.state.users.currentUser.credentials, status, spoilerText, visibility, sensitive, mediaIds, inReplyToStatusId, contentType, noAttachmentLinks: store.state.instance.noAttachmentLinks, mediaDescriptions})
     .then((data) => {
       if (!data.error) {
         store.dispatch('addNewStatuses', {

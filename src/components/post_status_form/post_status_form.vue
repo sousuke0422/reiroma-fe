@@ -86,7 +86,7 @@
             <audio v-if="type(file) === 'audio'" :src="file.image" controls></audio>
             <a v-if="type(file) === 'unknown'" :href="file.image">{{file.url}}</a>
           </div>
-          <input type="text" :placeholder="$t('post_status.media_description')" v-model="newStatus.imageDescriptions[file.id]"></input>
+          <input type="text" :placeholder="$t('post_status.media_description')" v-model="newStatus.mediaDescriptions[file.id]"></input>
         </div>
       </div>
       <div class="upload_settings" v-if="newStatus.files.length > 0">
