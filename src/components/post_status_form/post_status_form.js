@@ -67,6 +67,7 @@ const PostStatusForm = {
         status: statusText,
         nsfw: false,
         files: [],
+        imageDescriptions: {},
         visibility: scope
       },
       caret: 0
@@ -242,6 +243,7 @@ const PostStatusForm = {
         visibility: newStatus.visibility,
         sensitive: newStatus.nsfw,
         media: newStatus.files,
+        imageDescriptions: newStatus.imageDescriptions || {},
         store: this.$store,
         inReplyToStatusId: this.replyTo,
         contentType: newStatus.contentType
@@ -251,6 +253,7 @@ const PostStatusForm = {
             status: '',
             spoilerText: '',
             files: [],
+            imageDescriptions: {},
             visibility: newStatus.visibility,
             contentType: newStatus.contentType
           }

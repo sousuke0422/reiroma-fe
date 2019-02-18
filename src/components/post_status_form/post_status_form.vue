@@ -86,6 +86,7 @@
             <audio v-if="type(file) === 'audio'" :src="file.image" controls></audio>
             <a v-if="type(file) === 'unknown'" :href="file.image">{{file.url}}</a>
           </div>
+          <input type="text" :placeholder="$t('post_status.media_description')" v-model="newStatus.imageDescriptions[file.id]"></input>
         </div>
       </div>
       <div class="upload_settings" v-if="newStatus.files.length > 0">
@@ -157,6 +158,11 @@
       background-color: var(--btn, $fallback--fg);
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
+    }
+
+    input {
+      min-width: 300px;
+      flex: 1;
     }
   }
 
