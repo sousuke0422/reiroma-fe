@@ -1,6 +1,6 @@
 <template>
   <div class="modal-view" v-if="showing" @click.prevent="hide">
-    <img class="modal-image" v-if="type === 'image'" :src="currentMedia.url"></img>
+    <img class="modal-image" v-if="type === 'image'" :src="currentMedia.url" :alt="currentMedia.description" :title="currentMedia.description"></img>
     <VideoAttachment
       class="modal-image"
       v-if="type === 'video'"
