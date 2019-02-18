@@ -25,9 +25,9 @@
       class="image-attachment"
       :class="{'hidden': hidden && preloadImage }"
       :href="attachment.url" target="_blank"
-      :title="attachment.description"
     >
-      <StillImage :referrerpolicy="referrerpolicy" :mimetype="attachment.mimetype" :src="attachment.large_thumb_url || attachment.url"/>
+      <StillImage :referrerpolicy="referrerpolicy" :mimetype="attachment.mimetype" :src="attachment.large_thumb_url || attachment.url"
+       :alt="attachment.description"/>
     </a>
 
     <a class="video-container"

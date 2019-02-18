@@ -3,7 +3,8 @@ const StillImage = {
     'src',
     'referrerpolicy',
     'mimetype',
-    'imageLoadError'
+    'imageLoadError',
+    'alt'
   ],
   data () {
     return {
