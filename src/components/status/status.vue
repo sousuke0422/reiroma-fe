@@ -36,51 +36,54 @@
             <user-card-content :user="status.user" :switcher="false"></user-card-content>
           </div>
           <!-- <div v-if="!noHeading" class="media-body container media-heading"> -->
-            <div v-if="!noHeading" class="media-heading">
-              <div class="heading-name-row">
-                <h4 class="user-name" v-if="status.user.name_html" v-html="status.user.name_html"></h4>
-                <h4 class="user-name" v-else>{{status.user.name}}</h4>
-                <router-link class="account-name" :to="userProfileLink">
-                  {{status.user.screen_name}}
-                </router-link>
+          <div v-if="!noHeading" class="media-heading">
+            <div class="heading-name-row">
+              <h4 class="user-name" v-if="status.user.name_html" v-html="status.user.name_html"></h4>
+              <h4 class="user-name" v-else>{{status.user.name}}</h4>
+              <router-link class="account-name" :to="userProfileLink">
+                {{status.user.screen_name}}
+              </router-link>
 
-                <span class="heading-right">
-                  <router-link class="timeago" :to="{ name: 'conversation', params: { id: status.id } }">
-                    <timeago :since="status.created_at" :auto-update="60"></timeago>
-                  </router-link>
-                  <div class="button-icon visibility-icon" v-if="status.visibility">
-                    <i :class="visibilityIcon(status.visibility)" :title="status.visibility | capitalize"></i>
-                  </div>
-                  <a :href="status.external_url" target="_blank" v-if="!status.is_local" class="source_url" title="Source">
-                    <i class="button-icon icon-link-ext-alt"></i>
-                  </a>
-                  <template v-if="expandable">
-                    <a href="#" @click.prevent="toggleExpanded" title="Expand">
-                      <i class="button-icon icon-plus-squared"></i>
-                    </a>
-                  </template>
-                  <a href="#" @click.prevent="toggleMute" v-if="unmuted"><i class="button-icon icon-eye-off"></i></a>
-                </span>
-              </div>
-              <div class="heading-reply-row"  @mouseenter.prevent.stop="replyEnter(status.in_reply_to_status_id, $event)" @mouseout.prevent.stop="replyLeave()">
-                <a v-if="isReply && !noReplyLinks" href="#" @click.prevent="gotoOriginal(status.in_reply_to_status_id)" :aria-label="$t('tool_tip.reply')">
-                  <!-- <i class="button-icon icon-reply" @mouseenter="replyEnter(status.in_reply_to_status_id, $event)" @mouseout="replyLeave()"></i> -->
-                  <span class="faint reply-to-text">Reply to </span>
+              <span class="heading-right">
+                <router-link class="timeago" :to="{ name: 'conversation', params: { id: status.id } }">
+                  <timeago :since="status.created_at" :auto-update="60"></timeago>
+                </router-link>
+                <div class="button-icon visibility-icon" v-if="status.visibility">
+                  <i :class="visibilityIcon(status.visibility)" :title="status.visibility | capitalize"></i>
+                </div>
+                <a :href="status.external_url" target="_blank" v-if="!status.is_local" class="source_url" title="Source">
+                  <i class="button-icon icon-link-ext-alt"></i>
                 </a>
-                <span v-if="isReply" class="faint">
-                  <router-link :to="replyProfileLink">
-                    {{replyToName}}
-                  </router-link>
-                </span>
-              </div>
-              <h4 class="replies" v-if="inConversation && !noReplyLinks">
-                <small v-if="replies.length">Replies:</small>
-                <small class="reply-link" v-for="reply in replies">
-                  <a href="#" @click.prevent="gotoOriginal(reply.id)" @mouseenter="replyEnter(reply.id, $event)" @mouseout="replyLeave()">{{reply.name}}&nbsp;</a>
-                </small>
-              </h4>
+                <template v-if="expandable">
+                  <a href="#" @click.prevent="toggleExpanded" title="Expand">
+                    <i class="button-icon icon-plus-squared"></i>
+                  </a>
+                </template>
+                <a href="#" @click.prevent="toggleMute" v-if="unmuted"><i class="button-icon icon-eye-off"></i></a>
+              </span>
             </div>
-          <!-- </div> -->
+            <div class="heading-reply-row">
+              <a class="reply-to"
+                v-if="isReply && !noReplyLinks"
+                href="#" @click.prevent="gotoOriginal(status.in_reply_to_status_id)"
+                :aria-label="$t('tool_tip.reply')"
+                @mouseenter.prevent.stop="replyEnter(status.in_reply_to_status_id, $event)"
+                @mouseleave.prevent.stop="replyLeave()"
+              >
+                <i class="button-icon icon-reply"></i>
+                <span class="faint reply-to-text">Reply to </span>
+              </a>
+              <router-link v-if="isReply" :to="replyProfileLink">
+                {{replyToName}}
+              </router-link>
+            </div>
+            <h4 class="replies" v-if="inConversation && !noReplyLinks">
+              <small v-if="replies.length">Replies:</small>
+              <small class="reply-link" v-for="reply in replies">
+                <a href="#" @click.prevent="gotoOriginal(reply.id)" @mouseenter="replyEnter(reply.id, $event)" @mouseout="replyLeave()">{{reply.name}}&nbsp;</a>
+              </small>
+            </h4>
+          </div>
 
           <div v-if="showPreview" class="status-preview-container">
             <status class="status-preview" v-if="preview" :noReplyLinks="true" :statusoid="preview" :compact=true></status>
@@ -235,7 +238,6 @@
   .media-body {
     flex: 1;
     padding: 0;
-    // margin: 0 0 0.25em 0.8em;
   }
 
   .usercard {
@@ -250,7 +252,6 @@
     flex-shrink: 0;
     max-width: 85%;
     font-weight: bold;
-    // margin-right: .2em;
 
     img {
       width: 14px;
@@ -265,8 +266,6 @@
     vertical-align: bottom;
     flex-basis: 100%;
     margin-bottom: 0.5em;
-
-    // line-height: 2em;
 
     a {
       display: inline-block;
@@ -312,32 +311,28 @@
       color: $fallback--link;
       color: var(--link, $fallback--link);
       max-width: 100%;
+      display: flex;
+      overflow: hidden;
       a {
         max-width: 100%;
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
       }
-      & > span {
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-      }
-      & > a:last-child {
-        flex-shrink: 0;
-      }
-    }
-    .reply-to-text {
-      // margin-right: 0.5em;
     }
     .reply-info {
       display: flex;
     }
-    .replies {
-      line-height: 16px;
+    .reply-to {
+      display: flex;
+      text-overflow: ellpisis;
     }
-    .reply-link {
-      //margin-right: 0.2em;
+    .reply-to-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .replies {
+      line-height: 18px;
     }
   }
 
@@ -345,19 +340,14 @@
     display: inline-flex;
     flex-shrink: 0;
     flex-wrap: nowrap;
-    // margin-left: .25em;
     align-self: baseline;
 
     .timeago {
-      // margin-right: 0.2em;
       font-size: 12px;
       flex: 1 0;
       align-self: last baseline;
     }
 
-    > * {
-      // margin-left: 0.2em;
-    }
     a:hover i {
       color: $fallback--text;
       color: var(--text, $fallback--text);
@@ -396,8 +386,8 @@
   }
 
   .status-content {
-    // margin-right: 0.5em;
     font-family: var(--postFont, sans-serif);
+    line-height: 1.4em;
 
     img, video {
       max-width: 100%;

@@ -316,6 +316,7 @@ const Status = {
       }
     },
     replyEnter (id, event) {
+      console.log('replyEnter', id)
       this.showPreview = true
       const targetId = id
       const statuses = this.$store.state.statuses.allStatuses
@@ -334,6 +335,7 @@ const Status = {
       }
     },
     replyLeave () {
+      console.log('replyLeave')
       this.showPreview = false
     },
     generateUserProfileLink (id, name) {
