@@ -18,6 +18,7 @@ const MENTIONS_URL = '/api/statuses/mentions.json'
 const DM_TIMELINE_URL = '/api/statuses/dm_timeline.json'
 const FOLLOWERS_URL = '/api/statuses/followers.json'
 const FRIENDS_URL = '/api/statuses/friends.json'
+const BLOCKS_URL = '/api/statuses/blocks.json'
 const FOLLOWING_URL = '/api/friendships/create.json'
 const UNFOLLOWING_URL = '/api/friendships/destroy.json'
 const QVITTER_USER_PREF_URL = '/api/qvitter/set_profile_pref.json'
@@ -130,7 +131,7 @@ const updateBanner = ({credentials, params}) => {
 // description
 const updateProfile = ({credentials, params}) => {
   // Always include these fields, because they might be empty or false
-  const fields = ['description', 'locked', 'no_rich_text', 'hide_follows', 'hide_followers']
+  const fields = ['description', 'locked', 'no_rich_text', 'hide_follows', 'hide_followers', 'show_role']
   let url = PROFILE_UPDATE_URL
 
   const form = new FormData()
@@ -252,6 +253,13 @@ const fetchFriends = ({id, page, credentials}) => {
   if (page) {
     url = url + `&page=${page}`
   }
+  return fetch(url, { headers: authHeaders(credentials) })
+    .then((data) => data.json())
+    .then((data) => data.map(parseUser))
+}
+
+const exportFriends = ({id, credentials}) => {
+  let url = `${FRIENDS_URL}?user_id=${id}&all=true`
   return fetch(url, { headers: authHeaders(credentials) })
     .then((data) => data.json())
     .then((data) => data.map(parseUser))
@@ -512,6 +520,17 @@ const fetchMutes = ({credentials}) => {
   }).then((data) => data.json())
 }
 
+const fetchBlocks = ({page, credentials}) => {
+  return fetch(BLOCKS_URL, {
+    headers: authHeaders(credentials)
+  }).then((data) => {
+    if (data.ok) {
+      return data.json()
+    }
+    throw new Error('Error fetching blocks', data)
+  })
+}
+
 const suggestions = ({credentials}) => {
   return fetch(SUGGESTIONS_URL, {
     headers: authHeaders(credentials)
@@ -536,6 +555,7 @@ const apiService = {
   fetchConversation,
   fetchStatus,
   fetchFriends,
+  exportFriends,
   fetchFollowers,
   followUser,
   unfollowUser,
@@ -552,6 +572,7 @@ const apiService = {
   fetchAllFollowing,
   setUserMute,
   fetchMutes,
+  fetchBlocks,
   register,
   getCaptcha,
   updateAvatar,

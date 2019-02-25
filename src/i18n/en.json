@@ -21,6 +21,11 @@
     "more": "More",
     "generic_error": "An error occured"
   },
+  "image_cropper": {
+    "crop_picture": "Crop picture",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
   "login": {
     "login": "Log in",
     "description": "Log in with OAuth",
@@ -28,7 +33,12 @@
     "password": "Password",
     "placeholder": "e.g. lain",
     "register": "Register",
-    "username": "Username"
+    "username": "Username",
+    "hint": "Log in to join the discussion"
+  },
+  "media_modal": {
+    "previous": "Previous",
+    "next": "Next"
   },
   "nav": {
     "about": "About",
@@ -100,6 +110,7 @@
     "avatarRadius": "Avatars",
     "background": "Background",
     "bio": "Bio",
+    "blocks_tab": "Blocks",
     "btnRadius": "Buttons",
     "cBlue": "Blue (Reply, follow)",
     "cGreen": "Green (Retweet)",
@@ -139,6 +150,7 @@
     "use_one_click_nsfw": "Open NSFW attachments with just one click",
     "hide_post_stats": "Hide post statistics (e.g. the number of favorites)",
     "hide_user_stats": "Hide user statistics (e.g. the number of followers)",
+    "hide_filtered_statuses": "Hide filtered statuses",
     "import_followers_from_a_csv_file": "Import follows from a csv file",
     "import_theme": "Load preset",
     "inputRadius": "Input fields",
@@ -153,6 +165,7 @@
     "lock_account_description": "Restrict your account to approved followers only",
     "loop_video": "Loop videos",
     "loop_video_silent_only": "Loop only videos without sound (i.e. Mastodon's \"gifs\")",
+    "mutes_tab": "Mutes",
     "play_videos_in_modal": "Play videos directly in the media viewer",
     "use_contain_fit": "Don't crop the attachment in thumbnails",
     "name": "Name",
@@ -164,8 +177,12 @@
     "notification_visibility_mentions": "Mentions",
     "notification_visibility_repeats": "Repeats",
     "no_rich_text_description": "Strip rich text formatting from all posts",
+    "no_blocks": "No blocks",
+    "no_mutes": "No mutes",
     "hide_follows_description": "Don't show who I'm following",
     "hide_followers_description": "Don't show who's following me",
+    "show_admin_badge": "Show Admin badge in my profile",
+    "show_moderator_badge": "Show Moderator badge in my profile",
     "nsfw_clickthrough": "Enable clickthrough NSFW attachment hiding",
     "panelRadius": "Panels",
     "pause_on_unfocused": "Pause streaming when tab is not focused",
@@ -192,6 +209,8 @@
     "subject_line_email": "Like email: \"re: subject\"",
     "subject_line_mastodon": "Like mastodon: copy as is",
     "subject_line_noop": "Do not copy",
+    "post_status_content_type": "Post status content type",
+    "status_content_type_plain": "Plain text",
     "stop_gifs": "Play-on-hover GIFs",
     "streaming": "Enable automatic streaming of new posts when scrolled to the top",
     "text": "Text",
@@ -200,6 +219,7 @@
     "theme_help_v2_1": "You can also override certain component's colors and opacity by toggling the checkbox, use \"Clear all\" button to clear all overrides.",
     "theme_help_v2_2": "Icons underneath some entries are background/text contrast indicators, hover over for detailed info. Please keep in mind that when using transparency contrast indicators show the worst possible case.",
     "tooltipRadius": "Tooltips/alerts",
+    "upload_a_photo": "Upload a photo",
     "user_settings": "User Settings",
     "values": {
       "false": "no",
@@ -326,7 +346,8 @@
     "repeated": "repeated",
     "show_new": "Show new",
     "up_to_date": "Up-to-date",
-    "no_more_statuses": "No more statuses"
+    "no_more_statuses": "No more statuses",
+    "no_statuses": "No statuses"
   },
   "user_card": {
     "approve": "Approve",
@@ -338,7 +359,7 @@
     "follow_sent": "Request sent!",
     "follow_progress": "Requesting…",
     "follow_again": "Send request again?",
-    "follow_unfollow": "Stop following",
+    "follow_unfollow": "Unfollow",
     "followees": "Following",
     "followers": "Followers",
     "following": "Following!",
@@ -349,7 +370,13 @@
     "muted": "Muted",
     "per_day": "per day",
     "remote_follow": "Remote follow",
-    "statuses": "Statuses"
+    "statuses": "Statuses",
+    "unblock": "Unblock",
+    "unblock_progress": "Unblocking...",
+    "block_progress": "Blocking...",
+    "unmute": "Unmute",
+    "unmute_progress": "Unmuting...",
+    "mute_progress": "Muting..."
   },
   "user_profile": {
     "timeline_title": "User Timeline"

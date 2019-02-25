@@ -14,6 +14,10 @@ const backendInteractorService = (credentials) => {
     return apiService.fetchFriends({id, page, credentials})
   }
 
+  const exportFriends = ({id}) => {
+    return apiService.exportFriends({id, credentials})
+  }
+
   const fetchFollowers = ({id, page}) => {
     return apiService.fetchFollowers({id, page, credentials})
   }
@@ -59,6 +63,7 @@ const backendInteractorService = (credentials) => {
   }
 
   const fetchMutes = () => apiService.fetchMutes({credentials})
+  const fetchBlocks = (params) => apiService.fetchBlocks({credentials, ...params})
   const fetchFollowRequests = () => apiService.fetchFollowRequests({credentials})
 
   const getCaptcha = () => apiService.getCaptcha()
@@ -78,6 +83,7 @@ const backendInteractorService = (credentials) => {
     fetchStatus,
     fetchConversation,
     fetchFriends,
+    exportFriends,
     fetchFollowers,
     followUser,
     unfollowUser,
@@ -89,6 +95,7 @@ const backendInteractorService = (credentials) => {
     startFetching,
     setUserMute,
     fetchMutes,
+    fetchBlocks,
     register,
     getCaptcha,
     updateAvatar,

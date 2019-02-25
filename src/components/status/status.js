@@ -10,8 +10,8 @@ import LinkPreview from '../link-preview/link-preview.vue'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 import fileType from 'src/services/file_type/file_type.service'
 import { highlightClass, highlightStyle } from '../../services/user_highlighter/user_highlighter.js'
-import { mentionMatchesUrl } from 'src/services/mention_matcher/mention_matcher.js'
-import { filter, find } from 'lodash'
+import { mentionMatchesUrl, extractTagFromUrl } from 'src/services/matcher/matcher.service.js'
+import { filter, find, unescape } from 'lodash'
 
 const Status = {
   name: 'Status',
@@ -110,6 +110,14 @@ const Status = {
       return hits
     },
     muted () { return !this.unmuted && (this.status.user.muted || this.muteWordHits.length > 0) },
+    hideFilteredStatuses () {
+      return typeof this.$store.state.config.hideFilteredStatuses === 'undefined'
+        ? this.$store.state.instance.hideFilteredStatuses
+        : this.$store.state.config.hideFilteredStatuses
+    },
+    hideStatus () {
+      return (this.hideReply || this.deleted) || (this.muted && this.hideFilteredStatuses)
+    },
     isFocused () {
       // retweet or root of an expanded conversation
       if (this.focused) {
@@ -201,14 +209,15 @@ const Status = {
     },
     replySubject () {
       if (!this.status.summary) return ''
+      const decodedSummary = unescape(this.status.summary)
       const behavior = typeof this.$store.state.config.subjectLineBehavior === 'undefined'
             ? this.$store.state.instance.subjectLineBehavior
             : this.$store.state.config.subjectLineBehavior
-      const startsWithRe = this.status.summary.match(/^re[: ]/i)
+      const startsWithRe = decodedSummary.match(/^re[: ]/i)
       if (behavior !== 'noop' && startsWithRe || behavior === 'masto') {
-        return this.status.summary
+        return decodedSummary
       } else if (behavior === 'email') {
-        return 're: '.concat(this.status.summary)
+        return 're: '.concat(decodedSummary)
       } else if (behavior === 'noop') {
         return ''
       }
@@ -273,12 +282,21 @@ const Status = {
       }
       if (target.tagName === 'A') {
         if (target.className.match(/mention/)) {
-          const href = target.getAttribute('href')
+          const href = target.href
           const attn = this.status.attentions.find(attn => mentionMatchesUrl(attn, href))
           if (attn) {
             event.stopPropagation()
             event.preventDefault()
             const link = this.generateUserProfileLink(attn.id, attn.screen_name)
+            this.$router.push(link)
+            return
+          }
+        }
+        if (target.className.match(/hashtag/)) {
+          // Extract tag name from link url
+          const tag = extractTagFromUrl(target.href)
+          if (tag) {
+            const link = this.generateTagLink(tag)
             this.$router.push(link)
             return
           }
@@ -340,6 +358,9 @@ const Status = {
     },
     generateUserProfileLink (id, name) {
       return generateProfileLink(id, name, this.$store.state.instance.restrictedNicknames)
+    },
+    generateTagLink (tag) {
+      return `/tag/${tag}`
     },
     setMedia () {
       const attachments = this.attachmentSize === 'hide' ? this.status.attachments : this.galleryAttachments

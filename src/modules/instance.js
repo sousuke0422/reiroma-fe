@@ -21,13 +21,16 @@ const defaultState = {
   collapseMessageWithSubject: false,
   hidePostStats: false,
   hideUserStats: false,
+  hideFilteredStatuses: false,
   disableChat: false,
   scopeCopy: true,
   subjectLineBehavior: 'email',
+  postContentType: 'text/plain',
   loginMethod: 'password',
   nsfwCensorImage: undefined,
   vapidPublicKey: undefined,
   noAttachmentLinks: false,
+  showFeaturesPanel: true,
 
   // Nasty stuff
   pleromaBackend: true,
@@ -63,9 +66,11 @@ const instance = {
         case 'name':
           dispatch('setPageTitle')
           break
-        case 'theme':
-          setPreset(value, commit)
       }
+    },
+    setTheme ({ commit }, themeName) {
+      commit('setInstanceOption', { name: 'theme', value: themeName })
+      return setPreset(themeName, commit)
     }
   }
 }

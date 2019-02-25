@@ -66,10 +66,14 @@ export default {
       })
     },
     logo () { return this.$store.state.instance.logo },
-    style () {
+    bgStyle () {
       return {
-        '--body-background-image': `url(${this.background})`,
         'background-image': `url(${this.background})`
+      }
+    },
+    bgAppStyle () {
+      return {
+        '--body-background-image': `url(${this.background})`
       }
     },
     sitename () { return this.$store.state.instance.name },
@@ -82,7 +86,7 @@ export default {
     unseenNotificationsCount () {
       return this.unseenNotifications.length
     },
-    showFeaturesPanel () { return this.$store.state.config.showFeaturesPanel }
+    showFeaturesPanel () { return this.$store.state.instance.showFeaturesPanel }
   },
   methods: {
     scrollToTop () {

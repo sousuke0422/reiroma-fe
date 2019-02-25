@@ -1,5 +1,5 @@
 <template>
-  <div class="status-el" v-if="!hideReply && !deleted" :class="[{ 'status-el_focused': isFocused }, { 'status-conversation': inlineExpanded }]">
+  <div class="status-el" v-if="!hideStatus" :class="[{ 'status-el_focused': isFocused }, { 'status-conversation': inlineExpanded }]">
     <template v-if="muted && !noReplyLinks">
       <div class="media status container muted">
         <small>
@@ -13,12 +13,11 @@
     </template>
     <template v-else>
       <div v-if="retweet && !noHeading" :class="[repeaterClass, { highlighted: repeaterStyle }]" :style="[repeaterStyle]" class="media container retweet-info">
-        <UserAvatar v-if="retweet" :betterShadow="betterShadow" :src="statusoid.user.profile_image_url_original"/>
+        <UserAvatar class="media-left" v-if="retweet" :betterShadow="betterShadow" :src="statusoid.user.profile_image_url_original"/>
         <div class="media-body faint">
           <span class="user-name">
-            <router-link :to="retweeterProfileLink">
-              {{retweeterHtml || retweeter}}
-            </router-link>
+            <router-link v-if="retweeterHtml" :to="retweeterProfileLink" v-html="retweeterHtml"/>
+            <router-link v-else :to="retweeterProfileLink">{{retweeter}}</router-link>
           </span>
           <i class='fa icon-retweet retweeted' :title="$t('tool_tip.repeat')"></i>
           {{$t('timeline.repeated')}}
@@ -78,7 +77,7 @@
               </router-link>
             </div>
             <h4 class="replies" v-if="inConversation && !noReplyLinks">
-              <small v-if="replies.length">Replies:</small>
+              <small class="faint" v-if="replies.length">Replies:</small>
               <small class="reply-link" v-for="reply in replies">
                 <a href="#" @click.prevent="gotoOriginal(reply.id)" @mouseenter="replyEnter(reply.id, $event)" @mouseout="replyLeave()">{{reply.name}}&nbsp;</a>
               </small>
@@ -325,11 +324,11 @@
     }
     .reply-to {
       display: flex;
-      text-overflow: ellpisis;
     }
     .reply-to-text {
       overflow: hidden;
       text-overflow: ellipsis;
+      margin: 0 0.4em 0 0.2em;
     }
     .replies {
       line-height: 18px;
@@ -410,9 +409,11 @@
     }
 
     p {
-      margin: 0;
-      margin-top: 0.2em;
-      margin-bottom: 0.5em;
+      margin: 0 0 1em 0;
+    }
+
+    p:last-child {
+      margin: 0 0 0 0;
     }
 
     h1 {
@@ -437,7 +438,7 @@
   }
 
   .retweet-info {
-    padding: 0.4em 0.6em 0 0.6em;
+    padding: 0.4em 0.75em;
     margin: 0;
 
     .avatar.still-image {
@@ -455,6 +456,19 @@
       display: flex;
       align-content: center;
       flex-wrap: wrap;
+
+      .user-name {
+        font-weight: bold;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        img {
+          width: 14px;
+          height: 14px;
+          vertical-align: middle;
+          object-fit: contain
+        }
+      }
 
       i {
         padding: 0 0.2em;
@@ -495,10 +509,9 @@
 .status-actions {
   width: 100%;
   display: flex;
-  margin-top: 0.5em;
+  margin-top: 0.75em;
 
   div, favorite-button {
-    // padding-top: 0.25em;
     max-width: 4em;
     flex: 1;
   }
@@ -526,9 +539,8 @@
 .status {
   display: flex;
   padding: 0.75em;
-  // padding: 0.6em;
   &.is-retweet {
-    padding-top: 0.1em;
+    padding-top: 0;
   }
 }
 
@@ -563,7 +575,7 @@ a.unmute {
 
 .timeline > {
   .status-el:last-child {
-    border-bottom-radius: 0 0 $fallback--panelRadius $fallback--panelRadius;;
+    border-radius: 0 0 $fallback--panelRadius $fallback--panelRadius;
     border-radius: 0 0 var(--panelRadius, $fallback--panelRadius) var(--panelRadius, $fallback--panelRadius);
     border-bottom: none;
   }

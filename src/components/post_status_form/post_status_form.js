@@ -56,6 +56,10 @@ const PostStatusForm = {
           ? this.copyMessageScope
           : this.$store.state.users.currentUser.default_scope
 
+    const contentType = typeof this.$store.state.config.postContentType === 'undefined'
+      ? this.$store.state.instance.postContentType
+      : this.$store.state.config.postContentType
+
     return {
       dropFiles: [],
       submitDisabled: false,
@@ -65,10 +69,10 @@ const PostStatusForm = {
       newStatus: {
         spoilerText: this.subject || '',
         status: statusText,
-        contentType: 'text/plain',
         nsfw: false,
         files: [],
-        visibility: scope
+        visibility: scope,
+        contentType
       },
       caret: 0
     }

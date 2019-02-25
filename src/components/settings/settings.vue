@@ -27,7 +27,7 @@
             <li>
               <interface-language-switcher />
             </li>
-            <li>
+            <li v-if="instanceSpecificPanelPresent">
               <input type="checkbox" id="hideISP" v-model="hideISPLocal">
               <label for="hideISP">{{$t('settings.hide_isp')}}</label>
             </li>
@@ -94,6 +94,28 @@
                     <option value="noop">
                       {{$t('settings.subject_line_noop')}}
                       {{subjectLineBehaviorDefault == 'noop' ? $t('settings.instance_default_simple') : ''}}
+                    </option>
+                  </select>
+                  <i class="icon-down-open"/>
+                </label>
+              </div>
+            </li>
+            <li>
+              <div>
+                {{$t('settings.post_status_content_type')}}
+                <label for="postContentType" class="select">
+                  <select id="postContentType" v-model="postContentTypeLocal">
+                    <option value="text/plain">
+                      {{$t('settings.status_content_type_plain')}}
+                      {{postContentTypeDefault == 'text/plain' ? $t('settings.instance_default_simple') : ''}}
+                    </option>
+                    <option value="text/html">
+                      HTML
+                      {{postContentTypeDefault == 'text/html' ? $t('settings.instance_default_simple') : ''}}
+                    </option>
+                    <option value="text/markdown">
+                      Markdown
+                      {{postContentTypeDefault == 'text/markdown' ? $t('settings.instance_default_simple') : ''}}
                     </option>
                   </select>
                   <i class="icon-down-open"/>
@@ -205,7 +227,6 @@
                 </label>
               </li>
             </ul>
-            </label>
           </div>
           <div>
             {{$t('settings.replies_in_timeline')}}
@@ -232,11 +253,18 @@
           </div>
         </div>
         <div class="setting-item">
-          <p>{{$t('settings.filtering_explanation')}}</p>
-          <textarea id="muteWords" v-model="muteWordsString"></textarea>
+          <div>
+            <p>{{$t('settings.filtering_explanation')}}</p>
+            <textarea id="muteWords" v-model="muteWordsString"></textarea>
+          </div>
+          <div>
+            <input type="checkbox" id="hideFilteredStatuses" v-model="hideFilteredStatusesLocal">
+            <label for="hideFilteredStatuses">
+              {{$t('settings.hide_filtered_statuses')}} {{$t('settings.instance_default', { value: hideFilteredStatusesDefault })}}
+            </label>
+          </div>
         </div>
       </div>
-
     </tab-switcher>
 </keep-alive>
   </div>
@@ -281,20 +309,6 @@
   .unavailable i {
     color: var(--cRed, $fallback--cRed);
     color: $fallback--cRed;
-  }
-
-  .old-avatar {
-    width: 128px;
-    border-radius: $fallback--avatarRadius;
-    border-radius: var(--avatarRadius, $fallback--avatarRadius);
-  }
-
-  .new-avatar {
-    object-fit: cover;
-    width: 128px;
-    height: 128px;
-    border-radius: $fallback--avatarRadius;
-    border-radius: var(--avatarRadius, $fallback--avatarRadius);
   }
 
   .btn {

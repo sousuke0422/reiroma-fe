@@ -1,5 +1,6 @@
 <template>
-  <div id="app" v-bind:style="style">
+  <div id="app" v-bind:style="bgAppStyle">
+    <div class="app-bg-wrapper" v-bind:style="bgStyle"></div>
     <nav class='nav-bar container' @click="scrollToTop()" id="nav">
       <div class='logo' :style='logoBgStyle'>
         <div class='mask' :style='logoMaskStyle'></div>
@@ -37,6 +38,11 @@
         </div>
       </div>
       <div class="main">
+        <div v-if="!currentUser" class="login-hint panel panel-default">
+          <router-link :to="{ name: 'login' }" class="panel-body">
+            {{ $t("login.hint") }}
+          </router-link>
+        </div>
         <transition name="fade">
           <router-view></router-view>
         </transition>

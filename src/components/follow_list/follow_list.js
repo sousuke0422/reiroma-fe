@@ -25,6 +25,9 @@ const FollowList = {
     },
     entries () {
       return this.showFollowers ? this.user.followers : this.user.friends
+    },
+    showFollowsYou () {
+      return !this.showFollowers || (this.showFollowers && this.userId !== this.$store.state.users.currentUser.id)
     }
   },
   methods: {
@@ -53,6 +56,9 @@ const FollowList = {
         this.fetchEntries()
       }
     }
+  },
+  watch: {
+    'user': 'fetchEntries'
   },
   components: {
     UserCard

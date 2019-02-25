@@ -9,9 +9,9 @@ const sortById = (a, b) => {
   if (isSeqA && isSeqB) {
     return seqA < seqB ? -1 : 1
   } else if (isSeqA && !isSeqB) {
-    return 1
-  } else if (!isSeqA && isSeqB) {
     return -1
+  } else if (!isSeqA && isSeqB) {
+    return 1
   } else {
     return a.id < b.id ? -1 : 1
   }
@@ -35,6 +35,13 @@ const conversation = {
   computed: {
     status () {
       return this.statusoid
+    },
+    statusId () {
+      if (this.statusoid.retweeted_status) {
+        return this.statusoid.retweeted_status.id
+      } else {
+        return this.statusoid.id
+      }
     },
     conversation () {
       if (!this.status) {
@@ -79,7 +86,7 @@ const conversation = {
         const conversationId = this.status.statusnet_conversation_id
         this.$store.state.api.backendInteractor.fetchConversation({id: conversationId})
           .then((statuses) => this.$store.dispatch('addNewStatuses', { statuses }))
-          .then(() => this.setHighlight(this.statusoid.id))
+          .then(() => this.setHighlight(this.statusId))
       } else {
         const id = this.$route.params.id
         this.$store.state.api.backendInteractor.fetchStatus({id})
@@ -91,11 +98,7 @@ const conversation = {
       return this.replies[id] || []
     },
     focused (id) {
-      if (this.statusoid.retweeted_status) {
-        return (id === this.statusoid.retweeted_status.id)
-      } else {
-        return (id === this.statusoid.id)
-      }
+      return id === this.statusId
     },
     setHighlight (id) {
       this.highlight = id

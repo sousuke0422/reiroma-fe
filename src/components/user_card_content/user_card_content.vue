@@ -13,13 +13,15 @@
             <router-link :to="{ name: 'user-settings' }" v-if="!isOtherUser">
               <i class="button-icon icon-cog usersettings" :title="$t('tool_tip.user_settings')"></i>
             </router-link>
-            <a :href="user.statusnet_profile_url" target="_blank" v-if="isOtherUser">
+            <a :href="user.statusnet_profile_url" target="_blank" v-if="isOtherUser && !user.is_local">
               <i class="icon-link-ext usersettings"></i>
             </a>
           </div>
 
           <router-link class='user-screen-name' :to="userProfileLink(user)">
-            <span class="handle">@{{user.screen_name}}</span><span v-if="user.locked"><i class="icon icon-lock"></i></span>
+            <span class="handle">@{{user.screen_name}}
+              <span class="alert staff" v-if="!hideBio && !!visibleRole">{{visibleRole}}</span>
+            </span><span v-if="user.locked"><i class="icon icon-lock"></i></span>
             <span v-if="!hideUserStatsLocal && !hideBio" class="dailyAvg">{{dailyAvg}} {{ $t('user_card.per_day') }}</span>
           </router-link>
         </div>
@@ -247,6 +249,15 @@
       text-overflow: ellipsis;
       overflow: hidden;
     }
+
+    // TODO use proper colors
+    .staff {
+      text-transform: capitalize;
+      color: $fallback--text;
+      color: var(--btnText, $fallback--text);
+      background-color: $fallback--fg;
+      background-color: var(--btn, $fallback--fg);
+    }
   }
 
   .user-meta {
@@ -375,6 +386,4 @@
   }
 }
 
-.floater {
-}
 </style>

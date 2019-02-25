@@ -90,6 +90,8 @@ export const parseUser = (data) => {
     output.statusnet_blocking = data.statusnet_blocking
 
     output.is_local = data.is_local
+    output.role = data.role
+    output.show_role = data.show_role
 
     output.follows_you = data.follows_you
 
@@ -115,6 +117,9 @@ export const parseUser = (data) => {
   output.statuses_count = data.statuses_count
   output.friends = []
   output.followers = []
+  if (data.pleroma) {
+    output.follow_request_count = data.pleroma.follow_request_count
+  }
 
   return output
 }

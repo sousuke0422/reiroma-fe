@@ -1,32 +1,57 @@
 <template>
   <div class="card">
     <router-link :to="userProfileLink(user)">
-      <UserAvatar class="avatar" :compact="true" @click.prevent.native="toggleUserExpanded" :src="user.profile_image_url"/>
+      <UserAvatar class="avatar" @click.prevent.native="toggleUserExpanded" :src="user.profile_image_url"/>
     </router-link>
-    <div class="usercard" v-if="userExpanded">
-      <user-card-content :user="user" :switcher="false"></user-card-content>
-    </div>
-    <div class="name-and-screen-name" v-else>
-      <div :title="user.name" v-if="user.name_html" class="user-name">
-        <span v-html="user.name_html"></span>
-        <span class="follows-you" v-if="!userExpanded && showFollows && user.follows_you">
+    <div class="user-card-main-content">
+      <div class="usercard" v-if="userExpanded">
+        <user-card-content :user="user" :switcher="false"></user-card-content>
+      </div>
+      <div class="name-and-screen-name" v-if="!userExpanded">
+        <div :title="user.name" class="user-name">
+          <span v-if="user.name_html" v-html="user.name_html"></span>
+          <span v-else>{{ user.name }}</span>
+        </div>
+        <div class="user-link-action">
+          <router-link class='user-screen-name' :to="userProfileLink(user)">
+            @{{user.screen_name}}
+          </router-link>
+        </div>
+      </div>
+      <div class="follow-box" v-if="!userExpanded">
+        <span class="faint" v-if="!noFollowsYou && user.follows_you">
           {{ currentUser.id == user.id ? $t('user_card.its_you') : $t('user_card.follows_you') }}
         </span>
+        <button
+          v-if="showFollow"
+          class="btn btn-default"
+          @click="followUser"
+          :disabled="followRequestInProgress"
+          :title="followRequestSent ? $t('user_card.follow_again') : ''"
+        >
+          <template v-if="followRequestInProgress">
+            {{ $t('user_card.follow_progress') }}
+          </template>
+          <template v-else-if="followRequestSent">
+            {{ $t('user_card.follow_sent') }}
+          </template>
+          <template v-else>
+            {{ $t('user_card.follow') }}
+          </template>
+        </button>
+        <button v-if="following" class="btn btn-default pressed" @click="unfollowUser" :disabled="followRequestInProgress">
+          <template v-if="followRequestInProgress">
+            {{ $t('user_card.follow_progress') }}
+          </template>
+          <template v-else>
+            {{ $t('user_card.follow_unfollow') }}
+          </template>
+        </button>
       </div>
-      <div :title="user.name" v-else class="user-name">
-        {{ user.name }}
-        <span class="follows-you" v-if="!userExpanded && showFollows && user.follows_you">
-          {{ currentUser.id == user.id ? $t('user_card.its_you') : $t('user_card.follows_you') }}
-        </span>
+      <div class="approval" v-if="showApproval">
+        <button class="btn btn-default" @click="approveUser">{{ $t('user_card.approve') }}</button>
+        <button class="btn btn-default" @click="denyUser">{{ $t('user_card.deny') }}</button>
       </div>
-
-      <router-link class='user-screen-name' :to="userProfileLink(user)">
-        @{{user.screen_name}}
-      </router-link>
-    </div>
-    <div class="approval" v-if="showApproval">
-      <button class="btn btn-default" @click="approveUser">{{ $t('user_card.approve') }}</button>
-      <button class="btn btn-default" @click="denyUser">{{ $t('user_card.deny') }}</button>
     </div>
   </div>
 </template>
@@ -36,11 +61,18 @@
 <style lang="scss">
 @import '../../_variables.scss';
 
-.name-and-screen-name {
+.user-card-main-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 100%;
   margin-left: 0.7em;
-  margin-top:0.0em;
+  min-width: 0;
+}
+
+.name-and-screen-name {
   text-align: left;
   width: 100%;
+
   .user-name {
     img {
       object-fit: contain;
@@ -49,12 +81,14 @@
       vertical-align: middle;
     }
   }
+
+  .user-link-action {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
 }
 
-.follows-you {
-  margin-left: 2em;
-  float: right;
-}
 
 .card {
   display: flex;
@@ -66,16 +100,31 @@
   border-bottom: 1px solid;
   margin: 0;
   border-bottom-color: $fallback--border;
-	border-bottom-color: var(--border, $fallback--border);
+  border-bottom-color: var(--border, $fallback--border);
 
   .avatar {
     padding: 0;
+  }
+
+  .follow-box {
+    text-align: center;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    line-height: 1.5em;
+
+    .btn {
+      margin-top: 0.5em;
+      margin-left: auto;
+      width: 10em;
+    }
   }
 }
 
 .usercard {
   width: fill-available;
-  margin: 0.2em 0 0 0.7em;
   border-radius: $fallback--panelRadius;
   border-radius: var(--panelRadius, $fallback--panelRadius);
   border-style: solid;
@@ -96,9 +145,15 @@
 }
 
 .approval {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   button {
-    width: 100%;
-    margin-bottom: 0.5em;
+    margin-top: 0.5em;
+    margin-right: 0.5em;
+    flex: 1 1;
+    max-width: 12em;
+    min-width: 8em;
   }
 }
 </style>

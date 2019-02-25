@@ -11,7 +11,8 @@ const Timeline = {
     'title',
     'userId',
     'tag',
-    'embedded'
+    'embedded',
+    'count'
   ],
   data () {
     return {
@@ -52,6 +53,8 @@ const Timeline = {
     const showImmediately = this.timeline.visibleStatuses.length === 0
 
     window.addEventListener('scroll', this.scrollLoad)
+
+    if (this.timelineName === 'friends' && !credentials) { return false }
 
     timelineFetcher.fetchAndUpdate({
       store,
