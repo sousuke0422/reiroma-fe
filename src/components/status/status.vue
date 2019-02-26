@@ -70,14 +70,14 @@
                 @mouseleave.prevent.stop="replyLeave()"
               >
                 <i class="button-icon icon-reply"></i>
-                <span class="faint reply-to-text">Reply to </span>
+                <span class="faint reply-to-text">{{$t('status.reply_to')}}</span>
               </a>
               <router-link v-if="isReply" :to="replyProfileLink">
                 {{replyToName}}
               </router-link>
             </div>
             <h4 class="replies" v-if="inConversation && !noReplyLinks">
-              <small class="faint" v-if="replies.length">Replies:</small>
+              <small class="faint" v-if="replies.length">{{$t('status.replies')}}:</small>
               <small class="reply-link" v-for="reply in replies">
                 <a href="#" @click.prevent="gotoOriginal(reply.id)" @mouseenter="replyEnter(reply.id, $event)" @mouseout="replyLeave()">{{reply.name}}&nbsp;</a>
               </small>
