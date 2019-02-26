@@ -217,7 +217,7 @@
   },
   "status": {
     "reply_to": "Vastaus",
-    "replies": "Vastaukset"
+    "replies_list": "Vastaukset:"
   },
   "user_card": {
     "approve": "Hyväksy",

@@ -351,7 +351,7 @@
   },
   "status": {
     "reply_to": "Reply to",
-    "replies": "Replies"
+    "replies_list": "Replies:"
   },
   "user_card": {
     "approve": "Approve",

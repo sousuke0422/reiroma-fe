@@ -34,7 +34,6 @@
           <div class="usercard" v-if="userExpanded">
             <user-card-content :user="status.user" :switcher="false"></user-card-content>
           </div>
-          <!-- <div v-if="!noHeading" class="media-body container media-heading"> -->
           <div v-if="!noHeading" class="media-heading">
             <div class="heading-name-row">
               <h4 class="user-name" v-if="status.user.name_html" v-html="status.user.name_html"></h4>
@@ -77,7 +76,7 @@
               </router-link>
             </div>
             <h4 class="replies" v-if="inConversation && !noReplyLinks">
-              <small class="faint" v-if="replies.length">{{$t('status.replies')}}:</small>
+              <small class="faint" v-if="replies.length">{{$t('status.replies_list')}}</small>
               <small class="reply-link" v-for="reply in replies">
                 <a href="#" @click.prevent="gotoOriginal(reply.id)" @mouseenter="replyEnter(reply.id, $event)" @mouseout="replyLeave()">{{reply.name}}&nbsp;</a>
               </small>
