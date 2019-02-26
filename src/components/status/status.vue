@@ -277,20 +277,18 @@
 
     .heading-name-row {
       padding: 0;
-      flex-shrink: 1;
       display: flex;
-      align-items: baseline;
 
       .user-name {
         flex-shrink: 1;
-        margin-right: 0.5em;
+        margin-right: 0.4em;
         overflow: hidden;
         text-overflow: ellipsis;
       }
 
       .account-name {
         min-width: 1.6em;
-        margin-right: 0.5em;
+        margin-right: 0.4em;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -319,17 +317,21 @@
         white-space: nowrap;
       }
     }
+
     .reply-info {
       display: flex;
     }
+
     .reply-to {
       display: flex;
     }
+
     .reply-to-text {
       overflow: hidden;
       text-overflow: ellipsis;
       margin: 0 0.4em 0 0.2em;
     }
+
     .replies {
       line-height: 18px;
     }

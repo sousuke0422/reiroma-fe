@@ -709,12 +709,6 @@ nav {
     margin: 0.5em 0 0.5em 0;
   }
 
-  .status .status-actions {
-    div {
-      max-width: 4em;
-    }
-  }
-
   .menu-button {
     display: block;
     margin-right: 0.8em;
@@ -723,7 +717,7 @@ nav {
 
 .login-hint {
   text-align: center;
-  
+
   @media all and (min-width: 801px) {
     display: none;
   }
