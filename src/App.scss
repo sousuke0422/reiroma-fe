@@ -628,6 +628,16 @@ nav {
   color: $fallback--faint;
   color: var(--faint, $fallback--faint);
 }
+
+.faint-link {
+  color: $fallback--faint;
+  color: var(--faint, $fallback--faint);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 @media all and (min-width: 800px) {
   .logo {
     opacity: 1 !important;
