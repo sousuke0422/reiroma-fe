@@ -47,6 +47,7 @@ const MASTODON_USER_FAVORITES_TIMELINE_URL = '/api/v1/favourites'
 import { each, map } from 'lodash'
 import { parseStatus, parseUser, parseNotification } from '../entity_normalizer/entity_normalizer.service.js'
 import 'whatwg-fetch'
+import { StatusCodeError } from '../errors/errors'
 
 const oldfetch = window.fetch
 
@@ -244,7 +245,15 @@ const denyUser = ({id, credentials}) => {
 const fetchUser = ({id, credentials}) => {
   let url = `${USER_URL}?user_id=${id}`
   return fetch(url, { headers: authHeaders(credentials) })
-    .then((data) => data.json())
+    .then((response) => {
+      return new Promise((resolve, reject) => response.json()
+        .then((json) => {
+          if (!response.ok) {
+            return reject(new StatusCodeError(response.status, json, { url }, response))
+          }
+          return resolve(json)
+        }))
+    })
     .then((data) => parseUser(data))
 }
 
@@ -531,6 +540,23 @@ const fetchBlocks = ({page, credentials}) => {
   })
 }
 
+const fetchOAuthTokens = ({credentials}) => {
+  const url = '/api/oauth_tokens.json'
+
+  return fetch(url, {
+    headers: authHeaders(credentials)
+  }).then((data) => data.json())
+}
+
+const revokeOAuthToken = ({id, credentials}) => {
+  const url = `/api/oauth_tokens/${id}`
+
+  return fetch(url, {
+    headers: authHeaders(credentials),
+    method: 'DELETE'
+  })
+}
+
 const suggestions = ({credentials}) => {
   return fetch(SUGGESTIONS_URL, {
     headers: authHeaders(credentials)
@@ -573,6 +599,8 @@ const apiService = {
   setUserMute,
   fetchMutes,
   fetchBlocks,
+  fetchOAuthTokens,
+  revokeOAuthToken,
   register,
   getCaptcha,
   updateAvatar,

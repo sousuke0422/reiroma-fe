@@ -1,7 +1,6 @@
 import Status from '../status/status.vue'
 import timelineFetcher from '../../services/timeline_fetcher/timeline_fetcher.service.js'
 import StatusOrConversation from '../status_or_conversation/status_or_conversation.vue'
-import UserCard from '../user_card/user_card.vue'
 import { throttle } from 'lodash'
 
 const Timeline = {
@@ -44,8 +43,7 @@ const Timeline = {
   },
   components: {
     Status,
-    StatusOrConversation,
-    UserCard
+    StatusOrConversation
   },
   created () {
     const store = this.$store
@@ -70,14 +68,21 @@ const Timeline = {
       document.addEventListener('visibilitychange', this.handleVisibilityChange, false)
       this.unfocused = document.hidden
     }
+    window.addEventListener('keydown', this.handleShortKey)
   },
   destroyed () {
     window.removeEventListener('scroll', this.scrollLoad)
+    window.removeEventListener('keydown', this.handleShortKey)
     if (typeof document.hidden !== 'undefined') document.removeEventListener('visibilitychange', this.handleVisibilityChange, false)
     this.$store.commit('setLoading', { timeline: this.timelineName, value: false })
   },
   methods: {
+    handleShortKey (e) {
+      if (e.key === '.') this.showNewStatuses()
+    },
     showNewStatuses () {
+      if (this.newStatusCount === 0) return
+
       if (this.timeline.flushMarker !== 0) {
         this.$store.commit('clearTimeline', { timeline: this.timelineName })
         this.$store.commit('queueFlush', { timeline: this.timelineName, id: 0 })
@@ -101,7 +106,7 @@ const Timeline = {
         tag: this.tag
       }).then(statuses => {
         store.commit('setLoading', { timeline: this.timelineName, value: false })
-        if (statuses.length === 0) {
+        if (statuses && statuses.length === 0) {
           this.bottomedOut = true
         }
       })
