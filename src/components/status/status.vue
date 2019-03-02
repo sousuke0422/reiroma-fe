@@ -64,27 +64,32 @@
             </div>
 
             <div class="heading-reply-row">
-              <a class="reply-to"
-                v-if="isReply"
-                href="#" @click.prevent="gotoOriginal(status.in_reply_to_status_id)"
-                :aria-label="$t('tool_tip.reply')"
-                @mouseenter.prevent.stop="replyEnter(status.in_reply_to_status_id, $event)"
-                @mouseleave.prevent.stop="replyLeave()"
-              >
-                <i class="button-icon icon-reply" v-if="!isPreview"></i>
-                <span class="faint-link reply-to-text">{{$t('status.reply_to')}}</span>
-              </a>
-              <router-link v-if="isReply" :to="replyProfileLink">
-                {{replyToName}}
-              </router-link>
+              <div v-if="isReply" class="reply-to-and-accountname">
+                <a class="reply-to"
+                  href="#" @click.prevent="gotoOriginal(status.in_reply_to_status_id)"
+                  :aria-label="$t('tool_tip.reply')"
+                  @mouseenter.prevent.stop="replyEnter(status.in_reply_to_status_id, $event)"
+                  @mouseleave.prevent.stop="replyLeave()"
+                >
+                  <i class="button-icon icon-reply" v-if="!isPreview"></i>
+                  <span class="faint-link reply-to-text">{{$t('status.reply_to')}}</span>
+                </a>
+                <router-link :to="replyProfileLink">
+                  {{replyToName}}
+                </router-link>
+                <span class="faint replies-separator" v-if="replies.length">
+                  -
+                </span>
+              </div>
+              <div class="replies" v-if="inConversation && !isPreview">
+                <span class="faint" v-if="replies.length">{{$t('status.replies_list')}}</span>
+                <span class="reply-link faint" v-for="reply in replies">
+                  <a href="#" @click.prevent="gotoOriginal(reply.id)" @mouseenter="replyEnter(reply.id, $event)" @mouseout="replyLeave()">{{reply.name}}</a>
+                </span>
+              </div>
             </div>
 
-            <div class="replies" v-if="inConversation && !isPreview">
-              <span class="faint" v-if="replies.length">{{$t('status.replies_list')}}</span>
-              <span class="reply-link faint" v-for="reply in replies">
-                <a href="#" @click.prevent="gotoOriginal(reply.id)" @mouseenter="replyEnter(reply.id, $event)" @mouseout="replyLeave()">{{reply.name}}&nbsp;</a>
-              </span>
-            </div>
+
           </div>
 
           <div v-if="showPreview" class="status-preview-container">
@@ -269,7 +274,6 @@ $status-margin: 0.75em;
     vertical-align: bottom;
     flex-basis: 100%;
     margin-bottom: 0.5em;
-    line-height: 16px;
 
     a {
       display: inline-block;
@@ -284,6 +288,7 @@ $status-margin: 0.75em;
       padding: 0;
       display: flex;
       justify-content: space-between;
+      line-height: 18px;
 
       .name-and-account-name {
         display: flex;
@@ -319,12 +324,11 @@ $status-margin: 0.75em;
     .heading-reply-row {
       align-content: baseline;
       font-size: 12px;
-      max-height: 1.5em;
-      color: $fallback--link;
-      color: var(--link, $fallback--link);
+      line-height: 18px;
       max-width: 100%;
       display: flex;
-      overflow: hidden;
+      flex-wrap: wrap;
+      align-items: stretch;
 
       a {
         max-width: 100%;
@@ -332,6 +336,14 @@ $status-margin: 0.75em;
         overflow: hidden;
         white-space: nowrap;
       }
+    }
+
+    .reply-to-and-accountname {
+      display: flex;
+      height: 18px;
+      margin-right: 0.5em;
+      overflow: hidden;
+      max-width: 100%;
     }
 
     .reply-info {
@@ -348,8 +360,22 @@ $status-margin: 0.75em;
       margin: 0 0.4em 0 0.2em;
     }
 
+    .replies-separator {
+      margin-left: 0.4em;
+    }
+
     .replies {
+      line-height: 18px;
       font-size: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      & > * {
+        margin-right: 0.4em;
+      }
+    }
+
+    .reply-link {
+      height: 17px;
     }
   }
 
