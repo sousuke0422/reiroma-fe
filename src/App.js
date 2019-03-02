@@ -8,6 +8,7 @@ import WhoToFollowPanel from './components/who_to_follow_panel/who_to_follow_pan
 import ChatPanel from './components/chat_panel/chat_panel.vue'
 import MediaModal from './components/media_modal/media_modal.vue'
 import SideDrawer from './components/side_drawer/side_drawer.vue'
+import NewStatusButton from './components/new_status_button/new_status_button.vue'
 import { unseenNotificationsFromStore } from './services/notification_utils/notification_utils'
 
 export default {
@@ -22,7 +23,8 @@ export default {
     WhoToFollowPanel,
     ChatPanel,
     MediaModal,
-    SideDrawer
+    SideDrawer,
+    NewStatusButton
   },
   data: () => ({
     mobileActivePanel: 'timeline',
