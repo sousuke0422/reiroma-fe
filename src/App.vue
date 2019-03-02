@@ -50,7 +50,7 @@
       <media-modal></media-modal>
     </div>
     <chat-panel :floating="true" v-if="currentUser && chat" class="floating-chat mobile-hidden"></chat-panel>
-    <NewStatusButton />
+    <MobilePostStatusModal />
   </div>
 </template>
 

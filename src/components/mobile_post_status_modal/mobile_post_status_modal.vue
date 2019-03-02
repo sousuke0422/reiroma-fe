@@ -20,7 +20,7 @@
 </div>
 </template>
 
-<script src="./new_status_button.js"></script>
+<script src="./mobile_post_status_modal.js"></script>
 
 <style lang="scss">
 @import '../../_variables.scss';

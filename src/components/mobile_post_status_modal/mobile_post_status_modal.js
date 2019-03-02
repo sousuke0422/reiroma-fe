@@ -1,7 +1,7 @@
 import PostStatusForm from '../post_status_form/post_status_form.vue'
 import { throttle } from 'lodash'
 
-const NewStatusButton = {
+const MobilePostStatusModal = {
   components: {
     PostStatusForm
   },
@@ -15,7 +15,6 @@ const NewStatusButton = {
     }
   },
   created () {
-    console.log('new-status-button')
     window.addEventListener('scroll', this.handleScroll)
   },
   destroyed () {
@@ -23,7 +22,6 @@ const NewStatusButton = {
   },
   computed: {
     currentUser () {
-      console.log(this.$store.state.users.currentUser)
       return this.$store.state.users.currentUser
     }
   },
@@ -31,6 +29,11 @@ const NewStatusButton = {
     openPostForm () {
       this.postFormOpen = true
       this.shown = false
+
+      const el = this.$el.querySelector('textarea')
+      this.$nextTick(function () {
+        el.focus()
+      })
     },
     closePostForm () {
       this.postFormOpen = false
@@ -59,4 +62,4 @@ const NewStatusButton = {
   }
 }
 
-export default NewStatusButton
+export default MobilePostStatusModal
