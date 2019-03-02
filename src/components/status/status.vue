@@ -344,6 +344,9 @@ $status-margin: 0.75em;
       margin-right: 0.5em;
       overflow: hidden;
       max-width: 100%;
+      .icon-reply {
+        transform: scaleX(-1);
+      }
     }
 
     .reply-info {
