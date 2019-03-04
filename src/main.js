@@ -27,6 +27,19 @@ import afterStoreSetup from './boot/after_store.js'
 
 const currentLocale = (window.navigator.language || 'en').split('-')[0]
 
+// These are inlined by webpack's DefinePlugin
+/* eslint-disable */
+const ciHostname = 'CI_HOSTNAME'
+/* eslint-enable */
+
+if (ciHostname || 1 > 0) {
+  window._fetch = window.fetch
+  window.fetch = function () {
+    arguments[0] = 'https://shigusegubu.club' + arguments[0]
+    return window._fetch.apply(this, arguments)
+  }
+}
+
 Vue.use(Vuex)
 Vue.use(VueRouter)
 Vue.use(VueTimeago, {
