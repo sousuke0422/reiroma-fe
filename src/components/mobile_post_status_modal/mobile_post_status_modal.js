@@ -7,10 +7,10 @@ const MobilePostStatusModal = {
   },
   data () {
     return {
-      shown: true,
+      hidden: false,
       postFormOpen: false,
+      scrollingDown: false,
       oldScrollPos: 0,
-      scrollDirection: -1,
       amountScrolled: 0
     }
   },
@@ -28,7 +28,7 @@ const MobilePostStatusModal = {
   methods: {
     openPostForm () {
       this.postFormOpen = true
-      this.shown = false
+      this.hidden = true
 
       const el = this.$el.querySelector('textarea')
       this.$nextTick(function () {
@@ -37,27 +37,27 @@ const MobilePostStatusModal = {
     },
     closePostForm () {
       this.postFormOpen = false
-      this.shown = true
+      this.hidden = false
     },
     handleScroll: throttle(function () {
       const scrollAmount = window.scrollY - this.oldScrollPos
-      const direction = scrollAmount > 0 ? 1 : -1
+      const scrollingDown = scrollAmount > 0
 
-      if (direction !== this.scrollDirection) {
+      if (scrollingDown !== this.scrollingDown) {
         this.amountScrolled = 0
-        this.scrollDirection = direction
-        if (direction === -1) {
-          this.shown = true
+        this.scrollingDown = scrollingDown
+        if (!scrollingDown) {
+          this.hidden = false
         }
-      } else if (direction === 1) {
+      } else if (scrollingDown) {
         this.amountScrolled += scrollAmount
-        if (this.amountScrolled > 100 && this.shown) {
-          this.shown = false
+        if (this.amountScrolled > 100 && !this.hidden) {
+          this.hidden = true
         }
       }
 
       this.oldScrollPos = window.scrollY
-      this.scrollDirection = direction
+      this.scrollingDown = scrollingDown
     }, 100)
   }
 }
