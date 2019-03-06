@@ -12,7 +12,7 @@
   </div>
   <button
     class="new-status-button"
-    :class="{ hidden }"
+    :class="{ 'hidden': isHidden }"
     @click="openPostForm"
   >
     <i class="icon-edit" />
