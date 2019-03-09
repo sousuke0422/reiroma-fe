@@ -49,6 +49,16 @@ const Status = {
         ? this.$store.state.instance.collapseMessageWithSubject
         : this.$store.state.config.collapseMessageWithSubject
     },
+    isLocal () {
+      if (this.status.is_local !== null) {
+        return this.status.is_local
+      } else {
+        const server = this.$store.state.instance.server
+        const windowDomain = window.location.origin
+        return this.status.external_url.startsWith(server) ||
+          this.status.external_url.startsWith(windowDomain)
+      }
+    },
     muteWords () {
       return this.$store.state.config.muteWords
     },

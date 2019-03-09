@@ -180,7 +180,7 @@ export const parseStatus = (data) => {
     output.external_url = data.url
 
     // FIXME missing!!
-    output.is_local = false
+    output.is_local = null
   } else {
     output.favorited = data.favorited
     output.fave_num = data.fave_num

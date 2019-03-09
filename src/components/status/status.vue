@@ -49,7 +49,7 @@
                 <div class="button-icon visibility-icon" v-if="status.visibility">
                   <i :class="visibilityIcon(status.visibility)" :title="status.visibility | capitalize"></i>
                 </div>
-                <a :href="status.external_url" target="_blank" v-if="!status.is_local && !isPreview" class="source_url" title="Source">
+                <a :href="status.external_url" target="_blank" v-if="!isLocal && !isPreview" class="source_url" title="Source">
                   <i class="button-icon icon-link-ext-alt"></i>
                 </a>
                 <template v-if="expandable && !isPreview">
