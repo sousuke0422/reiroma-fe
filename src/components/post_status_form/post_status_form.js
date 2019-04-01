@@ -1,6 +1,8 @@
 import statusPoster from '../../services/status_poster/status_poster.service.js'
 import MediaUpload from '../media_upload/media_upload.vue'
 import EmojiInput from '../emoji-input/emoji-input.vue'
+import PollContainer from '../poll/poll_container/poll_container.vue'
+import PollIcon from '../poll/poll_icon/poll_icon.vue'
 import fileTypeService from '../../services/file_type/file_type.service.js'
 import Completion from '../../services/completion/completion.js'
 import { take, filter, reject, map, uniqBy } from 'lodash'
@@ -30,7 +32,9 @@ const PostStatusForm = {
   ],
   components: {
     MediaUpload,
-    EmojiInput
+    EmojiInput,
+    PollContainer,
+    PollIcon
   },
   mounted () {
     this.resize(this.$refs.textarea)

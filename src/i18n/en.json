@@ -66,6 +66,10 @@
     "repeated_you": "repeated your status",
     "no_more_notifications": "No more notifications"
   },
+  "polls": {
+    "add_option": "Add Option",
+    "option": "Option"
+  },
   "post_status": {
     "new_status": "Post new status",
     "account_not_locked_warning": "Your account is not {0}. Anyone can follow you to view your follower-only posts.",
@@ -415,7 +419,8 @@
     "repeat": "Repeat",
     "reply": "Reply",
     "favorite": "Favorite",
-    "user_settings": "User Settings"
+    "user_settings": "User Settings",
+    "poll": "Add Poll"
   },
   "upload":{
     "error": {

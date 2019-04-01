@@ -71,9 +71,10 @@
           </div>
         </div>
       </div>
+      <poll-container />
       <div class='form-bottom'>
         <media-upload ref="mediaUpload" @uploading="disableSubmit" @uploaded="addMediaFile" @upload-failed="uploadFailed" :drop-files="dropFiles"></media-upload>
-
+        <poll-icon />
         <p v-if="isOverLengthLimit" class="error">{{ charactersLeft }}</p>
         <p class="faint" v-else-if="hasStatusLengthLimit">{{ charactersLeft }}</p>
 
