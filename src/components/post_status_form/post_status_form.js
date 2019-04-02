@@ -35,7 +35,8 @@ const PostStatusForm = {
     MediaUpload,
     EmojiInput,
     PollContainer,
-    PollIcon
+    PollIcon,
+    ScopeSelector
   },
   mounted () {
     this.resize(this.$refs.textarea)
