@@ -70,7 +70,8 @@
   },
   "polls": {
     "add_option": "Add Option",
-    "option": "Option"
+    "option": "Option",
+    "votes": "votes"
   },
   "post_status": {
     "new_status": "Post new status",

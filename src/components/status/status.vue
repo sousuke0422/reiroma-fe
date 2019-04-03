@@ -110,6 +110,10 @@
             <a v-if="showingMore" href="#" class="status-unhider" @click.prevent="toggleShowMore">{{$t("general.show_less")}}</a>
           </div>
 
+          <div v-if="status.poll.votes">
+            <poll-status :poll="status.poll" />
+          </div>
+
           <div v-if="status.attachments && (!hideSubjectStatus || showingLongSubject)" class="attachments media-body">
             <attachment
               class="non-gallery"

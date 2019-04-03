@@ -1,5 +1,5 @@
 <template>
-  <div class="poll-container">
+  <div class="poll-form">
     <hr />
     <div class="poll-option"
       v-for="(option, index) in options"
@@ -9,7 +9,8 @@
           class="poll-option-input"
           type="text"
           :placeholder="$t('polls.option')"
-          v-model="options[index]" />
+          @input="onUpdateOption($event, index)"
+          :value="option" />
       </div>
       <div class="icon-container">
         <i class="icon-cancel" @click="onDeleteOption(index)"></i>
@@ -28,34 +29,36 @@
 const maxOptions = 10
 
 export default {
-  name: 'PollContainer',
-  data () {
-    return {
-      options: ['', '']
-    }
-  },
+  name: 'PollForm',
   computed: {
     optionsLength: function () {
-      return this.$data.options.length
+      return this.$store.state.poll.pollOptions.length
+    },
+    options: function () {
+      return this.$store.state.poll.pollOptions
     }
   },
   methods: {
     onAddOption () {
       if (this.optionsLength < maxOptions) {
-        this.$data.options.push('')
+        this.$store.commit('addPollOption', '')
       }
     },
     onDeleteOption (index) {
+      console.log(index)
       if (this.optionsLength > 1) {
-        this.$data.options.splice(index, 1)
+        this.$store.commit('deletePollOption', index)
       }
+    },
+    onUpdateOption (e, index) {
+      this.$store.commit('updatePollOption', { index, option: e.target.value })
     }
   }
 }
 </script>
 
 <style lang="scss">
-.poll-container {
+.poll-form {
   padding: 0 0.5em 0.6em;
   hr {
     margin: 0 0 0.8em;

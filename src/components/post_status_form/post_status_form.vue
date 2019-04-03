@@ -71,7 +71,7 @@
           </div>
         </div>
       </div>
-      <poll-container />
+      <poll-form />
       <div class='form-bottom'>
         <media-upload ref="mediaUpload" @uploading="disableSubmit" @uploaded="addMediaFile" @upload-failed="uploadFailed" :drop-files="dropFiles"></media-upload>
         <poll-icon />

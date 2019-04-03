@@ -193,6 +193,8 @@ export const parseStatus = (data) => {
     output.summary_html = addEmojis(data.spoiler_text, data.emojis)
     output.external_url = data.url
 
+    output.poll = data.poll
+
     // output.is_local = ??? missing
   } else {
     output.favorited = data.favorited

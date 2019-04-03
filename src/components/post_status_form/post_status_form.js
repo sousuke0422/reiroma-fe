@@ -2,7 +2,7 @@ import statusPoster from '../../services/status_poster/status_poster.service.js'
 import MediaUpload from '../media_upload/media_upload.vue'
 import ScopeSelector from '../scope_selector/scope_selector.vue'
 import EmojiInput from '../emoji-input/emoji-input.vue'
-import PollContainer from '../poll/poll_container/poll_container.vue'
+import PollForm from '../poll/poll_form/poll_form.vue'
 import PollIcon from '../poll/poll_icon/poll_icon.vue'
 import fileTypeService from '../../services/file_type/file_type.service.js'
 import Completion from '../../services/completion/completion.js'
@@ -34,7 +34,7 @@ const PostStatusForm = {
   components: {
     MediaUpload,
     EmojiInput,
-    PollContainer,
+    PollForm,
     PollIcon,
     ScopeSelector
   },
@@ -68,6 +68,8 @@ const PostStatusForm = {
       ? this.$store.state.instance.postContentType
       : this.$store.state.config.postContentType
 
+    const pollOptions = this.$store.state.poll.pollOptions || []
+
     return {
       dropFiles: [],
       submitDisabled: false,
@@ -79,6 +81,7 @@ const PostStatusForm = {
         status: statusText,
         nsfw: false,
         files: [],
+        pollOptions,
         visibility: scope,
         contentType
       },
@@ -257,6 +260,7 @@ const PostStatusForm = {
         visibility: newStatus.visibility,
         sensitive: newStatus.nsfw,
         media: newStatus.files,
+        pollOptions: newStatus.pollOptions,
         store: this.$store,
         inReplyToStatusId: this.replyTo,
         contentType: newStatus.contentType

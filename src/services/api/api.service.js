@@ -487,7 +487,7 @@ const unretweet = ({ id, credentials }) => {
     .then((data) => parseStatus(data))
 }
 
-const postStatus = ({credentials, status, spoilerText, visibility, sensitive, mediaIds = [], inReplyToStatusId, contentType}) => {
+const postStatus = ({credentials, status, spoilerText, visibility, sensitive, pollOptions = [], mediaIds = [], inReplyToStatusId, contentType}) => {
   const form = new FormData()
 
   form.append('status', status)
@@ -498,6 +498,9 @@ const postStatus = ({credentials, status, spoilerText, visibility, sensitive, me
   if (contentType) form.append('content_type', contentType)
   mediaIds.forEach(val => {
     form.append('media_ids[]', val)
+  })
+  pollOptions.forEach(val => {
+    form.append('poll_options[]', val)
   })
   if (inReplyToStatusId) {
     form.append('in_reply_to_id', inReplyToStatusId)

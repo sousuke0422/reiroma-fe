@@ -2,6 +2,7 @@ import Attachment from '../attachment/attachment.vue'
 import FavoriteButton from '../favorite_button/favorite_button.vue'
 import RetweetButton from '../retweet_button/retweet_button.vue'
 import DeleteButton from '../delete_button/delete_button.vue'
+import PollStatus from '../poll/poll_status/poll_status.vue'
 import PostStatusForm from '../post_status_form/post_status_form.vue'
 import UserCard from '../user_card/user_card.vue'
 import UserAvatar from '../user_avatar/user_avatar.vue'
@@ -265,6 +266,7 @@ const Status = {
     RetweetButton,
     DeleteButton,
     PostStatusForm,
+    PollStatus,
     UserCard,
     UserAvatar,
     Gallery,
