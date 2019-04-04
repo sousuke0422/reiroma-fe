@@ -32,7 +32,11 @@ export default {
   },
   methods: {
     percentageForOption: function (count) {
-      return count / this.totalVotesCount * 100
+      if (this.totalVotesCount === 0) {
+        return 0
+      }
+
+      return (count / this.totalVotesCount * 100).toFixed(1)
     }
   }
 }
