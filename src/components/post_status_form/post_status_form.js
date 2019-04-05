@@ -85,7 +85,8 @@ const PostStatusForm = {
         visibility: scope,
         contentType
       },
-      caret: 0
+      caret: 0,
+      pollFormVisible: false
     }
   },
   computed: {
@@ -343,6 +344,9 @@ const PostStatusForm = {
     },
     changeVis (visibility) {
       this.newStatus.visibility = visibility
+    },
+    togglePollForm () {
+      this.pollFormVisible = !this.pollFormVisible
     }
   }
 }

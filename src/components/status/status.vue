@@ -111,7 +111,7 @@
           </div>
 
           <div v-if="status.poll.votes">
-            <poll-status :poll="status.poll" />
+            <poll :poll="status.poll" />
           </div>
 
           <div v-if="status.attachments && (!hideSubjectStatus || showingLongSubject)" class="attachments media-body">

@@ -1,5 +1,5 @@
 <template>
-  <div class="poll-status">
+  <div class="poll-results">
     <div class="votes">
       <div
         class="poll-option"
@@ -23,7 +23,7 @@
 
 <script>
 export default {
-  name: 'PollStatus',
+  name: 'PollResults',
   props: ['poll'],
   computed: {
     totalVotesCount () {
@@ -32,18 +32,14 @@ export default {
   },
   methods: {
     percentageForOption: function (count) {
-      if (this.totalVotesCount === 0) {
-        return 0
-      }
-
-      return (count / this.totalVotesCount * 100).toFixed(1)
+      return (this.totalVotesCount === 0 ? 0 : (count / this.totalVotesCount * 100)).toFixed(1)
     }
   }
 }
 </script>
 
 <style lang="scss">
-.poll-status {
+.poll-results {
   margin: 0.7em 0;
   .votes {
     display: table;

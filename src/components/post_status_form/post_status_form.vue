@@ -71,10 +71,17 @@
           </div>
         </div>
       </div>
-      <poll-form />
+      <poll-form :visible="pollFormVisible" />
       <div class='form-bottom'>
         <media-upload ref="mediaUpload" @uploading="disableSubmit" @uploaded="addMediaFile" @upload-failed="uploadFailed" :drop-files="dropFiles"></media-upload>
-        <poll-icon />
+        <div class="poll-icon">
+          <label
+            class="btn btn-default"
+            :title="$t('tool_tip.poll')"
+            @click="togglePollForm">
+            <i class="icon-chart-bar"></i>
+          </label>
+        </div>
         <p v-if="isOverLengthLimit" class="error">{{ charactersLeft }}</p>
         <p class="faint" v-else-if="hasStatusLengthLimit">{{ charactersLeft }}</p>
 
@@ -267,5 +274,13 @@
     cursor: pointer;
     z-index: 4;
   }
+}
+.poll-icon {
+  font-size: 26px;
+  flex: 1;
+}
+
+.icon-chart-bar {
+  cursor: pointer;
 }
 </style>

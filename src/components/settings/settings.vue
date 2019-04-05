@@ -327,7 +327,6 @@
     min-width: 10em;
   }
 
-
   textarea {
     width: 100%;
     height: 100px;

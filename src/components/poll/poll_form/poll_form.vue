@@ -1,5 +1,5 @@
 <template>
-  <div class="poll-form">
+  <div class="poll-form" v-if="visible">
     <hr />
     <div class="poll-option"
       v-for="(option, index) in options"
@@ -30,6 +30,7 @@ const maxOptions = 10
 
 export default {
   name: 'PollForm',
+  props: ['visible'],
   computed: {
     optionsLength: function () {
       return this.$store.state.poll.pollOptions.length
