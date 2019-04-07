@@ -1,6 +1,9 @@
 <template>
   <poll-results v-if="currentUserHasVoted" :poll="poll" />
-  <poll-vote v-else :poll="poll" />
+  <poll-vote
+    v-else
+    :poll="poll"
+    v-on:user-has-voted="onUserVote" />
 </template>
 
 <script>
@@ -16,7 +19,12 @@ export default {
   },
   computed: {
     currentUserHasVoted () {
-      return false
+      return this.poll.user_voted
+    }
+  },
+  methods: {
+    onUserVote (poll) {
+      this.poll = poll
     }
   }
 }

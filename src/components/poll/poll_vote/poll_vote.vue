@@ -37,9 +37,14 @@ export default {
     optionID (index) {
       return `pollOption${index}`
     },
-    onChoice (e) {
+    async onChoice (e) {
+      const pollID = this.poll.id
+      const optionName = e.target.value
+
       this.loading = true
-      console.log(e.target.value)
+      const poll = await this.$store.state.api.backendInteractor.vote(pollID, optionName)
+      this.loading = false
+      this.$emit('user-has-voted', poll)
     }
   }
 }

@@ -58,6 +58,10 @@ const backendInteractorService = (credentials) => {
     return apiService.denyUser({credentials, id})
   }
 
+  const vote = (pollID, optionName) => {
+    return apiService.vote({pollID, optionName})
+  }
+
   const startFetching = ({timeline, store, userId = false, tag}) => {
     return timelineFetcherService.startFetching({timeline, store, credentials, userId, tag})
   }
@@ -116,7 +120,8 @@ const backendInteractorService = (credentials) => {
     changePassword,
     fetchFollowRequests,
     approveUser,
-    denyUser
+    denyUser,
+    vote
   }
 
   return backendInteractorServiceInstance

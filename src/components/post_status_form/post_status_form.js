@@ -3,7 +3,6 @@ import MediaUpload from '../media_upload/media_upload.vue'
 import ScopeSelector from '../scope_selector/scope_selector.vue'
 import EmojiInput from '../emoji-input/emoji-input.vue'
 import PollForm from '../poll/poll_form/poll_form.vue'
-import PollIcon from '../poll/poll_icon/poll_icon.vue'
 import fileTypeService from '../../services/file_type/file_type.service.js'
 import Completion from '../../services/completion/completion.js'
 import { take, filter, reject, map, uniqBy } from 'lodash'
@@ -35,7 +34,6 @@ const PostStatusForm = {
     MediaUpload,
     EmojiInput,
     PollForm,
-    PollIcon,
     ScopeSelector
   },
   mounted () {

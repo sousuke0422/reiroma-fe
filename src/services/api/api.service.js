@@ -45,6 +45,7 @@ const MASTODON_MUTE_USER_URL = id => `/api/v1/accounts/${id}/mute`
 const MASTODON_UNMUTE_USER_URL = id => `/api/v1/accounts/${id}/unmute`
 const MASTODON_POST_STATUS_URL = '/api/v1/statuses'
 const MASTODON_MEDIA_UPLOAD_URL = '/api/v1/media'
+const MASTODON_VOTE_URL = '/api/v1/polls/vote'
 
 import { each, map } from 'lodash'
 import { parseStatus, parseUser, parseNotification, parseAttachment } from '../entity_normalizer/entity_normalizer.service.js'
@@ -641,6 +642,22 @@ const markNotificationsAsSeen = ({id, credentials}) => {
   }).then((data) => data.json())
 }
 
+const vote = ({pollID, optionName, credentials}) => {
+  const form = new FormData()
+
+  form.append('option_name', optionName)
+  form.append('question_id', pollID)
+
+  return promisedRequest(
+    MASTODON_VOTE_URL,
+    {
+      method: 'PATCH',
+      headers: authHeaders(credentials),
+      body: form
+    }
+  )
+}
+
 const apiService = {
   verifyCredentials,
   fetchTimeline,
@@ -683,7 +700,8 @@ const apiService = {
   approveUser,
   denyUser,
   suggestions,
-  markNotificationsAsSeen
+  markNotificationsAsSeen,
+  vote
 }
 
 export default apiService
