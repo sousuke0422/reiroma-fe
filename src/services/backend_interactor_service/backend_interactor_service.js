@@ -1,5 +1,6 @@
 import apiService from '../api/api.service.js'
 import timelineFetcherService from '../timeline_fetcher/timeline_fetcher.service.js'
+import notificationsFetcher from '../notifications_fetcher/notifications_fetcher.service.js'
 
 const backendInteractorService = (credentials) => {
   const fetchStatus = ({id}) => {
@@ -58,16 +59,44 @@ const backendInteractorService = (credentials) => {
     return apiService.denyUser({credentials, id})
   }
 
+  const startFetchingTimeline = ({ timeline, store, userId = false, tag }) => {
+    return timelineFetcherService.startFetching({ timeline, store, credentials, userId, tag })
+  }
+
+  const startFetchingNotifications = ({ store }) => {
+    return notificationsFetcher.startFetching({ store, credentials })
+  }
+
+  const tagUser = ({screen_name}, tag) => {
+    return apiService.tagUser({screen_name, tag, credentials})
+  }
+
+  const untagUser = ({screen_name}, tag) => {
+    return apiService.untagUser({screen_name, tag, credentials})
+  }
+
+  const addRight = ({screen_name}, right) => {
+    return apiService.addRight({screen_name, right, credentials})
+  }
+
+  const deleteRight = ({screen_name}, right) => {
+    return apiService.deleteRight({screen_name, right, credentials})
+  }
+
+  const setActivationStatus = ({screen_name}, status) => {
+    return apiService.setActivationStatus({screen_name, status, credentials})
+  }
+
+  const deleteUser = ({screen_name}) => {
+    return apiService.deleteUser({screen_name, credentials})
+  }
+
   const vote = (pollID, optionName) => {
     return apiService.vote({credentials, pollID, optionName})
   }
 
   const fetchPoll = (pollID) => {
     return apiService.fetchPoll({credentials, pollID})
-  }
-
-  const startFetching = ({timeline, store, userId = false, tag}) => {
-    return timelineFetcherService.startFetching({timeline, store, credentials, userId, tag})
   }
 
   const fetchMutes = () => apiService.fetchMutes({credentials})
@@ -105,13 +134,20 @@ const backendInteractorService = (credentials) => {
     fetchUserRelationship,
     fetchAllFollowing,
     verifyCredentials: apiService.verifyCredentials,
-    startFetching,
+    startFetchingTimeline,
+    startFetchingNotifications,
     fetchMutes,
     muteUser,
     unmuteUser,
     fetchBlocks,
     fetchOAuthTokens,
     revokeOAuthToken,
+    tagUser,
+    untagUser,
+    addRight,
+    deleteRight,
+    deleteUser,
+    setActivationStatus,
     register,
     getCaptcha,
     updateAvatar,

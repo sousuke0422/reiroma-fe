@@ -20,20 +20,21 @@ const emptyTl = (userId = 0) => ({
   flushMarker: 0
 })
 
+const emptyNotifications = () => ({
+  desktopNotificationSilence: true,
+  maxId: 0,
+  minId: Number.POSITIVE_INFINITY,
+  data: [],
+  idStore: {},
+  loading: false,
+  error: false
+})
+
 export const defaultState = () => ({
   allStatuses: [],
   allStatusesObject: {},
   maxId: 0,
-  notifications: {
-    desktopNotificationSilence: true,
-    maxId: 0,
-    minId: Number.POSITIVE_INFINITY,
-    data: [],
-    idStore: {},
-    loading: false,
-    error: false,
-    fetcherId: null
-  },
+  notifications: emptyNotifications(),
   favorites: new Set(),
   error: false,
   timelines: {
@@ -340,9 +341,6 @@ export const mutations = {
     oldTimeline.visibleStatusesObject = {}
     each(oldTimeline.visibleStatuses, (status) => { oldTimeline.visibleStatusesObject[status.id] = status })
   },
-  setNotificationFetcher (state, { fetcherId }) {
-    state.notifications.fetcherId = fetcherId
-  },
   resetStatuses (state) {
     const emptyState = defaultState()
     Object.entries(emptyState).forEach(([key, value]) => {
@@ -351,6 +349,9 @@ export const mutations = {
   },
   clearTimeline (state, { timeline }) {
     state.timelines[timeline] = emptyTl(state.timelines[timeline].userId)
+  },
+  clearNotifications (state) {
+    state.notifications = emptyNotifications()
   },
   setFavorited (state, { status, value }) {
     const newStatus = state.allStatusesObject[status.id]
@@ -377,6 +378,13 @@ export const mutations = {
   setDeleted (state, { status }) {
     const newStatus = state.allStatusesObject[status.id]
     newStatus.deleted = true
+  },
+  setManyDeleted (state, condition) {
+    Object.values(state.allStatusesObject).forEach(status => {
+      if (condition(status)) {
+        status.deleted = true
+      }
+    })
   },
   setLoading (state, { timeline, value }) {
     state.timelines[timeline].loading = value
@@ -428,15 +436,12 @@ const statuses = {
     setNotificationsSilence ({ rootState, commit }, { value }) {
       commit('setNotificationsSilence', { value })
     },
-    stopFetchingNotifications ({ rootState, commit }) {
-      if (rootState.statuses.notifications.fetcherId) {
-        window.clearInterval(rootState.statuses.notifications.fetcherId)
-      }
-      commit('setNotificationFetcher', { fetcherId: null })
-    },
     deleteStatus ({ rootState, commit }, status) {
       commit('setDeleted', { status })
       apiService.deleteStatus({ id: status.id, credentials: rootState.users.currentUser.credentials })
+    },
+    markStatusesAsDeleted ({ commit }, condition) {
+      commit('setManyDeleted', condition)
     },
     favorite ({ rootState, commit }, status) {
       // Optimistic favoriting...

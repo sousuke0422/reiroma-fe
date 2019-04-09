@@ -185,6 +185,9 @@ const PostStatusForm = {
     },
     postFormats () {
       return this.$store.state.instance.postFormats || []
+    },
+    safeDMEnabled () {
+      return this.$store.state.instance.safeDM
     }
   },
   methods: {
