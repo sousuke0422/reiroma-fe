@@ -59,7 +59,11 @@ const backendInteractorService = (credentials) => {
   }
 
   const vote = (pollID, optionName) => {
-    return apiService.vote({pollID, optionName})
+    return apiService.vote({credentials, pollID, optionName})
+  }
+
+  const fetchPoll = (pollID) => {
+    return apiService.fetchPoll({credentials, pollID})
   }
 
   const startFetching = ({timeline, store, userId = false, tag}) => {
@@ -121,7 +125,8 @@ const backendInteractorService = (credentials) => {
     fetchFollowRequests,
     approveUser,
     denyUser,
-    vote
+    vote,
+    fetchPoll
   }
 
   return backendInteractorServiceInstance

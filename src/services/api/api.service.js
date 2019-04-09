@@ -46,6 +46,7 @@ const MASTODON_UNMUTE_USER_URL = id => `/api/v1/accounts/${id}/unmute`
 const MASTODON_POST_STATUS_URL = '/api/v1/statuses'
 const MASTODON_MEDIA_UPLOAD_URL = '/api/v1/media'
 const MASTODON_VOTE_URL = '/api/v1/polls/vote'
+const MASTODON_POLL_URL = id => `/api/v1/polls/${id}`
 
 import { each, map } from 'lodash'
 import { parseStatus, parseUser, parseNotification, parseAttachment } from '../entity_normalizer/entity_normalizer.service.js'
@@ -658,6 +659,16 @@ const vote = ({pollID, optionName, credentials}) => {
   )
 }
 
+const fetchPoll = ({pollID, credentials}) => {
+  return promisedRequest(
+    MASTODON_POLL_URL(encodeURIComponent(pollID)),
+    {
+      method: 'GET',
+      headers: authHeaders(credentials)
+    }
+  )
+}
+
 const apiService = {
   verifyCredentials,
   fetchTimeline,
@@ -701,7 +712,8 @@ const apiService = {
   denyUser,
   suggestions,
   markNotificationsAsSeen,
-  vote
+  vote,
+  fetchPoll
 }
 
 export default apiService

@@ -12,7 +12,7 @@
     </div>
     <footer>
       <div class="refresh">
-        <a href="#">Refresh</a>&nbsp;·&nbsp;
+        <a href="#" @click="fetchPoll(poll.id)">Refresh</a>&nbsp;·&nbsp;
       </div>
       <div class="total">
         {{totalVotesCount}} {{ $t("polls.votes") }}
@@ -31,8 +31,12 @@ export default {
     }
   },
   methods: {
-    percentageForOption: function (count) {
+    percentageForOption (count) {
       return (this.totalVotesCount === 0 ? 0 : (count / this.totalVotesCount * 100)).toFixed(1)
+    },
+    async fetchPoll (pollID) {
+      const poll = await this.$store.state.api.backendInteractor.fetchPoll(pollID)
+      this.$emit('poll-refreshed', poll)
     }
   }
 }
