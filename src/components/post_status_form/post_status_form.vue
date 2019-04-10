@@ -74,7 +74,7 @@
           </div>
         </div>
       </div>
-      <poll-form :visible="pollFormVisible" />
+      <poll-form :visible="pollFormVisible" :options="newStatus.pollOptions" />
       <div class='form-bottom'>
         <media-upload ref="mediaUpload" @uploading="disableSubmit" @uploaded="addMediaFile" @upload-failed="uploadFailed" :drop-files="dropFiles"></media-upload>
         <div class="poll-icon">

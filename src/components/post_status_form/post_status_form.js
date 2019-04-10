@@ -275,6 +275,8 @@ const PostStatusForm = {
             visibility: newStatus.visibility,
             contentType: newStatus.contentType
           }
+          this.$store.dispatch('swapPollOptions', { options: ['', ''] })
+          this.pollFormVisible = false
           this.$refs.mediaUpload.clearFile()
           this.$emit('posted')
           let el = this.$el.querySelector('textarea')

@@ -42,17 +42,16 @@ export default {
   methods: {
     onAddOption () {
       if (this.optionsLength < maxOptions) {
-        this.$store.commit('addPollOption', '')
+        this.$store.dispatch('addPollOption', { option: '' })
       }
     },
     onDeleteOption (index) {
-      console.log(index)
       if (this.optionsLength > 1) {
-        this.$store.commit('deletePollOption', index)
+        this.$store.dispatch('deletePollOption', { index })
       }
     },
     onUpdateOption (e, index) {
-      this.$store.commit('updatePollOption', { index, option: e.target.value })
+      this.$store.dispatch('updatePollOption', { index, option: e.target.value })
     }
   }
 }
