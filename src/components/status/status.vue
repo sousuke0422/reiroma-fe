@@ -110,7 +110,7 @@
             <a v-if="showingMore" href="#" class="status-unhider" @click.prevent="toggleShowMore">{{$t("general.show_less")}}</a>
           </div>
 
-          <div v-if="status.poll && status.poll.votes">
+          <div v-if="status.poll && status.poll.options">
             <poll :poll="status.poll" />
           </div>
 

@@ -22,7 +22,7 @@ export default {
   },
   computed: {
     currentUserHasVoted () {
-      return this.poll.user_voted
+      return this.poll.voted
     }
   },
   methods: {

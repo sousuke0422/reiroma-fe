@@ -1,19 +1,27 @@
 const poll = {
   state: {
-    pollOptions: ['', '']
+    options: ['', ''],
+    multiple: false,
+    expiresIn: '86400'
   },
   mutations: {
     ADD_OPTION (state, { option }) {
-      state.pollOptions.push(option)
+      state.options.push(option)
     },
     UPDATE_OPTION (state, { index, option }) {
-      state.pollOptions[index] = option
+      state.options[index] = option
     },
     DELETE_OPTION (state, { index }) {
-      state.pollOptions.splice(index, 1)
+      state.options.splice(index, 1)
     },
     SWAP_OPTIONS (state, { options }) {
-      state.pollOptions = options
+      state.options = options
+    },
+    SET_MULTIPLE (state, { multiple }) {
+      state.multiple = multiple
+    },
+    SET_EXPIRES_IN (state, { expiresIn }) {
+      state.expiresIn = expiresIn
     }
   },
   actions: {
@@ -28,6 +36,12 @@ const poll = {
     },
     swapPollOptions (store, { options }) {
       store.commit('SWAP_OPTIONS', { options })
+    },
+    setMultiple (store, { multiple }) {
+      store.commit('SET_MULTIPLE', { multiple })
+    },
+    setExpiresIn (store, { expiresIn }) {
+      store.commit('SET_EXPIRES_IN', { expiresIn })
     }
   }
 }

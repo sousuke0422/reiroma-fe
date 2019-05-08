@@ -49,7 +49,7 @@ const MASTODON_MUTE_USER_URL = id => `/api/v1/accounts/${id}/mute`
 const MASTODON_UNMUTE_USER_URL = id => `/api/v1/accounts/${id}/unmute`
 const MASTODON_POST_STATUS_URL = '/api/v1/statuses'
 const MASTODON_MEDIA_UPLOAD_URL = '/api/v1/media'
-const MASTODON_VOTE_URL = '/api/v1/polls/vote'
+const MASTODON_VOTE_URL = id => `/api/v1/polls/${id}/votes`
 const MASTODON_POLL_URL = id => `/api/v1/polls/${id}`
 
 import { each, map } from 'lodash'
@@ -573,8 +573,9 @@ const unretweet = ({ id, credentials }) => {
     .then((data) => parseStatus(data))
 }
 
-const postStatus = ({credentials, status, spoilerText, visibility, sensitive, pollOptions = [], mediaIds = [], inReplyToStatusId, contentType}) => {
+const postStatus = ({credentials, status, spoilerText, visibility, sensitive, poll, mediaIds = [], inReplyToStatusId, contentType}) => {
   const form = new FormData()
+  const pollOptions = poll.options || []
 
   form.append('status', status)
   form.append('source', 'Pleroma FE')
@@ -585,9 +586,19 @@ const postStatus = ({credentials, status, spoilerText, visibility, sensitive, po
   mediaIds.forEach(val => {
     form.append('media_ids[]', val)
   })
-  pollOptions.forEach(val => {
-    form.append('poll_options[]', val)
-  })
+  if (pollOptions.some(option => option !== '')) {
+    const normalizedPoll = {
+      expires_in: poll.expiresIn,
+      multiple: poll.multiple
+    }
+    Object.keys(normalizedPoll).forEach(key => {
+      form.append(`poll[${key}]`, normalizedPoll[key])
+    })
+
+    pollOptions.forEach(option => {
+      form.append('poll[options][]', option)
+    })
+  }
   if (inReplyToStatusId) {
     form.append('in_reply_to_id', inReplyToStatusId)
   }
@@ -727,16 +738,15 @@ const markNotificationsAsSeen = ({id, credentials}) => {
   }).then((data) => data.json())
 }
 
-const vote = ({pollID, optionName, credentials}) => {
+const vote = ({pollID, choices, credentials}) => {
   const form = new FormData()
 
-  form.append('option_name', optionName)
-  form.append('question_id', pollID)
+  form.append('choices', choices)
 
   return promisedRequest(
-    MASTODON_VOTE_URL,
+    MASTODON_VOTE_URL(encodeURIComponent(pollID)),
     {
-      method: 'PATCH',
+      method: 'POST',
       headers: authHeaders(credentials),
       body: form
     }

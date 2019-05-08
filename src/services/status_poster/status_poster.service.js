@@ -1,7 +1,7 @@
 import { map } from 'lodash'
 import apiService from '../api/api.service.js'
 
-const postStatus = ({ store, status, spoilerText, visibility, sensitive, pollOptions = [], media = [], inReplyToStatusId = undefined, contentType = 'text/plain' }) => {
+const postStatus = ({ store, status, spoilerText, visibility, sensitive, poll, media = [], inReplyToStatusId = undefined, contentType = 'text/plain' }) => {
   const mediaIds = map(media, 'id')
 
   return apiService.postStatus({
@@ -13,7 +13,7 @@ const postStatus = ({ store, status, spoilerText, visibility, sensitive, pollOpt
     mediaIds,
     inReplyToStatusId,
     contentType,
-    pollOptions})
+    poll})
     .then((data) => {
       if (!data.error) {
         store.dispatch('addNewStatuses', {

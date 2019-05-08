@@ -74,10 +74,10 @@
           </div>
         </div>
       </div>
-      <poll-form :visible="pollFormVisible" :options="newStatus.pollOptions" />
+      <poll-form v-if="pollsAvailable" :visible="pollFormVisible" />
       <div class='form-bottom'>
         <media-upload ref="mediaUpload" @uploading="disableSubmit" @uploaded="addMediaFile" @upload-failed="uploadFailed" :drop-files="dropFiles"></media-upload>
-        <div class="poll-icon">
+        <div v-if="pollsAvailable" class="poll-icon">
           <label
             class="btn btn-default"
             :title="$t('tool_tip.poll')"

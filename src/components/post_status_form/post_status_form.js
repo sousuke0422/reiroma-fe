@@ -66,7 +66,7 @@ const PostStatusForm = {
       ? this.$store.state.instance.postContentType
       : this.$store.state.config.postContentType
 
-    const pollOptions = this.$store.state.poll.pollOptions || []
+    const poll = this.$store.state.poll || {}
 
     return {
       dropFiles: [],
@@ -79,7 +79,7 @@ const PostStatusForm = {
         status: statusText,
         nsfw: false,
         files: [],
-        pollOptions,
+        poll,
         visibility: scope,
         contentType
       },
@@ -188,6 +188,9 @@ const PostStatusForm = {
     },
     safeDMEnabled () {
       return this.$store.state.instance.safeDM
+    },
+    pollsAvailable () {
+      return this.$store.state.instance.pollsAvailable
     }
   },
   methods: {
@@ -262,7 +265,7 @@ const PostStatusForm = {
         visibility: newStatus.visibility,
         sensitive: newStatus.nsfw,
         media: newStatus.files,
-        pollOptions: newStatus.pollOptions,
+        poll: newStatus.poll,
         store: this.$store,
         inReplyToStatusId: this.replyTo,
         contentType: newStatus.contentType
@@ -273,7 +276,8 @@ const PostStatusForm = {
             spoilerText: '',
             files: [],
             visibility: newStatus.visibility,
-            contentType: newStatus.contentType
+            contentType: newStatus.contentType,
+            poll: this.$store.state.poll
           }
           this.$store.dispatch('swapPollOptions', { options: ['', ''] })
           this.pollFormVisible = false

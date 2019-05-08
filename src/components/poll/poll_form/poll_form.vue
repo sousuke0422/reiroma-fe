@@ -1,16 +1,16 @@
 <template>
   <div class="poll-form" v-if="visible">
-    <hr />
-    <div class="poll-option"
-      v-for="(option, index) in options"
-      :key="index">
+    <hr>
+    <div class="poll-option" v-for="(option, index) in options" :key="index">
       <div class="input-container">
         <input
           class="poll-option-input"
           type="text"
           :placeholder="$t('polls.option')"
           @input="onUpdateOption($event, index)"
-          :value="option" />
+          :value="option"
+          :maxlength="maxLength"
+        >
       </div>
       <div class="icon-container">
         <i class="icon-cancel" @click="onDeleteOption(index)"></i>
@@ -19,29 +19,77 @@
     <button
       class="btn btn-default add-option"
       type="button"
-      @click="onAddOption">{{ $t("polls.add_option") }}
-    </button>
+      @click="onAddOption"
+    >{{ $t("polls.add_option") }}</button>
+    <div class="poll-type-expiry">
+      <div class="poll-type">
+        <label for="poll-type-selector" class="select">
+          <select id="poll-type-selector" v-model="pollType" @change="onTypeChange">
+            <option value="single">{{$t('polls.single_choice')}}</option>
+            <option value="multiple">{{$t('polls.multiple_choices')}}</option>
+          </select>
+          <i class="icon-down-open"/>
+        </label>
+      </div>
+      <div class="poll-expiry">
+        <label for="poll-expiry-selector" class="select">
+          <select id="poll-expiry-selector" v-model="pollExpiry" @change="onExpiryChange">
+            <option v-for="(value, key) in expiryOptions" :value="key" v-bind:key="key">
+              {{ value }}
+            </option>
+          </select>
+          <i class="icon-down-open"/>
+        </label>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-// TODO: Make this configurable
-const maxOptions = 10
+import { pickBy } from 'lodash'
 
 export default {
   name: 'PollForm',
   props: ['visible'],
+  data: () => ({
+    pollType: 'single',
+    pollExpiry: '86400'
+  }),
   computed: {
-    optionsLength: function () {
-      return this.$store.state.poll.pollOptions.length
+    optionsLength () {
+      return this.$store.state.poll.options.length
     },
-    options: function () {
-      return this.$store.state.poll.pollOptions
+    options () {
+      return this.$store.state.poll.options
+    },
+    pollLimits () {
+      return this.$store.state.instance.pollLimits
+    },
+    maxOptions () {
+      return this.pollLimits.max_options
+    },
+    maxLength () {
+      return this.pollLimits.max_option_chars
+    },
+    expiryOptions () {
+      const minExpiration = this.pollLimits.min_expiration
+      const maxExpiration = this.pollLimits.max_expiration
+      const expiryOptions = this.$t('polls.expiry_options')
+
+      return pickBy(expiryOptions, (_value, key) => {
+        if (key === 'custom') {
+          return true
+        }
+
+        const parsedKey = parseInt(key)
+
+        return (parsedKey >= minExpiration && parsedKey <= maxExpiration)
+      })
     }
   },
   methods: {
     onAddOption () {
-      if (this.optionsLength < maxOptions) {
+      if (this.optionsLength < this.maxOptions) {
         this.$store.dispatch('addPollOption', { option: '' })
       }
     },
@@ -51,7 +99,18 @@ export default {
       }
     },
     onUpdateOption (e, index) {
-      this.$store.dispatch('updatePollOption', { index, option: e.target.value })
+      this.$store.dispatch('updatePollOption', {
+        index,
+        option: e.target.value
+      })
+    },
+    onTypeChange (e) {
+      const multiple = e.target.value === 'multiple'
+
+      this.$store.dispatch('setMultiple', { multiple })
+    },
+    onExpiryChange (e) {
+      this.$store.dispatch('setExpiresIn', { expiresIn: e.target.value })
     }
   }
 }
@@ -65,7 +124,7 @@ export default {
     border: solid 1px #1c2735;
   }
   .add-option {
-    margin: 0.8em 0 0;
+    margin: 0.8em 0 0.8em;
     width: 94%;
   }
   .poll-option {
@@ -81,6 +140,17 @@ export default {
   }
   .icon-container {
     width: 5%;
+  }
+  .poll-type-expiry {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 0.6em;
+  }
+  .poll-expiry-custom {
+    display: none;
+    input {
+      width: 100%;
+    }
   }
 }
 </style>
