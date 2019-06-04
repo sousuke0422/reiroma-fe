@@ -27,7 +27,7 @@ export default {
   },
   methods: {
     handlePollUpdate (poll) {
-      this.poll = poll
+      // this.poll = poll
     }
   }
 }

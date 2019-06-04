@@ -9,7 +9,25 @@
         class="visibility-notice">
         <router-link :to="{ name: 'user-settings' }">{{ $t('post_status.account_not_locked_warning_link') }}</router-link>
       </i18n>
-      <p v-if="newStatus.visibility === 'direct'" class="visibility-notice">
+      <p v-if="!hideScopeNotice && newStatus.visibility === 'public'" class="visibility-notice notice-dismissible">
+        <span>{{ $t('post_status.scope_notice.public') }}</span>
+        <a v-on:click.prevent="dismissScopeNotice()" class="button-icon dismiss">
+          <i class='icon-cancel'></i>
+        </a>
+      </p>
+      <p v-else-if="!hideScopeNotice && newStatus.visibility === 'unlisted'" class="visibility-notice notice-dismissible">
+        <span>{{ $t('post_status.scope_notice.unlisted') }}</span>
+        <a v-on:click.prevent="dismissScopeNotice()" class="button-icon dismiss">
+          <i class='icon-cancel'></i>
+        </a>
+      </p>
+      <p v-else-if="!hideScopeNotice && newStatus.visibility === 'private' && $store.state.users.currentUser.locked" class="visibility-notice notice-dismissible">
+        <span>{{ $t('post_status.scope_notice.private') }}</span>
+        <a v-on:click.prevent="dismissScopeNotice()" class="button-icon dismiss">
+          <i class='icon-cancel'></i>
+        </a>
+      </p>
+      <p v-else-if="newStatus.visibility === 'direct'" class="visibility-notice">
         <span v-if="safeDMEnabled">{{ $t('post_status.direct_warning_to_first_only') }}</span>
         <span v-else>{{ $t('post_status.direct_warning_to_all') }}</span>
       </p>
@@ -40,7 +58,7 @@
       >
       </textarea>
       <div class="visibility-tray">
-        <span class="text-format" v-if="formattingOptionsEnabled">
+        <div class="text-format" v-if="formattingOptionsEnabled">
           <label for="post-content-type" class="select">
             <select id="post-content-type" v-model="newStatus.contentType" class="form-control">
               <option v-for="postFormat in postFormats" :key="postFormat" :value="postFormat">
@@ -49,7 +67,7 @@
             </select>
             <i class="icon-down-open"></i>
           </label>
-        </span>
+        </div>
 
         <scope-selector
           :showAll="showAllScopes"
@@ -142,10 +160,11 @@
     display: flex;
     justify-content: space-between;
     flex-direction: row-reverse;
+    padding-top: 5px;
   }
 }
 
-.post-status-form, .login {
+.post-status-form {
   .form-bottom {
     display: flex;
     padding: 0.5em;
@@ -240,7 +259,7 @@
   .form-group {
     display: flex;
     flex-direction: column;
-    padding: 0.3em 0.5em 0.6em;
+    padding: 0.25em 0.5em 0.5em;
     line-height:24px;
   }
 

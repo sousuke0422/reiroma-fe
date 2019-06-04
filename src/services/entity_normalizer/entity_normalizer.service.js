@@ -33,16 +33,17 @@ export const parseUser = (data) => {
 
   if (masto) {
     output.screen_name = data.acct
+    output.statusnet_profile_url = data.url
 
     // There's nothing else to get
     if (mastoShort) {
       return output
     }
 
-    // output.name = ??? missing
+    output.name = data.display_name
     output.name_html = addEmojis(data.display_name, data.emojis)
 
-    // output.description = ??? missing
+    output.description = data.note
     output.description_html = addEmojis(data.note, data.emojis)
 
     // Utilize avatar_static for gif avatars?
@@ -55,8 +56,6 @@ export const parseUser = (data) => {
     output.friends_count = data.following_count
 
     output.bot = data.bot
-
-    output.statusnet_profile_url = data.url
 
     if (data.pleroma) {
       const relationship = data.pleroma.relationship
@@ -74,7 +73,7 @@ export const parseUser = (data) => {
       }
     }
 
-    // Missing, trying to recover
+    // TODO: handle is_local
     output.is_local = !output.screen_name.includes('@')
   } else {
     output.screen_name = data.screen_name
@@ -129,18 +128,22 @@ export const parseUser = (data) => {
   output.locked = data.locked
   output.followers_count = data.followers_count
   output.statuses_count = data.statuses_count
-  output.friends = []
-  output.followers = []
-  if (data.pleroma) {
-    output.follow_request_count = data.pleroma.follow_request_count
-  }
+  output.friendIds = []
+  output.followerIds = []
+  output.pinnedStatuseIds = []
 
   if (data.pleroma) {
+    output.follow_request_count = data.pleroma.follow_request_count
+
     output.tags = data.pleroma.tags
     output.deactivated = data.pleroma.deactivated
+
+    output.notification_settings = data.pleroma.notification_settings
   }
 
   output.tags = output.tags || []
+  output.rights = output.rights || {}
+  output.notification_settings = output.notification_settings || {}
 
   return output
 }
@@ -168,7 +171,7 @@ export const addEmojis = (string, emojis) => {
   return emojis.reduce((acc, emoji) => {
     return acc.replace(
       new RegExp(`:${emoji.shortcode}:`, 'g'),
-      `<img src='${emoji.url}' alt='${emoji.shortcode}' class='emoji' />`
+      `<img src='${emoji.url}' alt='${emoji.shortcode}' title='${emoji.shortcode}' class='emoji' />`
     )
   }, string)
 }
@@ -189,12 +192,15 @@ export const parseStatus = (data) => {
 
     output.statusnet_html = addEmojis(data.content, data.emojis)
 
+    output.tags = data.tags
+
     if (data.pleroma) {
       const { pleroma } = data
       output.text = pleroma.content ? data.pleroma.content['text/plain'] : data.content
       output.summary = pleroma.spoiler_text ? data.pleroma.spoiler_text['text/plain'] : data.spoiler_text
       output.statusnet_conversation_id = data.pleroma.conversation_id
       output.is_local = pleroma.local
+      output.in_reply_to_screen_name = data.pleroma.in_reply_to_account_acct
     } else {
       output.text = data.content
       output.summary = data.spoiler_text
@@ -204,8 +210,6 @@ export const parseStatus = (data) => {
     output.in_reply_to_user_id = data.in_reply_to_account_id
     output.replies_count = data.replies_count
 
-    // Missing!! fix in UI?
-    // output.in_reply_to_screen_name = ???
     if (output.type === 'retweet') {
       output.retweeted_status = parseStatus(data.reblog)
     }
@@ -213,6 +217,7 @@ export const parseStatus = (data) => {
     output.summary_html = addEmojis(data.spoiler_text, data.emojis)
     output.external_url = data.url
     output.poll = data.poll
+    output.pinned = data.pinned
   } else {
     output.favorited = data.favorited
     output.fave_num = data.fave_num
@@ -240,7 +245,6 @@ export const parseStatus = (data) => {
     output.in_reply_to_status_id = data.in_reply_to_status_id
     output.in_reply_to_user_id = data.in_reply_to_user_id
     output.in_reply_to_screen_name = data.in_reply_to_screen_name
-
     output.statusnet_conversation_id = data.statusnet_conversation_id
 
     if (output.type === 'retweet') {
@@ -278,6 +282,9 @@ export const parseStatus = (data) => {
     output.retweeted_status = parseStatus(retweetedStatus)
   }
 
+  output.favoritedBy = []
+  output.rebloggedBy = []
+
   return output
 }
 
@@ -291,9 +298,11 @@ export const parseNotification = (data) => {
 
   if (masto) {
     output.type = mastoDict[data.type] || data.type
-    // output.seen = ??? missing
-    output.status = parseStatus(data.status)
-    output.action = output.status // not sure
+    output.seen = data.pleroma.is_seen
+    output.status = output.type === 'follow'
+      ? null
+      : parseStatus(data.status)
+    output.action = output.status // TODO: Refactor, this is unneeded
     output.from_profile = parseUser(data.account)
   } else {
     const parsedNotice = parseStatus(data.notice)
@@ -307,7 +316,7 @@ export const parseNotification = (data) => {
   }
 
   output.created_at = new Date(data.created_at)
-  output.id = data.id
+  output.id = parseInt(data.id)
 
   return output
 }

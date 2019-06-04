@@ -190,7 +190,10 @@ const PostStatusForm = {
       return this.$store.state.instance.safeDM
     },
     pollsAvailable () {
-      return this.$store.state.instance.pollsAvailable
+      return true // this.$store.state.instance.pollsAvailable
+    },
+    hideScopeNotice () {
+      return this.$store.state.config.hideScopeNotice
     }
   },
   methods: {
@@ -354,6 +357,9 @@ const PostStatusForm = {
     },
     togglePollForm () {
       this.pollFormVisible = !this.pollFormVisible
+    },
+    dismissScopeNotice () {
+      this.$store.dispatch('setOption', { name: 'hideScopeNotice', value: true })
     }
   }
 }

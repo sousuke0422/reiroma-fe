@@ -1,18 +1,19 @@
 import Attachment from '../attachment/attachment.vue'
 import FavoriteButton from '../favorite_button/favorite_button.vue'
 import RetweetButton from '../retweet_button/retweet_button.vue'
-import DeleteButton from '../delete_button/delete_button.vue'
 import Poll from '../poll/poll.vue'
+import ExtraButtons from '../extra_buttons/extra_buttons.vue'
 import PostStatusForm from '../post_status_form/post_status_form.vue'
 import UserCard from '../user_card/user_card.vue'
 import UserAvatar from '../user_avatar/user_avatar.vue'
 import Gallery from '../gallery/gallery.vue'
 import LinkPreview from '../link-preview/link-preview.vue'
+import AvatarList from '../avatar_list/avatar_list.vue'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 import fileType from 'src/services/file_type/file_type.service'
 import { highlightClass, highlightStyle } from '../../services/user_highlighter/user_highlighter.js'
 import { mentionMatchesUrl, extractTagFromUrl } from 'src/services/matcher/matcher.service.js'
-import { filter, find, unescape } from 'lodash'
+import { filter, find, unescape, uniqBy } from 'lodash'
 
 const Status = {
   name: 'Status',
@@ -26,18 +27,19 @@ const Status = {
     'replies',
     'isPreview',
     'noHeading',
-    'inlineExpanded'
+    'inlineExpanded',
+    'showPinned'
   ],
   data () {
     return {
       replying: false,
-      expanded: false,
       unmuted: false,
       userExpanded: false,
       preview: null,
       showPreview: false,
       showingTall: this.inConversation && this.focused,
       showingLongSubject: false,
+      error: null,
       expandingSubject: typeof this.$store.state.config.collapseMessageWithSubject === 'undefined'
         ? !this.$store.state.instance.collapseMessageWithSubject
         : !this.$store.state.config.collapseMessageWithSubject,
@@ -98,6 +100,10 @@ const Status = {
         return this.statusoid
       }
     },
+    statusFromGlobalRepository () {
+      // NOTE: Consider to replace status with statusFromGlobalRepository
+      return this.$store.state.statuses.allStatusesObject[this.status.id]
+    },
     loggedIn () {
       return !!this.$store.state.users.currentUser
     },
@@ -157,7 +163,7 @@ const Status = {
       if (this.$store.state.config.replyVisibility === 'all') {
         return false
       }
-      if (this.inlineExpanded || this.expanded || this.inConversation || !this.isReply) {
+      if (this.inConversation || !this.isReply) {
         return false
       }
       if (this.status.user.id === this.$store.state.users.currentUser.id) {
@@ -171,7 +177,7 @@ const Status = {
         if (this.status.user.id === this.status.attentions[i].id) {
           continue
         }
-        if (checkFollowing && this.status.attentions[i].following) {
+        if (checkFollowing && this.$store.getters.findUser(this.status.attentions[i].id).following) {
           return false
         }
         if (this.status.attentions[i].id === this.$store.state.users.currentUser.id) {
@@ -211,8 +217,8 @@ const Status = {
       if (!this.status.summary) return ''
       const decodedSummary = unescape(this.status.summary)
       const behavior = typeof this.$store.state.config.subjectLineBehavior === 'undefined'
-            ? this.$store.state.instance.subjectLineBehavior
-            : this.$store.state.config.subjectLineBehavior
+        ? this.$store.state.instance.subjectLineBehavior
+        : this.$store.state.config.subjectLineBehavior
       const startsWithRe = decodedSummary.match(/^re[: ]/i)
       if (behavior !== 'noop' && startsWithRe || behavior === 'masto') {
         return decodedSummary
@@ -258,19 +264,34 @@ const Status = {
         return this.status.statusnet_html
       }
       return this.status.summary_html + '<br />' + this.status.statusnet_html
+    },
+    combinedFavsAndRepeatsUsers () {
+      // Use the status from the global status repository since favs and repeats are saved in it
+      const combinedUsers = [].concat(
+        this.statusFromGlobalRepository.favoritedBy,
+        this.statusFromGlobalRepository.rebloggedBy
+      )
+      return uniqBy(combinedUsers, 'id')
+    },
+    ownStatus () {
+      return this.status.user.id === this.$store.state.users.currentUser.id
+    },
+    tags () {
+      return this.status.tags.filter(tagObj => tagObj.hasOwnProperty('name')).map(tagObj => tagObj.name).join(' ')
     }
   },
   components: {
     Attachment,
     FavoriteButton,
     RetweetButton,
-    DeleteButton,
+    ExtraButtons,
     PostStatusForm,
     Poll,
     UserCard,
     UserAvatar,
     Gallery,
-    LinkPreview
+    LinkPreview,
+    AvatarList
   },
   methods: {
     visibilityIcon (visibility) {
@@ -284,6 +305,12 @@ const Status = {
         default:
           return 'icon-globe'
       }
+    },
+    showError (error) {
+      this.error = error
+    },
+    clearError () {
+      this.error = undefined
     },
     linkClicked (event) {
       let { target } = event
@@ -315,6 +342,7 @@ const Status = {
       }
     },
     toggleReplying () {
+      console.log(this.status)
       this.replying = !this.replying
     },
     gotoOriginal (id) {
@@ -352,7 +380,7 @@ const Status = {
         this.preview = find(statuses, { 'id': targetId })
         // or if we have to fetch it
         if (!this.preview) {
-          this.$store.state.api.backendInteractor.fetchStatus({id}).then((status) => {
+          this.$store.state.api.backendInteractor.fetchStatus({ id }).then((status) => {
             this.preview = status
           })
         }

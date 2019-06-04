@@ -54,7 +54,14 @@ const defaultState = {
 
   // Version Information
   backendVersion: '',
-  frontendVersion: ''
+  frontendVersion: '',
+
+  pollLimits: {
+    max_options: 4,
+    max_option_chars: 255,
+    min_expiration: 60,
+    max_expiration: 300
+  }
 }
 
 const instance = {

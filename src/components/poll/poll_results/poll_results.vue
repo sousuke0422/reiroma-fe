@@ -3,11 +3,11 @@
     <div class="votes">
       <div
         class="poll-option"
-        v-for="(pollOption, index) in poll.votes"
+        v-for="(pollOption, index) in poll.options"
         :key="index">
-          <div class="col">{{percentageForOption(pollOption.count)}}%</div>
-          <div class="col">{{pollOption.name}}</div>
-          <div class="col"><progress :max="totalVotesCount" :value="pollOption.count"></progress></div>
+          <div class="col">{{percentageForOption(pollOption.votes_count)}}%</div>
+          <div class="col">{{pollOption.title}}</div>
+          <div class="col"><progress :max="totalVotesCount" :value="pollOption.votes_count"></progress></div>
       </div>
     </div>
     <footer>
@@ -25,9 +25,12 @@
 export default {
   name: 'PollResults',
   props: ['poll'],
+  created () {
+    console.log(this.poll)
+  },
   computed: {
     totalVotesCount () {
-      return this.poll.votes.reduce((acc, vote) => { return acc + vote.count }, 0)
+      return this.poll.votes_count
     }
   },
   methods: {
@@ -36,6 +39,7 @@ export default {
     },
     async fetchPoll (pollID) {
       const poll = await this.$store.state.api.backendInteractor.fetchPoll(pollID)
+      console.log(poll)
       this.$emit('poll-refreshed', poll)
     }
   }

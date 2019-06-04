@@ -1,5 +1,5 @@
 <template>
-  <div :id="pollVoteId" class="poll-vote" v-bind:class="containerClass">
+  <div class="poll-vote" v-bind:class="containerClass">
     <div
       class="poll-choice"
       v-for="(pollOption, index) in poll.options"
@@ -10,7 +10,8 @@
           :id="optionID(index)"
           :value="pollOption.title"
           name="choice"
-          @change="onChoice">
+          v-model="checks[index]"
+        >
         <label :for="optionID(index)">{{pollOption.title}}</label>
     </div>
     <button class="btn btn-default poll-vote-button" @click="onVote">{{$t('polls.vote')}}</button>
@@ -24,7 +25,7 @@ export default {
   data () {
     return {
       loading: false,
-      choices: []
+      checks: []
     }
   },
   computed: {
@@ -32,23 +33,17 @@ export default {
       return {
         loading: this.loading
       }
-    },
-    pollVoteId: function () {
-      return `poll-vote-${this.poll.id}`
     }
   },
   methods: {
     optionID (index) {
       return `pollOption${this.poll.id}#${index}`
     },
-    async onChoice (e) {
-      // TODO
-    },
     async onVote () {
       this.loading = true
 
-      const pollID = this.poll.id
-      const poll = await this.$store.state.api.backendInteractor.vote(pollID, this.choices)
+      const choices = this.checks.filter(_=>_).map((entry, index) => index)
+      const poll = await this.$store.state.api.backendInteractor.vote(this.poll.id, choices)
 
       this.loading = false
       this.$emit('user-has-voted', poll)
