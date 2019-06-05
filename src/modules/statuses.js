@@ -494,6 +494,10 @@ export const mutations = {
     const newStatus = state.allStatusesObject[id]
     newStatus.favoritedBy = favoritedByUsers.filter(_ => _)
     newStatus.rebloggedBy = rebloggedByUsers.filter(_ => _)
+  },
+  updateStatusWithPoll (state, { id, poll }) {
+    const status = state.allStatusesObject[id]
+    status.poll = poll
   }
 }
 
@@ -578,6 +582,12 @@ const statuses = {
       ]).then(([favoritedByUsers, rebloggedByUsers]) =>
         commit('addFavsAndRepeats', { id, favoritedByUsers, rebloggedByUsers })
       )
+    },
+    votePoll ({ rootState, commit }, { id, pollId, choices }) {
+      return rootState.api.backendInteractor.vote(pollId, choices).then(poll => {
+        commit('updateStatusWithPoll', { id, poll })
+        return poll
+      })
     }
   },
   mutations

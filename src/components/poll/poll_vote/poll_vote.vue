@@ -21,7 +21,7 @@
 <script>
 export default {
   name: 'PollVote',
-  props: ['poll'],
+  props: ['poll', 'statusId'],
   data () {
     return {
       loading: false,
@@ -39,14 +39,14 @@ export default {
     optionID (index) {
       return `pollOption${this.poll.id}#${index}`
     },
-    async onVote () {
+    onVote () {
       this.loading = true
 
-      const choices = this.checks.filter(_=>_).map((entry, index) => index)
-      const poll = await this.$store.state.api.backendInteractor.vote(this.poll.id, choices)
-
-      this.loading = false
-      this.$emit('user-has-voted', poll)
+      const choices = this.checks.map((entry, index) => index).filter(value => typeof value === 'number')
+      this.$store.dispatch('votePoll', { id: this.statusId, pollId: this.poll.id, choices }).then(poll => {
+        console.log('vote result:', poll)
+        this.loading = false
+      })
     }
   }
 }

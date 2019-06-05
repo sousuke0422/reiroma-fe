@@ -739,18 +739,14 @@ const markNotificationsAsSeen = ({ id, credentials }) => {
 
 const vote = ({ pollID, choices, credentials }) => {
   const form = new FormData()
-
   form.append('choices', choices)
-
   const url = MASTODON_VOTE_URL(encodeURIComponent(pollID))
-  console.log(url, choices)
 
   return promisedRequest({
     url: MASTODON_VOTE_URL(encodeURIComponent(pollID)),
     method: 'POST',
     credentials,
     payload: {
-      'test': 'test',
       choices: choices
     }
   })

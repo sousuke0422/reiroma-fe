@@ -2,11 +2,14 @@
   <poll-results
     v-if="currentUserHasVoted"
     :poll="poll"
-    v-on:poll-refreshed="handlePollUpdate" />
+    v-on:poll-refreshed="handlePollUpdate"
+  />
   <poll-vote
     v-else
     :poll="poll"
-    v-on:user-has-voted="handlePollUpdate" />
+    :status-id="statusId"
+    v-on:user-has-voted="handlePollUpdate"
+  />
 </template>
 
 <script>
@@ -15,13 +18,17 @@ import PollVote from './poll_vote/poll_vote.vue'
 
 export default {
   name: 'Poll',
-  props: ['poll'],
+  props: ['poll', 'statusId'],
   components: {
     PollResults,
     PollVote
   },
   computed: {
     currentUserHasVoted () {
+      console.log('currentUserHasVoted poll', this.poll)
+      return this.poll.voted
+    },
+    voted () {
       return this.poll.voted
     }
   },
