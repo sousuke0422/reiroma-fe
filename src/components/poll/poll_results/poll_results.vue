@@ -12,7 +12,7 @@
     </div>
     <footer>
       <div class="refresh">
-        <a href="#" @click="fetchPoll(poll.id)">Refresh</a>&nbsp;·&nbsp;
+        <a href="#" @click.stop.prevent="fetchPoll(poll.id)">Refresh</a>&nbsp;·&nbsp;
       </div>
       <div class="total">
         {{totalVotesCount}} {{ $t("polls.votes") }}
@@ -24,7 +24,7 @@
 <script>
 export default {
   name: 'PollResults',
-  props: ['poll'],
+  props: ['poll', 'statusId'],
   created () {
     console.log(this.poll)
   },
@@ -37,10 +37,8 @@ export default {
     percentageForOption (count) {
       return (this.totalVotesCount === 0 ? 0 : (count / this.totalVotesCount * 100)).toFixed(1)
     },
-    async fetchPoll (pollID) {
-      const poll = await this.$store.state.api.backendInteractor.fetchPoll(pollID)
-      console.log(poll)
-      this.$emit('poll-refreshed', poll)
+    fetchPoll () {
+      this.$store.dispatch('refreshPoll', { id: this.statusId, pollId: this.poll.id })
     }
   }
 }

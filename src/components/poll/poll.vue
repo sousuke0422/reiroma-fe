@@ -2,6 +2,7 @@
   <poll-results
     v-if="currentUserHasVoted"
     :poll="poll"
+    :status-id="statusId"
     v-on:poll-refreshed="handlePollUpdate"
   />
   <poll-vote

@@ -87,12 +87,12 @@ const backendInteractorService = credentials => {
     return apiService.deleteUser({ screen_name, credentials })
   }
 
-  const vote = (pollID, choices) => {
-    return apiService.vote({ credentials, pollID, choices })
+  const vote = (pollId, choices) => {
+    return apiService.vote({ credentials, pollId, choices })
   }
 
-  const fetchPoll = (pollID) => {
-    return apiService.fetchPoll({ credentials, pollID })
+  const fetchPoll = (pollId) => {
+    return apiService.fetchPoll({ credentials, pollId })
   }
 
   const updateNotificationSettings = ({ settings }) => {

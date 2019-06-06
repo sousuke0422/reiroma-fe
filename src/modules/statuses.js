@@ -588,6 +588,12 @@ const statuses = {
         commit('updateStatusWithPoll', { id, poll })
         return poll
       })
+    },
+    refreshPoll ({ rootState, commit }, { id, pollId }) {
+      return rootState.api.backendInteractor.fetchPoll(pollId).then(poll => {
+        commit('updateStatusWithPoll', { id, poll })
+        return poll
+      })
     }
   },
   mutations

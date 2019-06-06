@@ -737,13 +737,12 @@ const markNotificationsAsSeen = ({ id, credentials }) => {
   }).then((data) => data.json())
 }
 
-const vote = ({ pollID, choices, credentials }) => {
+const vote = ({ pollId, choices, credentials }) => {
   const form = new FormData()
   form.append('choices', choices)
-  const url = MASTODON_VOTE_URL(encodeURIComponent(pollID))
 
   return promisedRequest({
-    url: MASTODON_VOTE_URL(encodeURIComponent(pollID)),
+    url: MASTODON_VOTE_URL(encodeURIComponent(pollId)),
     method: 'POST',
     credentials,
     payload: {
@@ -752,12 +751,12 @@ const vote = ({ pollID, choices, credentials }) => {
   })
 }
 
-const fetchPoll = ({ pollID, credentials }) => {
+const fetchPoll = ({ pollId, credentials }) => {
   return promisedRequest(
-    MASTODON_POLL_URL(encodeURIComponent(pollID)),
     {
+      url: MASTODON_POLL_URL(encodeURIComponent(pollId)),
       method: 'GET',
-      headers: authHeaders(credentials)
+      credentials
     }
   )
 }
