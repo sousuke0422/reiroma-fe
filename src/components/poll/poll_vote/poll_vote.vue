@@ -41,7 +41,7 @@ export default {
   methods: {
     vote () {
       this.loading = true
-
+      
       const choices = this.checks.map((entry, index) => index).filter(value => typeof value === 'number')
       this.$store.dispatch('votePoll', { id: this.statusId, pollId: this.poll.id, choices }).then(poll => {
         this.loading = false

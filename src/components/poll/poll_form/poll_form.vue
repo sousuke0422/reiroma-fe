@@ -7,24 +7,24 @@
           class="poll-option-input"
           type="text"
           :placeholder="$t('polls.option')"
-          @input="onUpdateOption($event, index)"
-          :value="option"
           :maxlength="maxLength"
+          v-model="options[index]"
+          @change="updatePollToParent"
         >
       </div>
-      <div class="icon-container">
-        <i class="icon-cancel" @click="onDeleteOption(index)"></i>
+      <div class="icon-container" v-if="options.length > 2">
+        <i class="icon-cancel" @click="deleteOption(index)"></i>
       </div>
     </div>
     <button
       class="btn btn-default add-option"
       type="button"
-      @click="onAddOption"
+      @click="addOption"
     >{{ $t("polls.add_option") }}</button>
     <div class="poll-type-expiry">
       <div class="poll-type">
         <label for="poll-type-selector" class="select">
-          <select id="poll-type-selector" v-model="pollType" @change="onTypeChange">
+          <select id="poll-type-selector" v-model="pollType" @change="updatePollToParent">
             <option value="single">{{$t('polls.single_choice')}}</option>
             <option value="multiple">{{$t('polls.multiple_choices')}}</option>
           </select>
@@ -33,7 +33,7 @@
       </div>
       <div class="poll-expiry">
         <label for="poll-expiry-selector" class="select">
-          <select id="poll-expiry-selector" v-model="pollExpiry" @change="onExpiryChange">
+          <select id="poll-expiry-selector" v-model="pollExpiry" @change="updatePollToParent">
             <option v-for="(value, key) in expiryOptions" :value="key" v-bind:key="key">
               {{ value }}
             </option>
@@ -53,15 +53,10 @@ export default {
   props: ['visible'],
   data: () => ({
     pollType: 'single',
-    pollExpiry: '86400'
+    pollExpiry: '86400',
+    options: ['', '']
   }),
   computed: {
-    optionsLength () {
-      return this.$store.state.poll.options.length
-    },
-    options () {
-      return this.$store.state.poll.options
-    },
     pollLimits () {
       return this.$store.state.instance.pollLimits
     },
@@ -88,29 +83,22 @@ export default {
     }
   },
   methods: {
-    onAddOption () {
-      if (this.optionsLength < this.maxOptions) {
-        this.$store.dispatch('addPollOption', { option: '' })
+    addOption () {
+      if (this.options.length < this.maxOptions) {
+        this.options.push('')
       }
     },
-    onDeleteOption (index) {
-      if (this.optionsLength > 1) {
-        this.$store.dispatch('deletePollOption', { index })
+    deleteOption (index, event) {
+      if (this.options.length > 2) {
+        this.options.splice(index, 1)
       }
     },
-    onUpdateOption (e, index) {
-      this.$store.dispatch('updatePollOption', {
-        index,
-        option: e.target.value
+    updatePollToParent () {
+      this.$emit('update-poll', {
+        options: this.options,
+        expiresIn: this.pollExpiry,
+        multiple: this.pollType === 'multiple'
       })
-    },
-    onTypeChange (e) {
-      const multiple = e.target.value === 'multiple'
-
-      this.$store.dispatch('setMultiple', { multiple })
-    },
-    onExpiryChange (e) {
-      this.$store.dispatch('setExpiresIn', { expiresIn: e.target.value })
     }
   }
 }

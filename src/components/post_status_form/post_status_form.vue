@@ -92,7 +92,7 @@
           </div>
         </div>
       </div>
-      <poll-form v-if="pollsAvailable" :visible="pollFormVisible" />
+      <poll-form v-if="pollsAvailable" :visible="pollFormVisible" @update-poll="setPoll" />
       <div class='form-bottom'>
         <media-upload ref="mediaUpload" @uploading="disableSubmit" @uploaded="addMediaFile" @upload-failed="uploadFailed" :drop-files="dropFiles"></media-upload>
         <div v-if="pollsAvailable" class="poll-icon">

@@ -66,8 +66,6 @@ const PostStatusForm = {
       ? this.$store.state.instance.postContentType
       : this.$store.state.config.postContentType
 
-    const poll = this.$store.state.poll || {}
-
     return {
       dropFiles: [],
       submitDisabled: false,
@@ -79,7 +77,7 @@ const PostStatusForm = {
         status: statusText,
         nsfw: false,
         files: [],
-        poll,
+        poll: {},
         visibility: scope,
         contentType
       },
@@ -280,9 +278,8 @@ const PostStatusForm = {
             files: [],
             visibility: newStatus.visibility,
             contentType: newStatus.contentType,
-            poll: this.$store.state.poll
+            poll: {}
           }
-          this.$store.dispatch('swapPollOptions', { options: ['', ''] })
           this.pollFormVisible = false
           this.$refs.mediaUpload.clearFile()
           this.$emit('posted')
@@ -357,6 +354,9 @@ const PostStatusForm = {
     },
     togglePollForm () {
       this.pollFormVisible = !this.pollFormVisible
+    },
+    setPoll (poll) {
+      this.newStatus.poll = poll
     },
     dismissScopeNotice () {
       this.$store.dispatch('setOption', { name: 'hideScopeNotice', value: true })
