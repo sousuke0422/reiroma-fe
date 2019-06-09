@@ -3,19 +3,24 @@
     <div class="votes">
       <div
         class="poll-option"
-        v-for="(pollOption, index) in poll.options"
-        :key="index">
-          <div class="col">{{percentageForOption(pollOption.votes_count)}}%</div>
-          <div class="col">{{pollOption.title}}</div>
-          <div class="col"><progress :max="totalVotesCount" :value="pollOption.votes_count"></progress></div>
+        v-for="(option, index) in poll.options"
+        :key="index"
+        :title="`${option.votes_count}/${totalVotesCount} ${$t('polls.votes')}`"
+      >
+        <div class="vote-label">
+          <span>{{percentageForOption(option.votes_count)}}%</span>
+          <span>{{option.title}}</span>
+        </div>
+        <div class="fill" :style="{ 'width': `${percentageForOption(option.votes_count)}%` }"></div>
+        
       </div>
     </div>
     <footer>
-      <div class="refresh">
-        <a href="#" @click.stop.prevent="fetchPoll(poll.id)">Refresh</a>&nbsp;·&nbsp;
-      </div>
       <div class="total">
-        {{totalVotesCount}} {{ $t("polls.votes") }}
+        {{totalVotesCount}} {{ $t("polls.votes") }}&nbsp;·&nbsp;
+      </div>
+      <div class="refresh">
+        <a href="#" @click.stop.prevent="fetchPoll(poll.id)">Refresh</a>
       </div>
     </footer>
   </div>
@@ -25,9 +30,6 @@
 export default {
   name: 'PollResults',
   props: ['poll', 'statusId'],
-  created () {
-    console.log(this.poll)
-  },
   computed: {
     totalVotesCount () {
       return this.poll.votes_count
@@ -35,7 +37,7 @@ export default {
   },
   methods: {
     percentageForOption (count) {
-      return (this.totalVotesCount === 0 ? 0 : (count / this.totalVotesCount * 100)).toFixed(1)
+      return this.totalVotesCount === 0 ? 0 : Math.round(count / this.totalVotesCount * 100)
     },
     fetchPoll () {
       this.$store.dispatch('refreshPoll', { id: this.statusId, pollId: this.poll.id })
@@ -45,18 +47,39 @@ export default {
 </script>
 
 <style lang="scss">
+@import '../../../_variables.scss';
+
 .poll-results {
-  margin: 0.7em 0;
   .votes {
-    display: table;
-    width: 100%;
+    display: flex;
+    flex-direction: column;
     margin: 0 0 0.5em;
   }
   .poll-option {
-    display: table-row;
-    .col {
-      display: table-cell;
-      padding: 0.7em 0.5em;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+  }
+  .fill {
+    height: 100%;
+    position: absolute;
+    background-color: $fallback--lightBg;
+    background-color: var(--faintLink, $fallback--lightBg);
+    border-radius: $fallback--panelRadius;
+    border-radius: var(--panelRadius, $fallback--panelRadius);
+    top: 0;
+    left: 0;
+    transition: width 0.5s;
+  }
+  .vote-label {
+    display: flex;
+    align-items: center;
+    padding: 0.1em 0.25em;
+    z-index: 1;
+    span {
+      margin-right: 0.5em;
     }
   }
   footer {

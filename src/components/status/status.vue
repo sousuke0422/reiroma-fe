@@ -52,7 +52,7 @@
 
               <span class="heading-right">
                 <router-link class="timeago faint-link" :to="{ name: 'conversation', params: { id: status.id } }">
-                  <timeago :since="status.created_at" :auto-update="60"></timeago>
+                  <Timeago :time="status.created_at" :auto-update="60"></Timeago>
                 </router-link>
                 <div class="button-icon visibility-icon" v-if="status.visibility">
                   <i :class="visibilityIcon(status.visibility)" :title="status.visibility | capitalize"></i>

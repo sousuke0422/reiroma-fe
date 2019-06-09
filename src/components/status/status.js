@@ -9,6 +9,7 @@ import UserAvatar from '../user_avatar/user_avatar.vue'
 import Gallery from '../gallery/gallery.vue'
 import LinkPreview from '../link-preview/link-preview.vue'
 import AvatarList from '../avatar_list/avatar_list.vue'
+import Timeago from '../timeago/timeago.vue'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 import fileType from 'src/services/file_type/file_type.service'
 import { highlightClass, highlightStyle } from '../../services/user_highlighter/user_highlighter.js'
@@ -291,7 +292,8 @@ const Status = {
     UserAvatar,
     Gallery,
     LinkPreview,
-    AvatarList
+    AvatarList,
+    Timeago
   },
   methods: {
     visibilityIcon (visibility) {
@@ -342,7 +344,6 @@ const Status = {
       }
     },
     toggleReplying () {
-      console.log(this.status)
       this.replying = !this.replying
     },
     gotoOriginal (id) {

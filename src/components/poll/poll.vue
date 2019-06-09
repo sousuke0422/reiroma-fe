@@ -3,13 +3,11 @@
     v-if="currentUserHasVoted"
     :poll="poll"
     :status-id="statusId"
-    v-on:poll-refreshed="handlePollUpdate"
   />
   <poll-vote
     v-else
     :poll="poll"
     :status-id="statusId"
-    v-on:user-has-voted="handlePollUpdate"
   />
 </template>
 
@@ -26,17 +24,11 @@ export default {
   },
   computed: {
     currentUserHasVoted () {
-      console.log('currentUserHasVoted poll', this.poll)
       return this.poll.voted
     },
     voted () {
       return this.poll.voted
     }
   },
-  methods: {
-    handlePollUpdate (poll) {
-      // this.poll = poll
-    }
-  }
 }
 </script>

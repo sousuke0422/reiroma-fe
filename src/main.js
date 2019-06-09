@@ -15,7 +15,6 @@ import oauthTokensModule from './modules/oauth_tokens.js'
 import pollModule from './modules/poll.js'
 import reportsModule from './modules/reports.js'
 
-import VueTimeago from 'vue-timeago'
 import VueI18n from 'vue-i18n'
 
 import createPersistedState from './lib/persisted_state.js'
@@ -32,14 +31,6 @@ const currentLocale = (window.navigator.language || 'en').split('-')[0]
 
 Vue.use(Vuex)
 Vue.use(VueRouter)
-Vue.use(VueTimeago, {
-  locale: currentLocale === 'cs' ? 'cs' : currentLocale === 'ja' ? 'ja' : 'en',
-  locales: {
-    'cs': require('../static/timeago-cs.json'),
-    'en': require('../static/timeago-en.json'),
-    'ja': require('../static/timeago-ja.json')
-  }
-})
 Vue.use(VueI18n)
 Vue.use(VueChatScroll)
 Vue.use(VueClickOutside)
