@@ -259,7 +259,7 @@ const PostStatusForm = {
         }
       }
 
-      const poll = this.pollFormVisible ? this.poll : {}
+      const poll = this.pollFormVisible ? this.newStatus.poll : {}
 
       this.posting = true
       statusPoster.postStatus({
