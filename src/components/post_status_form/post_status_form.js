@@ -50,8 +50,8 @@ const PostStatusForm = {
     let statusText = preset || ''
 
     const scopeCopy = typeof this.$store.state.config.scopeCopy === 'undefined'
-          ? this.$store.state.instance.scopeCopy
-          : this.$store.state.config.scopeCopy
+      ? this.$store.state.instance.scopeCopy
+      : this.$store.state.config.scopeCopy
 
     if (this.replyTo) {
       const currentUser = this.$store.state.users.currentUser
@@ -59,8 +59,8 @@ const PostStatusForm = {
     }
 
     const scope = (this.copyMessageScope && scopeCopy || this.copyMessageScope === 'direct')
-          ? this.copyMessageScope
-          : this.$store.state.users.currentUser.default_scope
+      ? this.copyMessageScope
+      : this.$store.state.users.currentUser.default_scope
 
     const contentType = typeof this.$store.state.config.postContentType === 'undefined'
       ? this.$store.state.instance.postContentType
@@ -82,7 +82,7 @@ const PostStatusForm = {
         contentType
       },
       caret: 0,
-      pollFormVisible: false
+      pollFormVisible: true
     }
   },
   computed: {
@@ -138,8 +138,8 @@ const PostStatusForm = {
     },
     showAllScopes () {
       const minimalScopesMode = typeof this.$store.state.config.minimalScopesMode === 'undefined'
-            ? this.$store.state.instance.minimalScopesMode
-            : this.$store.state.config.minimalScopesMode
+        ? this.$store.state.instance.minimalScopesMode
+        : this.$store.state.config.minimalScopesMode
       return !minimalScopesMode
     },
     emoji () {
@@ -259,6 +259,8 @@ const PostStatusForm = {
         }
       }
 
+      const poll = this.pollFormVisible ? this.poll : {}
+
       this.posting = true
       statusPoster.postStatus({
         status: newStatus.status,
@@ -266,10 +268,10 @@ const PostStatusForm = {
         visibility: newStatus.visibility,
         sensitive: newStatus.nsfw,
         media: newStatus.files,
-        poll: newStatus.poll,
         store: this.$store,
         inReplyToStatusId: this.replyTo,
-        contentType: newStatus.contentType
+        contentType: newStatus.contentType,
+        poll
       }).then((data) => {
         if (!data.error) {
           this.newStatus = {
@@ -282,6 +284,7 @@ const PostStatusForm = {
           }
           this.pollFormVisible = false
           this.$refs.mediaUpload.clearFile()
+          this.$refs.pollForm.clear()
           this.$emit('posted')
           let el = this.$el.querySelector('textarea')
           el.style.height = 'auto'

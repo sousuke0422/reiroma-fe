@@ -1,6 +1,6 @@
 <template>
 <div class="post-status-form">
-  <form @submit.prevent="postStatus(newStatus)">
+  <form @submit.prevent="postStatus(newStatus)" autocomplete="off">
     <div class="form-group" >
       <i18n
         v-if="!$store.state.users.currentUser.locked && newStatus.visibility == 'private'"
@@ -92,7 +92,12 @@
           </div>
         </div>
       </div>
-      <poll-form v-if="pollsAvailable" :visible="pollFormVisible" @update-poll="setPoll" />
+      <poll-form
+        ref="pollForm"
+        v-if="pollsAvailable"
+        :visible="pollFormVisible"
+        @update-poll="setPoll"
+      />
       <div class='form-bottom'>
         <media-upload ref="mediaUpload" @uploading="disableSubmit" @uploaded="addMediaFile" @upload-failed="uploadFailed" :drop-files="dropFiles"></media-upload>
         <div v-if="pollsAvailable" class="poll-icon">
@@ -100,7 +105,7 @@
             class="btn btn-default"
             :title="$t('tool_tip.poll')"
             @click="togglePollForm">
-            <i class="icon-chart-bar"></i>
+            <i class="icon-chart-bar" :class="pollFormVisible && 'selected'" />
           </label>
         </div>
         <p v-if="isOverLengthLimit" class="error">{{ charactersLeft }}</p>
@@ -300,6 +305,11 @@
 .poll-icon {
   font-size: 26px;
   flex: 1;
+
+  .selected {
+    color: $fallback--lightText;
+    color: var(--lightText, $fallback--lightText);
+  }
 }
 
 .icon-chart-bar {

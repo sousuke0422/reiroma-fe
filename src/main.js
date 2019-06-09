@@ -12,7 +12,6 @@ import chatModule from './modules/chat.js'
 import oauthModule from './modules/oauth.js'
 import mediaViewerModule from './modules/media_viewer.js'
 import oauthTokensModule from './modules/oauth_tokens.js'
-import pollModule from './modules/poll.js'
 import reportsModule from './modules/reports.js'
 
 import VueI18n from 'vue-i18n'
@@ -69,7 +68,6 @@ const persistedStateOptions = {
       oauth: oauthModule,
       mediaViewer: mediaViewerModule,
       oauthTokens: oauthTokensModule,
-      poll: pollModule,
       reports: reportsModule
     },
     plugins: [persistedState, pushNotifications],

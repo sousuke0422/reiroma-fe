@@ -264,6 +264,15 @@ option {
   background-color: var(--bg, $fallback--bg);
 }
 
+.hide-number-spinner {
+  -moz-appearance: textfield;
+  &[type=number]::-webkit-inner-spin-button,
+  &[type=number]::-webkit-outer-spin-button {
+    opacity: 0;
+    display: none;
+  }
+}
+
 i[class*=icon-] {
   color: $fallback--icon;
   color: var(--icon, $fallback--icon)
