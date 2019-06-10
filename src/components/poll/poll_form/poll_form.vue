@@ -66,8 +66,8 @@ export default {
   data: () => ({
     pollType: 'single',
     options: ['', ''],
-    expiryAmount: 1,
-    expiryUnit: 'minutes',
+    expiryAmount: 2,
+    expiryUnit: 'hours',
     expiryUnits: ['minutes', 'hours', 'days']
   }),
   computed: {

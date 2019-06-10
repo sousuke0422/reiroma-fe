@@ -85,7 +85,10 @@
     "votes": "votes",
     "vote": "Vote",
     "single_choice": "Single choice",
-    "multiple_choices": "Multiple choices"
+    "multiple_choices": "Multiple choices",
+    "expiry": "Poll age",
+    "expires_in": "Ends in {0}",
+    "expired": "Poll ended {0} ago"
   },
   "interactions": {
     "favs_repeats": "Repeats and Favorites",
