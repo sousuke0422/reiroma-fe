@@ -9,7 +9,7 @@ import * as DateUtils from 'src/services/date_utils/date_utils.js'
 
 export default {
   name: 'Timeago',
-  props: ['time', 'autoUpdate', 'longFormat'],
+  props: ['time', 'autoUpdate', 'longFormat', 'nowThreshold'],
   data () {
     return {
       relativeTime: { key: 'time.now', num: 0 },
@@ -27,18 +27,14 @@ export default {
       return typeof this.time === 'string'
         ? new Date(Date.parse(this.time)).toLocaleString()
         : this.time.toLocaleString()
-    },
-    relativeTimeObject () {
-      return this.longFormat
-        ? DateUtils.relativeTime(this.time)
-        : DateUtils.relativeTimeShort(this.time)
     }
   },
   methods: {
     refreshRelativeTimeObject () {
+      const nowThreshold = typeof this.nowThreshold === 'number' ? this.nowThreshold : 1
       this.relativeTime = this.longFormat
-        ? DateUtils.relativeTime(this.time)
-        : DateUtils.relativeTimeShort(this.time)
+        ? DateUtils.relativeTime(this.time, nowThreshold)
+        : DateUtils.relativeTimeShort(this.time, nowThreshold)
 
       if (this.autoUpdate) {
         this.interval = setTimeout(

@@ -18,24 +18,20 @@
         >     
         </div> 
       </div>
-      <div v-else>
+      <div v-else @click="activateOption(index)">
         <input
           v-if="poll.multiple"
           type="checkbox"
-          :id="optionId(index)"
           :disabled="loading"
-          :value="option.title"
-          v-model="multipleChoices[index]"
+          :value="index"
         >
         <input
           v-else
           type="radio"
-          :id="optionId(index)"
           :disabled="loading"
           :value="index"
-          v-model="singleChoiceIndex"
         >
-        <label :for="optionId(index)">
+        <label>
           {{option.title}}
         </label>
       </div>
@@ -54,7 +50,7 @@
         {{totalVotesCount}} {{ $t("polls.votes") }}&nbsp;·&nbsp;
       </div>
       <i18n :path="expired ? 'polls.expired' : 'polls.expires_in'">
-        <Timeago :time="this.poll.expires_at" :auto-update="60" />
+        <Timeago :time="this.poll.expires_at" :auto-update="60" :now-threshold="0" />
       </i18n>
     </div>
   </div>
@@ -80,6 +76,8 @@
     display: flex;
     flex-direction: row;
     position: relative;
+    color: $fallback--lightText;
+    color: var(--lightText, $fallback--lightText);
   }
   .option-result-label {
     display: flex;
@@ -94,7 +92,7 @@
     height: 100%;
     position: absolute;
     background-color: $fallback--lightBg;
-    background-color: var(--faintLink, $fallback--lightBg);
+    background-color: var(--linkBg, $fallback--lightBg);
     border-radius: $fallback--panelRadius;
     border-radius: var(--panelRadius, $fallback--panelRadius);
     top: 0;

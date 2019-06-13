@@ -103,7 +103,7 @@
         <div v-if="pollsAvailable" class="poll-icon">
           <label
             class="btn btn-default"
-            :title="$t('tool_tip.poll')"
+            :title="$t('polls.add_poll')"
             @click="togglePollForm">
             <i class="icon-chart-bar" :class="pollFormVisible && 'selected'" />
           </label>

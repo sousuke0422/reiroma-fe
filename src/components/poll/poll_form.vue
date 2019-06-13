@@ -19,14 +19,14 @@
     </div>
     <a
       v-if="options.length < maxOptions"
-      class="add-option"
+      class="add-option faint"
       @click="addOption"
     >
       <i class="icon-plus" />
       {{ $t("polls.add_option") }}
     </a>
     <div class="poll-type-expiry">
-      <div class="poll-type">
+      <div class="poll-type" :title="$t('polls.type')">
         <label for="poll-type-selector" class="select">
           <select class="select" v-model="pollType" @change="updatePollToParent">
             <option value="single">{{$t('polls.single_choice')}}</option>
@@ -35,7 +35,7 @@
           <i class="icon-down-open"/>
         </label>
       </div>
-      <div class="poll-expiry">
+      <div class="poll-expiry" :title="$t('polls.expiry')">
         <input 
           type="number"
           class="expiry-amount hide-number-spinner"
@@ -57,87 +57,10 @@
   </div>
 </template>
 
-<script>
-import * as DateUtils from 'src/services/date_utils/date_utils'
-
-export default {
-  name: 'PollForm',
-  props: ['visible'],
-  data: () => ({
-    pollType: 'single',
-    options: ['', ''],
-    expiryAmount: 2,
-    expiryUnit: 'hours',
-    expiryUnits: ['minutes', 'hours', 'days']
-  }),
-  computed: {
-    pollLimits () {
-      return this.$store.state.instance.pollLimits
-    },
-    maxOptions () {
-      return this.pollLimits.max_options
-    },
-    maxLength () {
-      return this.pollLimits.max_option_chars
-    }
-  },
-  methods: {
-    clear () {
-      this.pollType = 'single'
-      this.options = ['', '']
-      this.expiryAmount = 1
-      this.expiryUnit = 'minutes'
-    },
-    nextOption (index) {
-      const element = this.$el.querySelector(`#poll-${index+1}`)
-      if (element) {
-        element.focus()
-      } else {
-        // Try adding an option and try focusing on it
-        const addedOption = this.addOption()
-        if (addedOption) {
-          this.$nextTick(function () {
-            this.nextOption(index)
-          })
-        }
-      }
-    },
-    addOption () {
-      if (this.options.length < this.maxOptions) {
-        this.options.push('')
-        return true
-      }
-      return false
-    },
-    deleteOption (index, event) {
-      if (this.options.length > 2) {
-        this.options.splice(index, 1)
-      }
-    },
-    expiryAmountChange () {
-      this.expiryAmount = Math.max(1, this.expiryAmount)
-      this.expiryAmount = Math.min(120, this.expiryAmount)
-      this.updatePollToParent()
-    },
-    updatePollToParent () {
-      const unitMultiplier = this.expiryUnit === 'minutes' ? 60
-        : this.expiryUnit === 'hours' ? 60 * 60
-        : 60 * 60 * 24
-
-      const expiresIn = this.expiryAmount * unitMultiplier
-
-      this.$emit('update-poll', {
-        options: this.options,
-        multiple: this.pollType === 'multiple',
-        expiresIn
-      })
-    }
-  }
-}
-</script>
+<script src="./poll_form.js"></script>
 
 <style lang="scss">
-@import '../../../_variables.scss';
+@import '../../_variables.scss';
 
 .poll-form {
   display: flex;
@@ -148,8 +71,6 @@ export default {
     align-self: flex-start;
     padding-top: 0.25em;
     cursor: pointer;
-    color: $fallback--faint;
-    color: var(--faint, $fallback--faint);
   }
 
   .poll-option {
@@ -194,6 +115,7 @@ export default {
 
     .expiry-amount {
       width: 3em;
+      text-align: right;
     }
 
     .expiry-unit {

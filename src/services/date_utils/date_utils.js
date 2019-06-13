@@ -6,12 +6,12 @@ export const WEEK = 7 * DAY
 export const MONTH = 30 * DAY
 export const YEAR = 365.25 * DAY
 
-export const relativeTime = date => {
+export const relativeTime = (date, nowThreshold = 1) => {
   if (typeof date === 'string') date = Date.parse(date)
   const round = Date.now() > date ? Math.floor : Math.ceil
   const d = Math.abs(Date.now() - date)
   let r = { num: round(d / YEAR), key: 'time.years' }
-  if (d < 30 * SECOND) {
+  if (d < nowThreshold * SECOND) {
     r.num = 0
     r.key = 'time.now'
   } else if (d < MINUTE) {
@@ -38,8 +38,8 @@ export const relativeTime = date => {
   return r
 }
 
-export const relativeTimeShort = date => {
-  const r = relativeTime(date)
+export const relativeTimeShort = (date, nowThreshold = 1) => {
+  const r = relativeTime(date, nowThreshold)
   r.key += '_short'
   return r
 }

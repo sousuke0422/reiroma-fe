@@ -56,11 +56,10 @@ const defaultState = {
   backendVersion: '',
   frontendVersion: '',
 
+  pollsAvailable: true,
   pollLimits: {
     max_options: 4,
-    max_option_chars: 255,
-    min_expiration: 60,
-    max_expiration: 600
+    max_option_chars: 255
   }
 }
 

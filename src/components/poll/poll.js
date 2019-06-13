@@ -1,4 +1,5 @@
 import Timeago from '../timeago/timeago.vue'
+import { forEach } from 'lodash'
 
 export default {
   name: 'Poll',
@@ -14,6 +15,7 @@ export default {
   },
   created () {
     this.refreshInterval = setTimeout(this.refreshPoll, 30 * 1000)
+    this.multipleChoices = this.poll.options.map(_ => false)
   },
   destroyed () {
     clearTimeout(this.refreshInterval)
@@ -38,7 +40,7 @@ export default {
     },
     choiceIndices () {
       return this.multipleChoices
-        .map((entry, index) => index)
+        .map((entry, index) => entry && index)
         .filter(value => typeof value === 'number')
     },
     isDisabled () {
@@ -55,13 +57,38 @@ export default {
       this.refreshInterval = setTimeout(this.refreshPoll, 30 * 1000)
     },
     percentageForOption (count) {
-      return this.totalVotesCount === 0 ? 0 : Math.round((count + 5) / (this.totalVotesCount + 10) * 100)
+      return this.totalVotesCount === 0 ? 0 : Math.round(count / this.totalVotesCount * 100)
     },
     resultTitle (option) {
       return `${option.votes_count}/${this.totalVotesCount} ${this.$t('polls.votes')}`
     },
     fetchPoll () {
       this.$store.dispatch('refreshPoll', { id: this.statusId, pollId: this.poll.id })
+    },
+    activateOption (index) {
+      // forgive me father: doing checking the radio/checkboxes
+      // in code because of customized input elements need either
+      // a) an extra element for the actual graphic, or b) use a
+      // pseudo element for the label. We use b) which mandates
+      // using "for" and "id" matching which isn't nice when the
+      // same poll appears multiple times on the site (notifs and
+      // timeline for example). With code we can make sure it just
+      // works without altering the pseudo element implementation.
+      const clickedElement = this.$el.querySelector(`input[value="${index}"]`)
+      if (this.poll.multiple) {
+        // Checkboxes
+        const wasChecked = this.multipleChoices[index]
+        clickedElement.checked = !wasChecked
+        this.$set(this.multipleChoices, index, !wasChecked)
+      } else {
+        // Radio button
+        const allElements = this.$el.querySelectorAll('input')
+        forEach(allElements, element => {
+          element.checked = false
+        })
+        clickedElement.checked = true
+        this.singleChoiceIndex = index
+      }
     },
     optionId (index) {
       return `poll${this.poll.id}-${index}`

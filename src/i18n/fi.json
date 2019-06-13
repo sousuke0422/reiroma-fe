@@ -36,6 +36,7 @@
     "chat": "Paikallinen Chat",
     "friend_requests": "Seurauspyynnöt",
     "mentions": "Maininnat",
+    "interactions": "Interaktiot",
     "dms": "Yksityisviestit",
     "public_tl": "Julkinen Aikajana",
     "timeline": "Aikajana",
@@ -53,6 +54,24 @@
     "read": "Lue!",
     "repeated_you": "toisti viestisi",
     "no_more_notifications": "Ei enempää ilmoituksia"
+  },
+  "polls": {
+    "add_poll": "Lisää äänestys",
+    "add_option": "Lisää vaihtoehto",
+    "option": "Vaihtoehto",
+    "votes": "ääntä",
+    "vote": "Äänestä",
+    "type": "Äänestyksen tyyppi",
+    "single_choice": "Yksi valinta",
+    "multiple_choices": "Monivalinta",
+    "expiry": "Äänestyksen kesto",
+    "expires_in": "Päättyy {0} päästä",
+    "expired": "Päättyi {0} sitten"
+  },
+  "interactions": {
+    "favs_repeats": "Toistot ja tykkäykset",
+    "follows": "Uudet seuraukset",
+    "load_older": "Lataa vanhempia interaktioita"
   },
   "post_status": {
     "new_status": "Uusi viesti",
@@ -298,9 +317,9 @@
   },
   "upload":{
     "error": {
-    "base": "Lataus epäonnistui.",
-    "file_too_big": "Tiedosto liian suuri [{filesize}{filesizeunit} / {allowedsize}{allowedsizeunit}]",
-    "default": "Yritä uudestaan myöhemmin"
+      "base": "Lataus epäonnistui.",
+      "file_too_big": "Tiedosto liian suuri [{filesize}{filesizeunit} / {allowedsize}{allowedsizeunit}]",
+      "default": "Yritä uudestaan myöhemmin"
     },
     "file_size_units": {
       "B": "tavua",

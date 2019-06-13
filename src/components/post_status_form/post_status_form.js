@@ -2,7 +2,7 @@ import statusPoster from '../../services/status_poster/status_poster.service.js'
 import MediaUpload from '../media_upload/media_upload.vue'
 import ScopeSelector from '../scope_selector/scope_selector.vue'
 import EmojiInput from '../emoji-input/emoji-input.vue'
-import PollForm from '../poll/poll_form/poll_form.vue'
+import PollForm from '../poll/poll_form.vue'
 import fileTypeService from '../../services/file_type/file_type.service.js'
 import Completion from '../../services/completion/completion.js'
 import { take, filter, reject, map, uniqBy } from 'lodash'
@@ -82,7 +82,7 @@ const PostStatusForm = {
         contentType
       },
       caret: 0,
-      pollFormVisible: true
+      pollFormVisible: false
     }
   },
   computed: {
@@ -188,7 +188,7 @@ const PostStatusForm = {
       return this.$store.state.instance.safeDM
     },
     pollsAvailable () {
-      return true // this.$store.state.instance.pollsAvailable
+      return this.$store.state.instance.pollsAvailable
     },
     hideScopeNotice () {
       return this.$store.state.config.hideScopeNotice
