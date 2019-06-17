@@ -1,5 +1,5 @@
 import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
-// import { Socket } from 'phoenix'
+import { Socket } from 'phoenix'
 
 const api = {
   state: {
@@ -58,10 +58,10 @@ const api = {
     initializeSocket (store) {
       // Set up websocket connection
       if (!store.state.chatDisabled) {
-        // const token = store.state.wsToken
-        // const socket = new Socket('/socket', {params: {token}})
-        // socket.connect()
-        // store.dispatch('initializeChat', socket)
+        const token = store.state.wsToken
+        const socket = new Socket('/socket', { params: { token } })
+        socket.connect()
+        store.dispatch('initializeChat', socket)
       }
     },
     disableChat (store) {
