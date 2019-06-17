@@ -10,6 +10,7 @@ import apiModule from './modules/api.js'
 import configModule from './modules/config.js'
 import chatModule from './modules/chat.js'
 import oauthModule from './modules/oauth.js'
+import authFlowModule from './modules/auth_flow.js'
 import mediaViewerModule from './modules/media_viewer.js'
 import oauthTokensModule from './modules/oauth_tokens.js'
 import reportsModule from './modules/reports.js'
@@ -23,6 +24,7 @@ import messages from './i18n/messages.js'
 
 import VueChatScroll from 'vue-chat-scroll'
 import VueClickOutside from 'v-click-outside'
+import PortalVue from 'portal-vue'
 
 import afterStoreSetup from './boot/after_store.js'
 
@@ -33,6 +35,7 @@ Vue.use(VueRouter)
 Vue.use(VueI18n)
 Vue.use(VueChatScroll)
 Vue.use(VueClickOutside)
+Vue.use(PortalVue)
 
 const i18n = new VueI18n({
   // By default, use the browser locale, we will update it if neccessary
@@ -66,6 +69,7 @@ const persistedStateOptions = {
       config: configModule,
       chat: chatModule,
       oauth: oauthModule,
+      authFlow: authFlowModule,
       mediaViewer: mediaViewerModule,
       oauthTokens: oauthTokensModule,
       reports: reportsModule

@@ -117,6 +117,7 @@ const backendInteractorService = credentials => {
   const updateBanner = ({ banner }) => apiService.updateBanner({ credentials, banner })
   const updateProfile = ({ params }) => apiService.updateProfile({ credentials, params })
 
+
   const externalProfile = (profileUrl) => apiService.externalProfile({ profileUrl, credentials })
   const importBlocks = (file) => apiService.importBlocks({ file, credentials })
   const importFollows = (file) => apiService.importFollows({ file, credentials })
@@ -128,6 +129,11 @@ const backendInteractorService = credentials => {
   const fetchFavoritedByUsers = (id) => apiService.fetchFavoritedByUsers({ id })
   const fetchRebloggedByUsers = (id) => apiService.fetchRebloggedByUsers({ id })
   const reportUser = (params) => apiService.reportUser({ credentials, ...params })
+  const fetchSettingsMFA = () => apiService.settingsMFA({ credentials })
+  const generateMfaBackupCodes = () => apiService.generateMfaBackupCodes({ credentials })
+  const mfaSetupOTP = () => apiService.mfaSetupOTP({ credentials })
+  const mfaConfirmOTP = ({ password, token }) => apiService.mfaConfirmOTP({ credentials, password, token })
+  const mfaDisableOTP = ({ password }) => apiService.mfaDisableOTP({ credentials, password })
 
   const favorite = (id) => apiService.favorite({ id, credentials })
   const unfavorite = (id) => apiService.unfavorite({ id, credentials })
@@ -175,6 +181,11 @@ const backendInteractorService = credentials => {
     importFollows,
     deleteAccount,
     changePassword,
+    fetchSettingsMFA,
+    generateMfaBackupCodes,
+    mfaSetupOTP,
+    mfaConfirmOTP,
+    mfaDisableOTP,
     fetchFollowRequests,
     approveUser,
     denyUser,

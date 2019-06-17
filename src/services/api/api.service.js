@@ -4,8 +4,6 @@ import 'whatwg-fetch'
 import { StatusCodeError } from '../errors/errors'
 
 /* eslint-env browser */
-const LOGIN_URL = '/api/account/verify_credentials.json'
-const REGISTRATION_URL = '/api/account/register.json'
 const BG_UPDATE_URL = '/api/qvitter/update_background_image.json'
 const EXTERNAL_PROFILE_URL = '/api/externalprofile/show.json'
 const QVITTER_USER_NOTIFICATIONS_READ_URL = '/api/qvitter/statuses/notifications/read.json'
@@ -23,6 +21,16 @@ const ADMIN_USERS_URL = '/api/pleroma/admin/users'
 const SUGGESTIONS_URL = '/api/v1/suggestions'
 const NOTIFICATION_SETTINGS_URL = '/api/pleroma/notification_settings'
 
+const MFA_SETTINGS_URL = '/api/pleroma/profile/mfa'
+const MFA_BACKUP_CODES_URL = '/api/pleroma/profile/mfa/backup_codes'
+
+const MFA_SETUP_OTP_URL = '/api/pleroma/profile/mfa/setup/totp'
+const MFA_CONFIRM_OTP_URL = '/api/pleroma/profile/mfa/confirm/totp'
+const MFA_DISABLE_OTP_URL = '/api/pleroma/profile/mfa/totp'
+
+const MASTODON_LOGIN_URL = '/api/v1/accounts/verify_credentials'
+const MASTODON_REGISTRATION_URL = '/api/v1/accounts'
+const GET_BACKGROUND_HACK = '/api/account/verify_credentials.json'
 const MASTODON_USER_FAVORITES_TIMELINE_URL = '/api/v1/favourites'
 const MASTODON_USER_NOTIFICATIONS_URL = '/api/v1/notifications'
 const MASTODON_FAVORITE_URL = id => `/api/v1/statuses/${id}/favourite`
@@ -175,19 +183,29 @@ const updateProfile = ({ credentials, params }) => {
 // homepage
 // location
 // token
-const register = (params) => {
-  const form = new FormData()
-
-  each(params, (value, key) => {
-    if (value) {
-      form.append(key, value)
-    }
-  })
-
-  return fetch(REGISTRATION_URL, {
+const register = ({ params, credentials }) => {
+  const { nickname, ...rest } = params
+  return fetch(MASTODON_REGISTRATION_URL, {
     method: 'POST',
-    body: form
+    headers: {
+      ...authHeaders(credentials),
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      nickname,
+      locale: 'en_US',
+      agreement: true,
+      ...rest
+    })
   })
+    .then((response) => [response.ok, response])
+    .then(([ok, response]) => {
+      if (ok) {
+        return response.json()
+      } else {
+        return response.json().then((error) => { throw new Error(error) })
+      }
+    })
 }
 
 const getCaptcha = () => fetch('/api/pleroma/captcha').then(resp => resp.json())
@@ -519,8 +537,7 @@ const fetchPinnedStatuses = ({ id, credentials }) => {
 }
 
 const verifyCredentials = (user) => {
-  return fetch(LOGIN_URL, {
-    method: 'POST',
+  return fetch(MASTODON_LOGIN_URL, {
     headers: authHeaders(user)
   })
     .then((response) => {
@@ -533,6 +550,26 @@ const verifyCredentials = (user) => {
       }
     })
     .then((data) => data.error ? data : parseUser(data))
+    .then((mastoUser) => {
+      // REMOVE WHEN BE SUPPORTS background_image
+      return fetch(GET_BACKGROUND_HACK, {
+        method: 'POST',
+        headers: authHeaders(user)
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json()
+          } else {
+            return {}
+          }
+        })
+      /* eslint-disable camelcase */
+        .then(({ background_image }) => ({
+          ...mastoUser,
+          background_image
+        }))
+      /* eslint-enable camelcase */
+    })
 }
 
 const favorite = ({ id, credentials }) => {
@@ -677,6 +714,51 @@ const changePassword = ({ credentials, password, newPassword, newPasswordConfirm
     headers: authHeaders(credentials)
   })
     .then((response) => response.json())
+}
+
+const settingsMFA = ({ credentials }) => {
+  return fetch(MFA_SETTINGS_URL, {
+    headers: authHeaders(credentials),
+    method: 'GET'
+  }).then((data) => data.json())
+}
+
+const mfaDisableOTP = ({ credentials, password }) => {
+  const form = new FormData()
+
+  form.append('password', password)
+
+  return fetch(MFA_DISABLE_OTP_URL, {
+    body: form,
+    method: 'DELETE',
+    headers: authHeaders(credentials)
+  })
+    .then((response) => response.json())
+}
+
+const mfaConfirmOTP = ({ credentials, password, token }) => {
+  const form = new FormData()
+
+  form.append('password', password)
+  form.append('code', token)
+
+  return fetch(MFA_CONFIRM_OTP_URL, {
+    body: form,
+    headers: authHeaders(credentials),
+    method: 'POST'
+  }).then((data) => data.json())
+}
+const mfaSetupOTP = ({ credentials }) => {
+  return fetch(MFA_SETUP_OTP_URL, {
+    headers: authHeaders(credentials),
+    method: 'GET'
+  }).then((data) => data.json())
+}
+const generateMfaBackupCodes = ({ credentials }) => {
+  return fetch(MFA_BACKUP_CODES_URL, {
+    headers: authHeaders(credentials),
+    method: 'GET'
+  }).then((data) => data.json())
 }
 
 const fetchMutes = ({ credentials }) => {
@@ -830,6 +912,11 @@ const apiService = {
   importFollows,
   deleteAccount,
   changePassword,
+  settingsMFA,
+  mfaDisableOTP,
+  generateMfaBackupCodes,
+  mfaSetupOTP,
+  mfaConfirmOTP,
   fetchFollowRequests,
   approveUser,
   denyUser,
