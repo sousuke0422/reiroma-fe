@@ -7,13 +7,13 @@ import fileTypeService from '../../services/file_type/file_type.service.js'
 import Completion from '../../services/completion/completion.js'
 import { take, filter, reject, map, uniqBy } from 'lodash'
 
-const buildMentionsString = ({user, attentions}, currentUser) => {
+const buildMentionsString = ({ user, attentions }, currentUser) => {
   let allAttentions = [...attentions]
 
   allAttentions.unshift(user)
 
   allAttentions = uniqBy(allAttentions, 'id')
-  allAttentions = reject(allAttentions, {id: currentUser.id})
+  allAttentions = reject(allAttentions, { id: currentUser.id })
 
   let mentions = map(allAttentions, (attention) => {
     return `@${attention.screen_name}`
@@ -98,7 +98,7 @@ const PostStatusForm = {
           return false
         }
         // eslint-disable-next-line camelcase
-        return map(take(matchedUsers, 5), ({screen_name, name, profile_image_url_original}, index) => ({
+        return map(take(matchedUsers, 5), ({ screen_name, name, profile_image_url_original }, index) => ({
           // eslint-disable-next-line camelcase
           screen_name: `@${screen_name}`,
           name: name,
@@ -111,7 +111,7 @@ const PostStatusForm = {
         if (matchedEmoji.length <= 0) {
           return false
         }
-        return map(take(matchedEmoji, 5), ({shortcode, image_url, utf}, index) => ({
+        return map(take(matchedEmoji, 5), ({ shortcode, image_url, utf }, index) => ({
           screen_name: `:${shortcode}:`,
           name: '',
           utf: utf || '',
@@ -188,7 +188,8 @@ const PostStatusForm = {
       return this.$store.state.instance.safeDM
     },
     pollsAvailable () {
-      return this.$store.state.instance.pollsAvailable
+      return this.$store.state.instance.pollsAvailable &&
+        this.$store.state.instance.pollLimits.max_options >= 2
     },
     hideScopeNotice () {
       return this.$store.state.config.hideScopeNotice
@@ -243,7 +244,7 @@ const PostStatusForm = {
     onKeydown (e) {
       e.stopPropagation()
     },
-    setCaret ({target: {selectionStart}}) {
+    setCaret ({ target: { selectionStart } }) {
       this.caret = selectionStart
     },
     postStatus (newStatus) {
@@ -330,7 +331,7 @@ const PostStatusForm = {
     },
     fileDrop (e) {
       if (e.dataTransfer.files.length > 0) {
-        e.preventDefault()  // allow dropping text like before
+        e.preventDefault() // allow dropping text like before
         this.dropFiles = e.dataTransfer.files
       }
     },

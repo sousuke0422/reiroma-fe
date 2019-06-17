@@ -39,13 +39,16 @@
         <input 
           type="number"
           class="expiry-amount hide-number-spinner"
-          min="1"
-          max="120"
+          :min="minExpirationInCurrentUnit"
+          :max="maxExpirationInCurrentUnit"
           v-model="expiryAmount"
           @change="expiryAmountChange"
         >
         <label class="expiry-unit select">
-          <select v-model="expiryUnit" @change="updatePollToParent">
+          <select 
+            v-model="expiryUnit"
+            @change="expiryAmountChange"
+          >
             <option v-for="unit in expiryUnits" :value="unit">
               {{ $t(`time.${unit}_short`, ['']) }}
             </option>
@@ -83,12 +86,14 @@
   .input-container {
     width: 100%;
     input {
+      // Hack: dodge the floating X icon
+      padding-right: 2.5em;
       width: 100%;
     }
   }
 
   .icon-container {
-    // Move the icon over the input box
+    // Hack: Move the icon over the input box
     width: 2em;
     margin-left: -2em;
     z-index: 1;

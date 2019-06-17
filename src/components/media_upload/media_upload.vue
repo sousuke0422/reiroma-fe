@@ -13,7 +13,8 @@
 <style>
  .media-upload {
      font-size: 26px;
-     flex: 1;
+     min-width: 50px;
+     flex: 0;
  }
 
  .icon-upload {
