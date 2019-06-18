@@ -111,14 +111,14 @@ const backendInteractorService = credentials => {
   const unpinOwnStatus = (id) => apiService.unpinOwnStatus({ credentials, id })
 
   const getCaptcha = () => apiService.getCaptcha()
-  const register = (params) => apiService.register(params)
+  const register = (params) => apiService.register({ credentials, params })
   const updateAvatar = ({ avatar }) => apiService.updateAvatar({ credentials, avatar })
-  const updateBg = ({ params }) => apiService.updateBg({ credentials, params })
+  const updateBg = ({ params }) => apiService.updateBg({ credentials, background })
   const updateBanner = ({ banner }) => apiService.updateBanner({ credentials, banner })
   const updateProfile = ({ params }) => apiService.updateProfile({ credentials, params })
 
-
   const externalProfile = (profileUrl) => apiService.externalProfile({ profileUrl, credentials })
+
   const importBlocks = (file) => apiService.importBlocks({ file, credentials })
   const importFollows = (file) => apiService.importFollows({ file, credentials })
 
@@ -126,14 +126,15 @@ const backendInteractorService = credentials => {
   const changePassword = ({ password, newPassword, newPasswordConfirmation }) =>
     apiService.changePassword({ credentials, password, newPassword, newPasswordConfirmation })
 
-  const fetchFavoritedByUsers = (id) => apiService.fetchFavoritedByUsers({ id })
-  const fetchRebloggedByUsers = (id) => apiService.fetchRebloggedByUsers({ id })
-  const reportUser = (params) => apiService.reportUser({ credentials, ...params })
   const fetchSettingsMFA = () => apiService.settingsMFA({ credentials })
   const generateMfaBackupCodes = () => apiService.generateMfaBackupCodes({ credentials })
   const mfaSetupOTP = () => apiService.mfaSetupOTP({ credentials })
   const mfaConfirmOTP = ({ password, token }) => apiService.mfaConfirmOTP({ credentials, password, token })
   const mfaDisableOTP = ({ password }) => apiService.mfaDisableOTP({ credentials, password })
+
+  const fetchFavoritedByUsers = (id) => apiService.fetchFavoritedByUsers({ id })
+  const fetchRebloggedByUsers = (id) => apiService.fetchRebloggedByUsers({ id })
+  const reportUser = (params) => apiService.reportUser({ credentials, ...params })
 
   const favorite = (id) => apiService.favorite({ id, credentials })
   const unfavorite = (id) => apiService.unfavorite({ id, credentials })
