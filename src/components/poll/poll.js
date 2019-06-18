@@ -1,5 +1,5 @@
 import Timeago from '../timeago/timeago.vue'
-import { forEach } from 'lodash'
+import { forEach, map } from 'lodash'
 
 export default {
   name: 'Poll',
@@ -8,14 +8,14 @@ export default {
   data () {
     return {
       loading: false,
-      multipleChoices: [],
-      singleChoiceIndex: null,
+      choices: [],
       refreshInterval: null
     }
   },
   created () {
     this.refreshInterval = setTimeout(this.refreshPoll, 30 * 1000)
-    this.multipleChoices = this.poll.options.map(_ => false)
+    // Initialize choices to booleans and set its length to match options
+    this.choices = this.poll.options.map(_ => false)
   },
   destroyed () {
     clearTimeout(this.refreshInterval)
@@ -42,14 +42,15 @@ export default {
       }
     },
     choiceIndices () {
-      return this.multipleChoices
+      // Convert array of booleans into an array of indices of the
+      // items that were 'true', so [true, false, false, true] becomes
+      // [0, 3].
+      return this.choices
         .map((entry, index) => entry && index)
         .filter(value => typeof value === 'number')
     },
     isDisabled () {
-      const noChoice = this.poll.multiple
-        ? this.choiceIndices.length === 0
-        : this.singleChoiceIndex === undefined
+      const noChoice = this.choiceIndices.length === 0
       return this.loading || noChoice
     }
   },
@@ -77,44 +78,30 @@ export default {
       // same poll appears multiple times on the site (notifs and
       // timeline for example). With code we can make sure it just
       // works without altering the pseudo element implementation.
+      const allElements = this.$el.querySelectorAll('input')
       const clickedElement = this.$el.querySelector(`input[value="${index}"]`)
       if (this.poll.multiple) {
-        // Checkboxes
-        const wasChecked = this.multipleChoices[index]
-        clickedElement.checked = !wasChecked
-        this.$set(this.multipleChoices, index, !wasChecked)
+        // Checkboxes, toggle only the clicked one
+        clickedElement.checked = !clickedElement.checked
       } else {
-        // Radio button
-        const allElements = this.$el.querySelectorAll('input')
-        forEach(allElements, element => {
-          element.checked = false
-        })
+        // Radio button, uncheck everything and check the clicked one
+        forEach(allElements, element => { element.checked = false })
         clickedElement.checked = true
-        this.singleChoiceIndex = index
       }
+      this.choices = map(allElements, e => e.checked)
     },
     optionId (index) {
       return `poll${this.poll.id}-${index}`
     },
     vote () {
+      if (this.choiceIndices.length === 0) return
       this.loading = true
-      if (this.poll.multiple) {
-        if (this.choiceIndices.length === 0) return
-        this.$store.dispatch(
-          'votePoll',
-          { id: this.statusId, pollId: this.poll.id, choices: this.choiceIndices }
-        ).then(poll => {
-          this.loading = false
-        })
-      } else {
-        if (this.singleChoiceIndex === undefined) return
-        this.$store.dispatch(
-          'votePoll',
-          { id: this.statusId, pollId: this.poll.id, choices: [this.singleChoiceIndex] }
-        ).then(poll => {
-          this.loading = false
-        })
-      }
+      this.$store.dispatch(
+        'votePoll',
+        { id: this.statusId, pollId: this.poll.id, choices: this.choiceIndices }
+      ).then(poll => {
+        this.loading = false
+      })
     }
   }
 }
