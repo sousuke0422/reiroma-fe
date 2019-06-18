@@ -1,4 +1,5 @@
 import * as DateUtils from 'src/services/date_utils/date_utils.js'
+import { uniq } from 'lodash'
 
 export default {
   name: 'PollForm',
@@ -105,8 +106,13 @@ export default {
         this.expiryAmount
       )
 
+      const options = uniq(this.options.filter(option => option !== ''))
+      if (options.length < 2) {
+        this.$emit('update-poll', { error: this.$t('polls.not_enough_options') })
+        return
+      }
       this.$emit('update-poll', {
-        options: this.options,
+        options,
         multiple: this.pollType === 'multiple',
         expiresIn
       })

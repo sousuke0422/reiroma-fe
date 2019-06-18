@@ -102,7 +102,8 @@
     "multiple_choices": "Multiple choices",
     "expiry": "Poll age",
     "expires_in": "Ends in {0}",
-    "expired": "Poll ended {0} ago"
+    "expired": "Poll ended {0} ago",
+    "not_enough_options": "Too few unique options in poll"
   },
   "interactions": {
     "favs_repeats": "Repeats and Favorites",

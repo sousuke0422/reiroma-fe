@@ -193,6 +193,11 @@ const PostStatusForm = {
     },
     hideScopeNotice () {
       return this.$store.state.config.hideScopeNotice
+    },
+    pollContentError () {
+      return this.pollFormVisible &&
+        this.newStatus.poll &&
+        this.newStatus.poll.error
     }
   },
   methods: {
@@ -261,6 +266,10 @@ const PostStatusForm = {
       }
 
       const poll = this.pollFormVisible ? this.newStatus.poll : {}
+      if (this.pollContentError) {
+        this.error = this.pollContentError
+        return
+      }
 
       this.posting = true
       statusPoster.postStatus({
