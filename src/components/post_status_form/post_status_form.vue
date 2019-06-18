@@ -33,30 +33,39 @@
       </p>
       <EmojiInput
         v-if="newStatus.spoilerText || alwaysShowSubject"
-        type="text"
-        :placeholder="$t('post_status.content_warning')"
+        :suggest="emojiSuggestor"
         v-model="newStatus.spoilerText"
-        classname="form-control"
-      />
-      <textarea
-        ref="textarea"
-        @click="setCaret"
-        @keyup="setCaret" v-model="newStatus.status" :placeholder="$t('post_status.default')" rows="1" class="form-control"
-        @keydown="onKeydown"
-        @keydown.down="cycleForward"
-        @keydown.up="cycleBackward"
-        @keydown.shift.tab="cycleBackward"
-        @keydown.tab="cycleForward"
-        @keydown.enter="replaceCandidate"
-        @keydown.meta.enter="postStatus(newStatus)"
-        @keyup.ctrl.enter="postStatus(newStatus)"
-        @drop="fileDrop"
-        @dragover.prevent="fileDrag"
-        @input="resize"
-        @paste="paste"
-        :disabled="posting"
-      >
-      </textarea>
+        class="form-control"
+        >
+        <input
+
+          type="text"
+          :placeholder="$t('post_status.content_warning')"
+          v-model="newStatus.spoilerText"
+          class="form-post-subject"
+          />
+      </EmojiInput>
+      <EmojiInput
+        :suggest="emojiUserSuggestor"
+        v-model="newStatus.status"
+        class="form-control"
+        >
+        <textarea
+          ref="textarea"
+          v-model="newStatus.status"
+          :placeholder="$t('post_status.default')"
+          rows="1"
+          @keydown.meta.enter="postStatus(newStatus)"
+          @keyup.ctrl.enter="postStatus(newStatus)"
+          @drop="fileDrop"
+          @dragover.prevent="fileDrag"
+          @input="resize"
+          @paste="paste"
+          :disabled="posting"
+          class="form-post-body"
+        >
+        </textarea>
+      </EmojiInput>
       <div class="visibility-tray">
         <div class="text-format" v-if="postFormats.length > 1">
           <label for="post-content-type" class="select">
@@ -82,67 +91,52 @@
           :onScopeChange="changeVis"/>
       </div>
     </div>
-    <div class="autocomplete-panel" v-if="candidates">
-        <div class="autocomplete-panel-body">
-          <div
-            v-for="(candidate, index) in candidates"
-            :key="index"
-            @click="replace(candidate.utf || (candidate.screen_name + ' '))"
-            class="autocomplete-item"
-            :class="{ highlighted: candidate.highlighted }"
-          >
-            <span v-if="candidate.img"><img :src="candidate.img" /></span>
-            <span v-else>{{candidate.utf}}</span>
-            <span>{{candidate.screen_name}}<small>{{candidate.name}}</small></span>
-          </div>
+    <poll-form
+      ref="pollForm"
+      v-if="pollsAvailable"
+      :visible="pollFormVisible"
+      @update-poll="setPoll"
+    />
+    <div class='form-bottom'>
+      <div class='form-bottom-left'>
+        <media-upload ref="mediaUpload" @uploading="disableSubmit" @uploaded="addMediaFile" @upload-failed="uploadFailed" :drop-files="dropFiles"></media-upload>
+        <div v-if="pollsAvailable" class="poll-icon">
+          <i
+            :title="$t('polls.add_poll')"
+            @click="togglePollForm"
+            class="icon-chart-bar btn btn-default"
+            :class="pollFormVisible && 'selected'"
+          />
         </div>
       </div>
-      <poll-form
-        ref="pollForm"
-        v-if="pollsAvailable"
-        :visible="pollFormVisible"
-        @update-poll="setPoll"
-      />
-      <div class='form-bottom'>
-        <div class='form-bottom-left'>
-          <media-upload ref="mediaUpload" @uploading="disableSubmit" @uploaded="addMediaFile" @upload-failed="uploadFailed" :drop-files="dropFiles"></media-upload>
-          <div v-if="pollsAvailable" class="poll-icon">
-            <i
-              :title="$t('polls.add_poll')"
-              @click="togglePollForm"
-              class="icon-chart-bar btn btn-default"
-              :class="pollFormVisible && 'selected'"
-            />
-          </div>
-        </div>
-        <p v-if="isOverLengthLimit" class="error">{{ charactersLeft }}</p>
-        <p class="faint" v-else-if="hasStatusLengthLimit">{{ charactersLeft }}</p>
+      <p v-if="isOverLengthLimit" class="error">{{ charactersLeft }}</p>
+      <p class="faint" v-else-if="hasStatusLengthLimit">{{ charactersLeft }}</p>
 
-        <button v-if="posting" disabled class="btn btn-default">{{$t('post_status.posting')}}</button>
-        <button v-else-if="isOverLengthLimit" disabled class="btn btn-default">{{$t('general.submit')}}</button>
-        <button v-else :disabled="submitDisabled" type="submit" class="btn btn-default">{{$t('general.submit')}}</button>
-      </div>
-      <div class='alert error' v-if="error">
-        Error: {{ error }}
-        <i class="button-icon icon-cancel" @click="clearError"></i>
-      </div>
-      <div class="attachments">
-        <div class="media-upload-wrapper" v-for="file in newStatus.files">
-          <i class="fa button-icon icon-cancel" @click="removeMediaFile(file)"></i>
-          <div class="media-upload-container attachment">
-            <img class="thumbnail media-upload" :src="file.url" v-if="type(file) === 'image'"></img>
-            <video v-if="type(file) === 'video'" :src="file.url" controls></video>
-            <audio v-if="type(file) === 'audio'" :src="file.url" controls></audio>
-            <a v-if="type(file) === 'unknown'" :href="file.url">{{file.url}}</a>
-          </div>
+      <button v-if="posting" disabled class="btn btn-default">{{$t('post_status.posting')}}</button>
+      <button v-else-if="isOverLengthLimit" disabled class="btn btn-default">{{$t('general.submit')}}</button>
+      <button v-else :disabled="submitDisabled" type="submit" class="btn btn-default">{{$t('general.submit')}}</button>
+    </div>
+    <div class='alert error' v-if="error">
+      Error: {{ error }}
+      <i class="button-icon icon-cancel" @click="clearError"></i>
+    </div>
+    <div class="attachments">
+      <div class="media-upload-wrapper" v-for="file in newStatus.files">
+        <i class="fa button-icon icon-cancel" @click="removeMediaFile(file)"></i>
+        <div class="media-upload-container attachment">
+          <img class="thumbnail media-upload" :src="file.url" v-if="type(file) === 'image'"></img>
+          <video v-if="type(file) === 'video'" :src="file.url" controls></video>
+          <audio v-if="type(file) === 'audio'" :src="file.url" controls></audio>
+          <a v-if="type(file) === 'unknown'" :href="file.url">{{file.url}}</a>
         </div>
       </div>
-      <div class="upload_settings" v-if="newStatus.files.length > 0">
-        <input type="checkbox" id="filesSensitive" v-model="newStatus.nsfw">
-        <label for="filesSensitive">{{$t('post_status.attachments_sensitive')}}</label>
-      </div>
-    </form>
-  </div>
+    </div>
+    <div class="upload_settings" v-if="newStatus.files.length > 0">
+      <input type="checkbox" id="filesSensitive" v-model="newStatus.nsfw">
+      <label for="filesSensitive">{{$t('post_status.attachments_sensitive')}}</label>
+    </div>
+  </form>
+</div>
 </template>
 
 <script src="./post_status_form.js"></script>
@@ -309,7 +303,7 @@
     min-height: 1px;
   }
 
-  form textarea.form-control {
+  .form-post-body {
     line-height:16px;
     resize: none;
     overflow: hidden;
@@ -318,7 +312,7 @@
     box-sizing: content-box;
   }
 
-  form textarea.form-control:focus {
+  .form-post-body:focus {
     min-height: 48px;
   }
 

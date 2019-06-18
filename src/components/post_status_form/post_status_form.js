@@ -4,8 +4,8 @@ import ScopeSelector from '../scope_selector/scope_selector.vue'
 import EmojiInput from '../emoji-input/emoji-input.vue'
 import PollForm from '../poll/poll_form.vue'
 import fileTypeService from '../../services/file_type/file_type.service.js'
-import Completion from '../../services/completion/completion.js'
-import { take, filter, reject, map, uniqBy } from 'lodash'
+import { reject, map, uniqBy } from 'lodash'
+import suggestor from '../emoji-input/suggestor.js'
 
 const buildMentionsString = ({ user, attentions }, currentUser) => {
   let allAttentions = [...attentions]
@@ -58,7 +58,7 @@ const PostStatusForm = {
       statusText = buildMentionsString({ user: this.repliedUser, attentions: this.attentions }, currentUser)
     }
 
-    const scope = (this.copyMessageScope && scopeCopy || this.copyMessageScope === 'direct')
+    const scope = ((this.copyMessageScope && scopeCopy) || this.copyMessageScope === 'direct')
       ? this.copyMessageScope
       : this.$store.state.users.currentUser.default_scope
 
@@ -86,50 +86,6 @@ const PostStatusForm = {
     }
   },
   computed: {
-    candidates () {
-      const firstchar = this.textAtCaret.charAt(0)
-      if (firstchar === '@') {
-        const query = this.textAtCaret.slice(1).toUpperCase()
-        const matchedUsers = filter(this.users, (user) => {
-          return user.screen_name.toUpperCase().startsWith(query) ||
-            user.name && user.name.toUpperCase().startsWith(query)
-        })
-        if (matchedUsers.length <= 0) {
-          return false
-        }
-        // eslint-disable-next-line camelcase
-        return map(take(matchedUsers, 5), ({ screen_name, name, profile_image_url_original }, index) => ({
-          // eslint-disable-next-line camelcase
-          screen_name: `@${screen_name}`,
-          name: name,
-          img: profile_image_url_original,
-          highlighted: index === this.highlighted
-        }))
-      } else if (firstchar === ':') {
-        if (this.textAtCaret === ':') { return }
-        const matchedEmoji = filter(this.emoji.concat(this.customEmoji), (emoji) => emoji.shortcode.startsWith(this.textAtCaret.slice(1)))
-        if (matchedEmoji.length <= 0) {
-          return false
-        }
-        return map(take(matchedEmoji, 5), ({ shortcode, image_url, utf }, index) => ({
-          screen_name: `:${shortcode}:`,
-          name: '',
-          utf: utf || '',
-          // eslint-disable-next-line camelcase
-          img: utf ? '' : this.$store.state.instance.server + image_url,
-          highlighted: index === this.highlighted
-        }))
-      } else {
-        return false
-      }
-    },
-    textAtCaret () {
-      return (this.wordAtCaret || {}).word || ''
-    },
-    wordAtCaret () {
-      const word = Completion.wordAtPosition(this.newStatus.status, this.caret - 1) || {}
-      return word
-    },
     users () {
       return this.$store.state.users.users
     },
@@ -141,6 +97,23 @@ const PostStatusForm = {
         ? this.$store.state.instance.minimalScopesMode
         : this.$store.state.config.minimalScopesMode
       return !minimalScopesMode
+    },
+    emojiUserSuggestor () {
+      return suggestor({
+        emoji: [
+          ...this.$store.state.instance.emoji,
+          ...this.$store.state.instance.customEmoji
+        ],
+        users: this.$store.state.users.users
+      })
+    },
+    emojiSuggestor () {
+      return suggestor({
+        emoji: [
+          ...this.$store.state.instance.emoji,
+          ...this.$store.state.instance.customEmoji
+        ]
+      })
     },
     emoji () {
       return this.$store.state.instance.emoji || []
@@ -198,57 +171,6 @@ const PostStatusForm = {
     }
   },
   methods: {
-    replace (replacement) {
-      this.newStatus.status = Completion.replaceWord(this.newStatus.status, this.wordAtCaret, replacement)
-      const el = this.$el.querySelector('textarea')
-      el.focus()
-      this.caret = 0
-    },
-    replaceCandidate (e) {
-      const len = this.candidates.length || 0
-      if (this.textAtCaret === ':' || e.ctrlKey) { return }
-      if (len > 0) {
-        e.preventDefault()
-        const candidate = this.candidates[this.highlighted]
-        const replacement = candidate.utf || (candidate.screen_name + ' ')
-        this.newStatus.status = Completion.replaceWord(this.newStatus.status, this.wordAtCaret, replacement)
-        const el = this.$el.querySelector('textarea')
-        el.focus()
-        this.caret = 0
-        this.highlighted = 0
-      }
-    },
-    cycleBackward (e) {
-      const len = this.candidates.length || 0
-      if (len > 0) {
-        e.preventDefault()
-        this.highlighted -= 1
-        if (this.highlighted < 0) {
-          this.highlighted = this.candidates.length - 1
-        }
-      } else {
-        this.highlighted = 0
-      }
-    },
-    cycleForward (e) {
-      const len = this.candidates.length || 0
-      if (len > 0) {
-        if (e.shiftKey) { return }
-        e.preventDefault()
-        this.highlighted += 1
-        if (this.highlighted >= len) {
-          this.highlighted = 0
-        }
-      } else {
-        this.highlighted = 0
-      }
-    },
-    onKeydown (e) {
-      e.stopPropagation()
-    },
-    setCaret ({ target: { selectionStart } }) {
-      this.caret = selectionStart
-    },
     postStatus (newStatus) {
       if (this.posting) { return }
       if (this.submitDisabled) { return }
