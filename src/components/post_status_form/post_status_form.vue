@@ -104,14 +104,16 @@
         @update-poll="setPoll"
       />
       <div class='form-bottom'>
-        <media-upload ref="mediaUpload" @uploading="disableSubmit" @uploaded="addMediaFile" @upload-failed="uploadFailed" :drop-files="dropFiles"></media-upload>
-        <div v-if="pollsAvailable" class="poll-icon">
-          <label
-            class="btn btn-default"
-            :title="$t('polls.add_poll')"
-            @click="togglePollForm">
-            <i class="icon-chart-bar" :class="pollFormVisible && 'selected'" />
-          </label>
+        <div class='form-bottom-left'>
+          <media-upload ref="mediaUpload" @uploading="disableSubmit" @uploaded="addMediaFile" @upload-failed="uploadFailed" :drop-files="dropFiles"></media-upload>
+          <div v-if="pollsAvailable" class="poll-icon">
+            <i
+              :title="$t('polls.add_poll')"
+              @click="togglePollForm"
+              class="icon-chart-bar btn btn-default"
+              :class="pollFormVisible && 'selected'"
+            />
+          </div>
         </div>
         <p v-if="isOverLengthLimit" class="error">{{ charactersLeft }}</p>
         <p class="faint" v-else-if="hasStatusLengthLimit">{{ charactersLeft }}</p>
@@ -191,6 +193,11 @@
     }
   }
 
+  .form-bottom-left {
+    display: flex;
+    flex: 1;
+  }
+
   .text-format {
     .only-format {
       color: $fallback--faint;
@@ -198,6 +205,20 @@
     }
   }
 
+  .poll-icon {
+    font-size: 26px;
+    flex: 1;
+
+    .selected {
+      color: $fallback--lightText;
+      color: var(--lightText, $fallback--lightText);
+    }
+  }
+
+  .icon-chart-bar {
+    cursor: pointer;
+  }
+  
 
   .error {
     text-align: center;
@@ -259,7 +280,6 @@
     }
   }
 
-
   .btn {
     cursor: pointer;
   }
@@ -314,18 +334,5 @@
     cursor: pointer;
     z-index: 4;
   }
-}
-.poll-icon {
-  font-size: 26px;
-  flex: 1;
-
-  .selected {
-    color: $fallback--lightText;
-    color: var(--lightText, $fallback--lightText);
-  }
-}
-
-.icon-chart-bar {
-  cursor: pointer;
 }
 </style>

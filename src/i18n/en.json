@@ -101,7 +101,7 @@
     "single_choice": "Single choice",
     "multiple_choices": "Multiple choices",
     "expiry": "Poll age",
-    "expires_in": "Ends in {0}",
+    "expires_in": "Poll ends in {0}",
     "expired": "Poll ended {0} ago",
     "not_enough_options": "Too few unique options in poll"
   },

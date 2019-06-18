@@ -14,7 +14,6 @@
  .media-upload {
      font-size: 26px;
      min-width: 50px;
-     flex: 0;
  }
 
  .icon-upload {

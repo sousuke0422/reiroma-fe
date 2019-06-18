@@ -24,8 +24,11 @@ export default {
     expired () {
       return Date.now() > Date.parse(this.poll.expires_at)
     },
+    loggedIn () {
+      return this.$store.state.users.currentUser
+    },
     showResults () {
-      return this.poll.voted || this.expired
+      return this.poll.voted || this.expired || !this.loggedIn
     },
     totalVotesCount () {
       return this.poll.votes_count

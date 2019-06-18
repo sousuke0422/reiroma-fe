@@ -291,7 +291,7 @@ const PostStatusForm = {
           }
           this.pollFormVisible = false
           this.$refs.mediaUpload.clearFile()
-          this.$refs.pollForm.clear()
+          this.clearPollForm()
           this.$emit('posted')
           let el = this.$el.querySelector('textarea')
           el.style.height = 'auto'
@@ -367,6 +367,11 @@ const PostStatusForm = {
     },
     setPoll (poll) {
       this.newStatus.poll = poll
+    },
+    clearPollForm () {
+      if (this.$refs.pollForm) {
+        this.$refs.pollForm.clear()
+      }
     },
     dismissScopeNotice () {
       this.$store.dispatch('setOption', { name: 'hideScopeNotice', value: true })
