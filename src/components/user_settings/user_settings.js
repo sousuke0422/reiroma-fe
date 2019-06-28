@@ -39,6 +39,7 @@ const UserSettings = {
       newBio: unescape(this.$store.state.users.currentUser.description),
       newLocked: this.$store.state.users.currentUser.locked,
       newNoRichText: this.$store.state.users.currentUser.no_rich_text,
+      newSkipThreadContainment: this.$store.state.users.currentUser.skip_thread_containment,
       newDefaultScope: this.$store.state.users.currentUser.default_scope,
       hideFollows: this.$store.state.users.currentUser.hide_follows,
       hideFollowers: this.$store.state.users.currentUser.hide_followers,
@@ -140,6 +141,7 @@ const UserSettings = {
             display_name: this.newName,
             default_scope: this.newDefaultScope,
             no_rich_text: this.newNoRichText,
+            skip_thread_containment: this.newSkipThreadContainment,
             hide_follows: this.hideFollows,
             hide_followers: this.hideFollowers,
             show_role: this.showRole

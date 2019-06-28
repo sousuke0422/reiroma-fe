@@ -55,6 +55,10 @@
               <label for="account-no-rich-text">{{$t('settings.no_rich_text_description')}}</label>
             </p>
             <p>
+              <input type="checkbox" v-model="newSkipThreadContainment" id="account-skip-thread-containment">
+              <label for="account-skip-Thread-Containment">{{$t('settings.skip_thread_containment_description')}}</label>
+            </p>
+            <p>
               <input type="checkbox" v-model="hideFollows" id="account-hide-follows">
               <label for="account-hide-follows">{{$t('settings.hide_follows_description')}}</label>
             </p>

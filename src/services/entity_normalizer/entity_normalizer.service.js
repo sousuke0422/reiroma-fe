@@ -90,6 +90,7 @@ export const parseUser = (data) => {
       if (data.source.pleroma) {
         output.no_rich_text = data.source.pleroma.no_rich_text
         output.show_role = data.source.pleroma.show_role
+        output.skip_thread_containment = data.source.skip_thread_containment
       }
     }
 
