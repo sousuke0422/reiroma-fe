@@ -25,6 +25,7 @@
       @click.prevent="toggleHidden"
     >
       <img
+        v-if="!nsfwUseBlur"
         :key="nsfwImage"
         class="nsfw"
         :src="nsfwImage"
@@ -48,13 +49,14 @@
     <a
       v-if="type === 'image' && (!hidden || preloadImage)"
       class="image-attachment"
-      :class="{'hidden': hidden && preloadImage }"
+      :class="{'hidden': hidden && preloadImage && !nsfwUseBlur}"
       :href="attachment.url"
       target="_blank"
       :title="attachment.description"
       @click="openModal"
     >
       <StillImage
+        :class="{'nsfw-blur': hidden && nsfwUseBlur}"
         :referrerpolicy="referrerpolicy"
         :mimetype="attachment.mimetype"
         :src="attachment.large_thumb_url || attachment.url"
@@ -284,6 +286,10 @@
       object-fit: cover;
       width: 100%;
       height: 100%;
+    }
+
+    .nsfw-blur {
+      filter: blur(3.0rem);
     }
 
     img {
