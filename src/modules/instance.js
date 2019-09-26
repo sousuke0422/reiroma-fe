@@ -27,6 +27,7 @@ const defaultState = {
   subjectLineBehavior: 'email',
   postContentType: 'text/plain',
   nsfwCensorImage: undefined,
+  nsfwUseBlur: false,
   vapidPublicKey: undefined,
   noAttachmentLinks: false,
   showFeaturesPanel: true,

@@ -74,6 +74,9 @@ Enables [PushAPI](https://developer.mozilla.org/en-US/docs/Web/API/Push_API) - b
 ### `nsfwCensorImage`
 Use custom image for NSFW'd images
 
+### `nsfwUseBlur`
+Use blur effect instead of placeholder image for NSFW images
+
 ### `showFeaturesPanel`
 Show panel showcasing instance features/settings to logged-out visitors
 

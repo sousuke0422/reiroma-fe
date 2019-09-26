@@ -17,6 +17,7 @@ const Attachment = {
       nsfwImage: this.$store.state.instance.nsfwCensorImage || nsfwImage,
       hideNsfwLocal: this.$store.state.config.hideNsfw,
       preloadImage: this.$store.state.config.preloadImage,
+      nsfwUseBlur: this.$store.state.instance.nsfwUseBlur,
       loading: false,
       img: fileTypeService.fileType(this.attachment.mimetype) === 'image' && document.createElement('img'),
       modalOpen: false,
