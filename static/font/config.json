@@ -297,6 +297,24 @@
       "css": "zoom-in",
       "code": 59420,
       "src": "fontawesome"
+    },
+    {
+      "uid": "w3nzesrlbezu6f30q7ytyq919p6gdlb6",
+      "css": "home-2",
+      "code": 59421,
+      "src": "typicons"
+    },
+    {
+      "uid": "31972e4e9d080eaa796290349ae6c1fd",
+      "css": "users",
+      "code": 59422,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "3a00327e61b997b58518bd43ed83c3df",
+      "css": "login",
+      "code": 59423,
+      "src": "fontawesome"
     }
   ]
 }
