@@ -31,7 +31,10 @@
     "disable": "Disable",
     "enable": "Enable",
     "confirm": "Confirm",
-    "verify": "Verify"
+    "verify": "Verify",
+    "sensitive": "Sensitive content",
+    "sensitive_hint": "Click to show",
+    "hide": "Hide"
   },
   "image_cropper": {
     "crop_picture": "Crop picture",

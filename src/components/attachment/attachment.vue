@@ -43,7 +43,7 @@
       <a
         href="#"
         @click.prevent="toggleHidden"
-      >Hide</a>
+      >{{$t('general.hide')}}</a>
     </div>
 
     <a
