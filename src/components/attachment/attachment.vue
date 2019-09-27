@@ -24,6 +24,11 @@
       :href="attachment.url"
       @click.prevent="toggleHidden"
     >
+      <div v-if="nsfwUseBlur && type !== 'video'" class="centered-hider">
+        <a href="#">
+          {{$t('general.sensitive')}}<br><small>{{$t('general.sensitive_hint')}}</small>
+        </a>
+      </div>
       <img
         v-if="!nsfwUseBlur"
         :key="nsfwImage"
@@ -31,6 +36,19 @@
         :src="nsfwImage"
         :class="{'small': isSmall}"
       >
+      <StillImage
+        v-else-if="type === 'image' || attachment.large_thumb_url"
+        class="nsfw-blur"
+        :referrerpolicy="referrerpolicy"
+        :mimetype="attachment.mimetype"
+        :src="attachment.large_thumb_url || attachment.url"
+      />
+      <VideoAttachment
+        v-else-if="type === 'video'"
+        class="video nsfw-blur"
+        :attachment="attachment"
+        :controls="allowPlay"
+      />
       <i
         v-if="type === 'video'"
         class="play-icon icon-play-circled"
@@ -56,7 +74,6 @@
       @click="openModal"
     >
       <StillImage
-        :class="{'nsfw-blur': hidden && nsfwUseBlur}"
         :referrerpolicy="referrerpolicy"
         :mimetype="attachment.mimetype"
         :src="attachment.large_thumb_url || attachment.url"
@@ -226,6 +243,28 @@
     line-height: 1;
     border-radius: $fallback--tooltipRadius;
     border-radius: var(--tooltipRadius, $fallback--tooltipRadius);
+  }
+
+  .centered-hider {
+    position: absolute;
+    width: 14em;
+    height: 2em;
+    top: calc(50% - 1em);
+    left: calc(50% - 7em);
+    text-align: center;
+    white-space: nowrap;
+    margin: auto;
+    padding: 5px;
+    background: rgba(230,230,230,0.6);
+    font-weight: bold;
+    z-index: 4;
+    line-height: 1;
+    border-radius: $fallback--tooltipRadius;
+    border-radius: var(--tooltipRadius, $fallback--tooltipRadius);
+  }
+
+  .hider a, .centered-hider a {
+    color: rgba(25,25,25,1.0);
   }
 
   video {
