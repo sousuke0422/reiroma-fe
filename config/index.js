@@ -38,6 +38,11 @@ module.exports = {
         changeOrigin: true,
         cookieDomainRewrite: 'localhost'
       },
+      '/instance': {
+        target,
+        changeOrigin: true,
+        cookieDomainRewrite: 'localhost'
+      },
       '/nodeinfo': {
         target,
         changeOrigin: true,
