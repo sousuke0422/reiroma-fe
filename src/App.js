@@ -96,6 +96,10 @@ export default {
         !this.$store.state.config.hideISP &&
         this.$store.state.instance.instanceSpecificPanelContent
     },
+    showInstanceSpecificPanelInSidebar () {
+      return this.showInstanceSpecificPanel &&
+        this.$store.state.instance.showInstanceSpecificPanelInSidebar
+    },
     showFeaturesPanel () { return this.$store.state.instance.showFeaturesPanel },
     isMobileLayout () { return this.$store.state.interface.mobileLayout }
   },

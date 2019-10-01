@@ -9,7 +9,12 @@ const About = {
     TermsOfServicePanel
   },
   computed: {
-    showFeaturesPanel () { return this.$store.state.instance.showFeaturesPanel }
+    showFeaturesPanel () { return this.$store.state.instance.showFeaturesPanel },
+    showInstanceSpecificPanel() {
+      return this.$store.state.instance.showInstanceSpecificPanel &&
+        !this.$store.state.instance.showInstanceSpecificPanelInSidebar
+    },
+    isMobileLayout () { return this.$store.state.interface.mobileLayout }
   }
 }
 
