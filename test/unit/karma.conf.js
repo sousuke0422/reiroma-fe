@@ -58,7 +58,9 @@ module.exports = function (config) {
     reporters: ['mocha'],
     logLevel: 'debug',
     browserConsoleLogOptions: {
-      level: "debug", format: "%b %T: %m", terminal: true
+      level: "debug",
+      format: "%b %T: %m",
+      terminal: true
     },
     customLaunchers: {
       'FirefoxHeadless': {
