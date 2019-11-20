@@ -23,6 +23,7 @@ test:
     - mkdir -pv $APT_CACHE_DIR && apt-get -qq update
     - apt install firefox-esr -y --no-install-recommends
     - firefox --version
+    - firefox --headless --screenshot test.jpg https://pleroma.social/
     - yarn
     - yarn unit
 
