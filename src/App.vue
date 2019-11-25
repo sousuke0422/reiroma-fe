@@ -16,7 +16,8 @@
       @click="scrollToTop()"
     >
       <div class="inner-nav">
-        <div
+        <router-link
+          :to="{ name: 'root' }"
           class="logo"
           :style="logoBgStyle"
         >
@@ -28,7 +29,7 @@
             :src="logo"
             :style="logoStyle"
           >
-        </div>
+        </router-link>
         <div class="item">
           <router-link
             v-if="!hideSitename"

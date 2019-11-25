@@ -325,7 +325,6 @@ i[class*=icon-] {
 }
 
 .item {
-  flex: 1;
   line-height: 50px;
   height: 50px;
   overflow: hidden;
@@ -358,16 +357,12 @@ i[class*=icon-] {
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 0;
-    right: 0;
-
-    align-items: stretch;
-    justify-content: center;
-    flex: 0 0 auto;
-    z-index: -1;
+    left: 50%;
+    transform: translateX(-50%);
     transition: opacity;
     transition-timing-function: ease-out;
     transition-duration: 100ms;
+    cursor: pointer;
 
     .mask {
       mask-repeat: no-repeat;
@@ -398,6 +393,7 @@ i[class*=icon-] {
     padding-right: 10px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     flex-basis: 970px;
     height: 50px;
 
