@@ -35,7 +35,8 @@ const conversation = {
   data () {
     return {
       highlight: null,
-      expanded: false
+      expanded: false,
+      height: '115px'
     }
   },
   props: [
@@ -44,7 +45,8 @@ const conversation = {
     'isPage',
     'pinnedStatusIdsObject',
     'inProfile',
-    'profileUserId'
+    'profileUserId',
+    'hidden'
   ],
   created () {
     if (this.isPage) {
@@ -102,6 +104,9 @@ const conversation = {
     },
     isExpanded () {
       return this.expanded || this.isPage
+    },
+    hiderStyle () {
+      return this.hidden ? { height: this.height } : {}
     }
   },
   components: {
@@ -112,7 +117,7 @@ const conversation = {
       const newConversationId = this.getConversationId(newVal)
       const oldConversationId = this.getConversationId(oldVal)
       if (newConversationId && oldConversationId && newConversationId === oldConversationId) {
-        this.setHighlight(this.originalStatusId)
+        this.setHighheightlight(this.originalStatusId)
       } else {
         this.fetchConversation()
       }
@@ -121,6 +126,10 @@ const conversation = {
       if (value) {
         this.fetchConversation()
       }
+    },
+    hidden (value) {
+      this.height = `${this.$el.clientHeight}px`
+      console.log('Element height:', this.height)
     }
   },
   methods: {

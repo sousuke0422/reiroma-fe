@@ -32,7 +32,8 @@ const Timeline = {
     return {
       paused: false,
       unfocused: false,
-      bottomedOut: false
+      bottomedOut: false,
+      vScrollIndex: 0
     }
   },
   computed: {
@@ -68,6 +69,12 @@ const Timeline = {
     },
     pinnedStatusIdsObject () {
       return keyBy(this.pinnedStatusIds)
+    },
+    displayingStatuses () {
+      const amount = this.timeline.visibleStatuses.length
+      const min = Math.max(0, this.vScrollIndex - 20)
+      const max = Math.min(amount, this.vScrollIndex + 20)
+      return this.timeline.visibleStatuses.slice(min, max).map(_ => _.id)
     }
   },
   components: {
@@ -79,7 +86,7 @@ const Timeline = {
     const credentials = store.state.users.currentUser.credentials
     const showImmediately = this.timeline.visibleStatuses.length === 0
 
-    window.addEventListener('scroll', this.scrollLoad)
+    window.addEventListener('scroll', throttle(this.scrollLoad, 100))
 
     if (store.state.api.fetchers[this.timelineName]) { return false }
 
@@ -142,7 +149,35 @@ const Timeline = {
         }
       })
     }, 1000, this),
+    determineVisibleStatuses () {
+      const statuses = this.$refs.timeline.children
+
+      const bodyBRect = document.body.getBoundingClientRect()
+      const height = Math.max(bodyBRect.height, -(bodyBRect.y))
+
+      const centerOfScreen = window.pageYOffset + (window.innerHeight * 0.5)
+
+      // Approximate which status is in the middle of the screen and check how
+      // far it is roughly from the viewport
+      let approxIndex = Math.floor(statuses.length * (centerOfScreen / height))
+      let err = statuses[approxIndex].getBoundingClientRect().y
+
+      // if the status is too far from viewport, check the next/previous ones if
+      // they happen to be better
+      while (err < -100) {
+        approxIndex++
+        err = statuses[approxIndex].getBoundingClientRect().y
+      }
+      while (err > 1000) {
+        approxIndex--
+        err = statuses[approxIndex].getBoundingClientRect().y
+      }
+
+      // this status is now the center point for virtual scrolling
+      this.vScrollIndex = approxIndex
+    },
     scrollLoad (e) {
+      this.determineVisibleStatuses()
       const bodyBRect = document.body.getBoundingClientRect()
       const height = Math.max(bodyBRect.height, -(bodyBRect.y))
       if (this.timeline.loading === false &&
