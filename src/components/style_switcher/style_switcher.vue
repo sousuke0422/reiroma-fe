@@ -10,7 +10,7 @@
           :on-import="onImport"
           :validator="importValidator"
         >
-          <template slot="before">
+          <template v-slot:before>
             <div class="presets">
               {{ $t('settings.presets') }}
               <label

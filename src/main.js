@@ -29,6 +29,8 @@ import VueClickOutside from 'v-click-outside'
 import PortalVue from 'portal-vue'
 import VBodyScrollLock from './directives/body_scroll_lock'
 import VTooltip from 'v-tooltip'
+import VueVirtualScroller from 'vue-virtual-scroller'
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
 import afterStoreSetup from './boot/after_store.js'
 
@@ -41,6 +43,7 @@ Vue.use(VueChatScroll)
 Vue.use(VueClickOutside)
 Vue.use(PortalVue)
 Vue.use(VBodyScrollLock)
+Vue.use(VueVirtualScroller)
 Vue.use(VTooltip, {
   popover: {
     defaultTrigger: 'hover click',

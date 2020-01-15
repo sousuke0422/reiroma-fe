@@ -7,7 +7,7 @@
       placement="bottom-end"
       :offset="5"
     >
-      <div slot="popover">
+      <template v-slot:popover>
         <div class="dropdown-menu">
           <template v-if="user.following">
             <button
@@ -50,7 +50,7 @@
             {{ $t('user_card.report') }}
           </button>
         </div>
-      </div>
+      </template>
       <div class="btn btn-default ellipsis-button">
         <i class="icon-ellipsis trigger-button" />
       </div>

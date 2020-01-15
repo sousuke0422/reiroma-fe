@@ -5,7 +5,7 @@
     :popper-options="popperOptions"
     @show="enter()"
   >
-    <template slot="popover">
+    <template v-slot:popover>
       <Status
         v-if="status"
         :is-preview="true"

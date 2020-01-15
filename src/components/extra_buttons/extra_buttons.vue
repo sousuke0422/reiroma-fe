@@ -5,7 +5,7 @@
     placement="top"
     class="extra-button-popover"
   >
-    <div slot="popover">
+    <template v-slot:popover>
       <div class="dropdown-menu">
         <button
           v-if="canMute && !status.thread_muted"
@@ -46,7 +46,7 @@
           <i class="icon-cancel" /><span>{{ $t("status.delete") }}</span>
         </button>
       </div>
-    </div>
+    </template>
     <div class="button-icon">
       <i class="icon-ellipsis" />
     </div>

@@ -25,8 +25,7 @@
       :get-key="getKey"
     >
       <template
-        slot="item"
-        slot-scope="{item}"
+        v-slot:item="{item}"
       >
         <div
           class="selectable-list-item-inner"
@@ -44,7 +43,7 @@
           />
         </div>
       </template>
-      <template slot="empty">
+      <template v-slot:empty>
         <slot name="empty" />
       </template>
     </List>

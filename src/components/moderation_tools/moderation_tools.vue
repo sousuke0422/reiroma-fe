@@ -7,7 +7,7 @@
       @show="showDropDown = true"
       @hide="showDropDown = false"
     >
-      <div slot="popover">
+      <template v-slot:popover>
         <div class="dropdown-menu">
           <span v-if="user.is_local">
             <button
@@ -120,7 +120,7 @@
             </button>
           </span>
         </div>
-      </div>
+      </template>
       <button
         class="btn btn-default btn-block"
         :class="{ pressed: showDropDown }"
@@ -133,11 +133,11 @@
         v-if="showDeleteUserDialog"
         :on-cancel="deleteUserDialog.bind(this, false)"
       >
-        <template slot="header">
+        <template v-slot:header>
           {{ $t('user_card.admin_menu.delete_user') }}
         </template>
         <p>{{ $t('user_card.admin_menu.delete_user_confirmation') }}</p>
-        <template slot="footer">
+        <template v-slot:footer>
           <button
             class="btn btn-default"
             @click="deleteUserDialog(false)"

@@ -47,17 +47,30 @@
             :profile-user-id="userId"
           />
         </template>
-        <template v-for="status in timeline.visibleStatuses">
-          <conversation
-            v-if="!excludedStatusIdsObject[status.id]"
-            :key="status.id"
-            class="status-fadein"
-            :status-id="status.id"
-            :collapsable="true"
-            :in-profile="inProfile"
-            :profile-user-id="userId"
-          />
-        </template>
+        <DynamicScroller
+          :items="timeline.visibleStatuses"
+          :min-item-size="115"
+          page-mode
+          class="scroller"
+        >
+          <template v-slot="{ item, index, active }">
+            <DynamicScrollerItem
+              v-if="!excludedStatusIdsObject[item.id]"
+              :item="item"
+              :active="active"
+              :data-index="index"
+              :size-dependencies="[item.id]"
+            >
+              <conversation
+                class="status-fadein"
+                :status-id="item.id"
+                :collapsable="true"
+                :in-profile="inProfile"
+                :profile-user-id="userId"
+              />
+            </DynamicScrollerItem>
+          </template>
+        </DynamicScroller>
       </div>
     </div>
     <div :class="classes.footer">

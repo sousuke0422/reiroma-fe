@@ -36,8 +36,7 @@
         >
           <FriendList :user-id="userId">
             <template
-              slot="item"
-              slot-scope="{item}"
+              v-slot:item="{item}"
             >
               <FollowCard :user="item" />
             </template>
@@ -51,8 +50,7 @@
         >
           <FollowerList :user-id="userId">
             <template
-              slot="item"
-              slot-scope="{item}"
+              v-slot:item="{item}"
             >
               <FollowCard
                 :user="item"
