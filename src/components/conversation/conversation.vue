@@ -29,7 +29,7 @@
       :replies="getReplies(status.id)"
       :in-profile="inProfile"
       :profile-user-id="profileUserId"
-      :virtualHidden="virtualHidden"
+      :virtual-hidden="virtualHidden"
       class="status-fadein panel-body"
       @goto="setHighlight"
       @toggleExpanded="toggleExpanded"
