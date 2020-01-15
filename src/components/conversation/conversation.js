@@ -36,7 +36,8 @@ const conversation = {
     return {
       highlight: null,
       expanded: false,
-      height: '115px'
+      // Approximate minimum height of a status, gets overwritten with real one
+      virtualHeight: '120px'
     }
   },
   props: [
