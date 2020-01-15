@@ -33,7 +33,7 @@ const Timeline = {
       paused: false,
       unfocused: false,
       bottomedOut: false,
-      vScrollIndex: 0
+      virtualScrollIndex: 0
     }
   },
   computed: {
@@ -72,8 +72,9 @@ const Timeline = {
     },
     statusesToDisplay () {
       const amount = this.timeline.visibleStatuses.length
-      const min = Math.max(0, this.vScrollIndex - 20)
-      const max = Math.min(amount, this.vScrollIndex + 20)
+      const statusesPerSide = Math.ceil(Math.max(10, window.innerHeight / 100))
+      const min = Math.max(0, this.virtualScrollIndex - statusesPerSide)
+      const max = Math.min(amount, this.virtualScrollIndex + statusesPerSide)
       return this.timeline.visibleStatuses.slice(min, max).map(_ => _.id)
     },
     virtualScrollingEnabled () {
@@ -89,7 +90,7 @@ const Timeline = {
     const credentials = store.state.users.currentUser.credentials
     const showImmediately = this.timeline.visibleStatuses.length === 0
 
-    window.addEventListener('scroll', throttle(this.scrollLoad, 100))
+    window.addEventListener('scroll', this.handleScroll)
 
     if (store.state.api.fetchers[this.timelineName]) { return false }
 
@@ -110,7 +111,7 @@ const Timeline = {
     window.addEventListener('keydown', this.handleShortKey)
   },
   destroyed () {
-    window.removeEventListener('scroll', this.scrollLoad)
+    window.removeEventListener('scroll', this.handleScroll)
     window.removeEventListener('keydown', this.handleShortKey)
     if (typeof document.hidden !== 'undefined') document.removeEventListener('visibilitychange', this.handleVisibilityChange, false)
     this.$store.commit('setLoading', { timeline: this.timelineName, value: false })
@@ -153,34 +154,48 @@ const Timeline = {
       })
     }, 1000, this),
     determineVisibleStatuses () {
+      if (!this.$refs.timeline) return
+
       const statuses = this.$refs.timeline.children
+
+      if (statuses.length === 0) return
 
       const bodyBRect = document.body.getBoundingClientRect()
       const height = Math.max(bodyBRect.height, -(bodyBRect.y))
 
       const centerOfScreen = window.pageYOffset + (window.innerHeight * 0.5)
 
-      // Approximate which status is in the middle of the screen and check how
-      // far it is roughly from the viewport
+      // Start from approximating the index of some visible status by using the
+      // the center of the screen on the timeline.
       let approxIndex = Math.floor(statuses.length * (centerOfScreen / height))
       let err = statuses[approxIndex].getBoundingClientRect().y
 
+      // if we have a previous scroll index that can be used, test if it's
+      // closer than the previous approximation, use it if so
+      if (
+        this.virtualScrollIndex < statuses.length &&
+        Math.abs(err) > statuses[this.virtualScrollIndex].getBoundingClientRect().y
+      ) {
+        approxIndex = this.virtualScrollIndex
+        err = statuses[approxIndex].getBoundingClientRect().y
+      }
+
       // if the status is too far from viewport, check the next/previous ones if
       // they happen to be better
-      while (err < -100) {
+      while (err < -100 && approxIndex < statuses.length - 1) {
         approxIndex++
         err = statuses[approxIndex].getBoundingClientRect().y
       }
-      while (err > 1000) {
+      while (err > window.innerHeight + 100 && approxIndex > 0) {
         approxIndex--
         err = statuses[approxIndex].getBoundingClientRect().y
       }
 
-      // this status is now the center point for virtual scrolling
-      this.vScrollIndex = approxIndex
+      // this status is now the center point for virtual scrolling and visible
+      // statuses will be nearby statuses before and after it
+      this.virtualScrollIndex = approxIndex
     },
     scrollLoad (e) {
-      this.determineVisibleStatuses()
       const bodyBRect = document.body.getBoundingClientRect()
       const height = Math.max(bodyBRect.height, -(bodyBRect.y))
       if (this.timeline.loading === false &&
@@ -190,6 +205,10 @@ const Timeline = {
         this.fetchOlderStatuses()
       }
     },
+    handleScroll: throttle(function (e) {
+      this.determineVisibleStatuses()
+      this.scrollLoad(e)
+    }, 100),
     handleVisibilityChange () {
       this.unfocused = document.hidden
     }
