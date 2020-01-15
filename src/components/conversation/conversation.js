@@ -118,7 +118,7 @@ const conversation = {
       const newConversationId = this.getConversationId(newVal)
       const oldConversationId = this.getConversationId(oldVal)
       if (newConversationId && oldConversationId && newConversationId === oldConversationId) {
-        this.setHighheightlight(this.originalStatusId)
+        this.setHighlight(this.originalStatusId)
       } else {
         this.fetchConversation()
       }
