@@ -35,7 +35,7 @@ const Status = {
     'showPinned',
     'inProfile',
     'profileUserId',
-    'hidden'
+    'virtualHidden'
   ],
   data () {
     return {
@@ -122,7 +122,7 @@ const Status = {
       return this.mergedConfig.hideFilteredStatuses
     },
     hideStatus () {
-      return (this.hideReply || this.deleted) || (this.muted && this.hideFilteredStatuses) || this.hidden
+      return (this.hideReply || this.deleted) || (this.muted && this.hideFilteredStatuses) || this.virtualHidden
     },
     isFocused () {
       // retweet or root of an expanded conversation

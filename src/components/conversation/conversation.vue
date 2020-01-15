@@ -1,11 +1,11 @@
 <template>
   <div
-    :style="hiderStyle"
+    :style="hiddenStyle"
     class="timeline panel-default"
     :class="[isExpanded ? 'panel' : 'panel-disabled']"
   >
     <div
-      v-if="isExpanded && !hidden"
+      v-if="isExpanded && !virtualHidden"
       class="panel-heading conversation-heading"
     >
       <span class="title"> {{ $t('timeline.conversation') }} </span>
@@ -29,7 +29,7 @@
       :replies="getReplies(status.id)"
       :in-profile="inProfile"
       :profile-user-id="profileUserId"
-      :hidden="hidden"
+      :virtualHidden="virtualHidden"
       class="status-fadein panel-body"
       @goto="setHighlight"
       @toggleExpanded="toggleExpanded"

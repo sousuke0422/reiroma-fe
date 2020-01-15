@@ -56,7 +56,7 @@
             :collapsable="true"
             :in-profile="inProfile"
             :profile-user-id="userId"
-            :hidden="!displayingStatuses.includes(status.id)"
+            :virtualHidden="!displayingStatuses.includes(status.id)"
           />
         </template>
       </div>

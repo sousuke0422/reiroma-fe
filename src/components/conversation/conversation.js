@@ -46,7 +46,7 @@ const conversation = {
     'pinnedStatusIdsObject',
     'inProfile',
     'profileUserId',
-    'hidden'
+    'virtualHidden'
   ],
   created () {
     if (this.isPage) {
@@ -105,8 +105,8 @@ const conversation = {
     isExpanded () {
       return this.expanded || this.isPage
     },
-    hiderStyle () {
-      return this.hidden ? { height: this.height } : {}
+    hiddenStyle () {
+      return this.virtualHidden ? { height: this.virtualHeight } : {}
     }
   },
   components: {
@@ -127,9 +127,8 @@ const conversation = {
         this.fetchConversation()
       }
     },
-    hidden (value) {
-      this.height = `${this.$el.clientHeight}px`
-      console.log('Element height:', this.height)
+    virtualHidden (value) {
+      this.virtualHeight = `${this.$el.clientHeight}px`
     }
   },
   methods: {
