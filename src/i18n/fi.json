@@ -228,7 +228,8 @@
     "values": {
       "false": "pois päältä",
       "true": "päällä"
-    }
+    },
+    "virtual_scrolling": "Optimoi aikajanan suorituskykyä"
   },
   "time": {
     "day": "{0} päivä",

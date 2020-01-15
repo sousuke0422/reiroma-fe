@@ -92,6 +92,11 @@
                     {{ $t('settings.reply_link_preview') }}
                   </Checkbox>
                 </li>
+                <li>
+                  <Checkbox v-model="virtualScrolling">
+                    {{ $t('settings.virtual_scrolling') }}
+                  </Checkbox>
+                </li>
               </ul>
             </div>
 

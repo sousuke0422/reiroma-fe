@@ -70,11 +70,14 @@ const Timeline = {
     pinnedStatusIdsObject () {
       return keyBy(this.pinnedStatusIds)
     },
-    displayingStatuses () {
+    statusesToDisplay () {
       const amount = this.timeline.visibleStatuses.length
       const min = Math.max(0, this.vScrollIndex - 20)
       const max = Math.min(amount, this.vScrollIndex + 20)
       return this.timeline.visibleStatuses.slice(min, max).map(_ => _.id)
+    },
+    virtualScrollingEnabled () {
+      return this.$store.getters.mergedConfig.virtualScrolling
     }
   },
   components: {
