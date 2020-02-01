@@ -35,12 +35,11 @@
     </div>
     <div :class="classes.body">
       <div class="timeline">
-        <template v-for="statusId in pinnedStatusIds">
+        <template v-for="status in pinnedStatuses">
           <conversation
-            v-if="timeline.statusesObject[statusId]"
-            :key="statusId + '-pinned'"
+            :key="status.id + '-pinned'"
             class="status-fadein"
-            :status-id="statusId"
+            :status-id="status.id"
             :collapsable="true"
             :pinned-status-ids-object="pinnedStatusIdsObject"
             :in-profile="inProfile"
@@ -49,7 +48,6 @@
         </template>
         <template v-for="status in timeline.visibleStatuses">
           <conversation
-            v-if="!excludedStatusIdsObject[status.id]"
             :key="status.id"
             class="status-fadein"
             :status-id="status.id"

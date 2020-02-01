@@ -61,7 +61,8 @@ export const defaultState = () => ({
     publicAndExternal: emptyTl(),
     friends: emptyTl(),
     tag: emptyTl(),
-    dms: emptyTl()
+    dms: emptyTl(),
+    pins: emptyTl()
   }
 })
 
@@ -630,7 +631,7 @@ const statuses = {
     },
     fetchPinnedStatuses ({ rootState, dispatch }, userId) {
       rootState.api.backendInteractor.fetchPinnedStatuses({ id: userId })
-        .then(statuses => dispatch('addNewStatuses', { statuses, timeline: 'user', userId, showImmediately: true, noIdUpdate: true }))
+        .then(statuses => dispatch('addNewStatuses', { statuses, timeline: 'pins', userId, showImmediately: true, noIdUpdate: true }))
     },
     pinStatus ({ rootState, dispatch }, statusId) {
       return rootState.api.backendInteractor.pinOwnStatus({ id: statusId })
