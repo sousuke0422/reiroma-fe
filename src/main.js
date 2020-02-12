@@ -19,6 +19,7 @@ import oauthTokensModule from './modules/oauth_tokens.js'
 import reportsModule from './modules/reports.js'
 import pollsModule from './modules/polls.js'
 import postStatusModule from './modules/postStatus.js'
+import popoverModule from './modules/popover.js'
 
 import VueI18n from 'vue-i18n'
 
@@ -89,7 +90,8 @@ const persistedStateOptions = {
       oauthTokens: oauthTokensModule,
       reports: reportsModule,
       polls: pollsModule,
-      postStatus: postStatusModule
+      postStatus: postStatusModule,
+      popover: popoverModule
     },
     plugins: [persistedState, pushNotifications],
     strict: false // Socket modifies itself, let's ignore this for now.

@@ -1,11 +1,9 @@
 <template>
-  <v-popover
-    popover-class="status-popover"
-    placement="top-start"
-    :popper-options="popperOptions"
-    @show="enter()"
-  >
-    <template slot="popover">
+  <Popover trigger="hover">
+    <template slot="trigger">
+      <slot />
+    </template>
+    <div slot="content" class="status-popover">
       <Status
         v-if="status"
         :is-preview="true"
@@ -18,10 +16,8 @@
       >
         <i class="icon-spin4 animate-spin" />
       </div>
-    </template>
-
-    <slot />
-  </v-popover>
+    </div>
+  </Popover>
 </template>
 
 <script src="./status_popover.js" ></script>
@@ -29,11 +25,11 @@
 <style lang="scss">
 @import '../../_variables.scss';
 
-.tooltip.popover.status-popover {
+.status-popover {
   font-size: 1rem;
   min-width: 15em;
   max-width: 95%;
-  margin-left: 0.5em;
+  margin: 0.5em 0;
 
   .popover-inner {
     border-color: $fallback--border;
