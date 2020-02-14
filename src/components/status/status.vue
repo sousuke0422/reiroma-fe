@@ -177,6 +177,8 @@
                 <StatusPopover
                   v-if="!isPreview"
                   :status-id="status.in_reply_to_status_id"
+                  class="reply-to-popover"
+                  style="min-width: 0"
                 >
                   <a
                     class="reply-to"
@@ -564,11 +566,10 @@ $status-margin: 0.75em;
       align-items: stretch;
 
       > .reply-to-and-accountname > a {
+        overflow: hidden;
         max-width: 100%;
         text-overflow: ellipsis;
-        overflow: hidden;
         white-space: nowrap;
-        display: inline-block;
         word-break: break-all;
       }
     }
@@ -577,7 +578,6 @@ $status-margin: 0.75em;
       display: flex;
       height: 18px;
       margin-right: 0.5em;
-      overflow: hidden;
       max-width: 100%;
       .icon-reply {
         transform: scaleX(-1);
@@ -588,6 +588,10 @@ $status-margin: 0.75em;
       display: flex;
     }
 
+    .reply-to-popover {
+      min-width: 0;
+    }
+
     .reply-to {
       display: flex;
     }
@@ -595,6 +599,7 @@ $status-margin: 0.75em;
     .reply-to-text {
       overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
       margin: 0 0.4em 0 0.2em;
       color: $fallback--faint;
       color: var(--faint, $fallback--faint);

@@ -1,40 +1,26 @@
 <template>
-  <!-- This is for the weird portal shit
-  <div
-    @mouseenter="registerPopover"
-    @mouseleave="unregisterPopover"
-  >
-    <slot name="trigger"></slot>
-    <portal
-      v-if="targetId"
-      :to="targetId"
-    >
-      <slot name="content"></slot>
-    </portal>
-  </div>
-  -->
   <div
     @mouseenter="onMouseenter"
     @mouseleave="onMouseleave"
   >
-    <div @click="onClick" ref="trigger">
-      <slot name="trigger"></slot>
+    <div
+      ref="trigger"
+      @click="onClick"
+    >
+      <slot name="trigger" />
     </div>
     <div
       v-if="display"
+      ref="content"
       :style="styles"
       class="popover"
+      :class="popoverClass"
     >
-      <div
-        ref="content"
+      <slot
+        name="content"
         class="popover-inner"
-      >
-      <!-- onSuccess is to mimic basic functionality of v-popover -->
-        <slot
-          name="content"
-          @onSuccess="hidePopover"
-        ></slot>
-      </div>
+        :close="hidePopover"
+      />
     </div>
   </div>
 </template>
@@ -48,15 +34,14 @@
   z-index: 8;
   position: absolute;
   min-width: 0;
+  transition: opacity 0.3s;
 
-  .popover-inner {
-    box-shadow: 1px 1px 4px rgba(0,0,0,.6);
-    box-shadow: var(--panelShadow);
-    border-radius: $fallback--btnRadius;
-    border-radius: var(--btnRadius, $fallback--btnRadius);
-    background-color: $fallback--bg;
-    background-color: var(--bg, $fallback--bg);
-  }
+  box-shadow: 1px 1px 4px rgba(0,0,0,.6);
+  box-shadow: var(--panelShadow);
+  border-radius: $fallback--btnRadius;
+  border-radius: var(--btnRadius, $fallback--btnRadius);
+  background-color: $fallback--bg;
+  background-color: var(--bg, $fallback--bg);
 
   .popover-arrow {
     width: 0;

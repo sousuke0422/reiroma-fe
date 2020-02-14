@@ -4,7 +4,10 @@ const Popover = {
   props: [
     'trigger',
     'placement',
-    'show'
+    'boundTo',
+    'padding',
+    'offset',
+    'popoverClass'
   ],
   data () {
     return {
@@ -31,55 +34,77 @@ const Popover = {
       }
     },
     */
+    updateStyles () {
+      if (this.hidden) return { opacity: 0 }
+
+      // Popover will be anchored around this element
+      const anchorEl = this.$refs.trigger || this.$el
+      const screenBox = anchorEl.getBoundingClientRect()
+      // Screen position of the origin point for popover
+      const origin = { x: screenBox.left + screenBox.width * 0.5, y: screenBox.top }
+      const content = this.$refs.content
+      const parentBounds = this.boundTo === 'container' && this.$el.offsetParent.getBoundingClientRect()
+      const padding = this.padding || {}
+      const bounds = this.boundTo === 'container'
+        ? {
+          xMin: parentBounds.left + (padding.left || 0),
+          xMax: parentBounds.right - (padding.right || 0),
+          yMin: 0 + (padding.top || 50),
+          yMax: window.innerHeight - (padding.bottom || 5)
+        } : {
+          xMin: 0 + (padding.left || 10),
+          xMax: window.innerWidth - (padding.right || 10),
+          yMin: 0 + (padding.top || 50),
+          yMax: window.innerHeight - (padding.bottom || 5)
+        }
+      let horizOffset = 0
+
+      console.log(bounds, content.offsetWidth)
+
+      // If overflowing from left, move it
+      if ((origin.x - content.offsetWidth * 0.5) < bounds.xMin) {
+        horizOffset = -(origin.x - content.offsetWidth * 0.5) + bounds.xMin
+      }
+
+      // If overflowing from right, move it
+      if ((origin.x + horizOffset + content.offsetWidth * 0.5) > bounds.xMax) {
+        horizOffset -= (origin.x + horizOffset + content.offsetWidth * 0.5) - bounds.xMax
+      }
+
+      // Default to whatever user wished with placement prop
+      let usingTop = this.placement !== 'bottom'
+
+      // Handle special cases, first force to displaying on top if there's not space on bottom,
+      // regardless of what placement value was. Then check if there's not space on top, and
+      // force to bottom, again regardless of what placement value was.
+      if (origin.y + content.offsetHeight > bounds.yMax) usingTop = true
+      if (origin.y - content.offsetHeight < bounds.yMin) usingTop = false
+
+      const yOffset = (this.offset && this.offset.y) || 0
+      const vertAlign = usingTop
+        ? {
+          bottom: `${anchorEl.offsetHeight + yOffset}px`
+        }
+        : {
+          top: `${anchorEl.offsetHeight + yOffset}px`
+        }
+      this.styles = {
+        opacity: '100%',
+        left: `${(anchorEl.offsetLeft + anchorEl.offsetWidth * 0.5) - content.offsetWidth * 0.5 + horizOffset}px`,
+        ...vertAlign
+      }
+    },
     showPopover () {
+      if (this.hidden) this.$emit('show')
       this.hidden = false
-      this.$nextTick(function () {
-        if (this.hidden) return { opacity: 0 }
-
-        const anchorEl = this.$refs.trigger || this.$el
-        console.log(anchorEl)
-        const screenBox = anchorEl.getBoundingClientRect()
-        const origin = { x: screenBox.left + screenBox.width * 0.5, y: screenBox.top}
-        const content = this.$refs.content
-        let horizOffset = 0
-
-        if ((origin.x - content.offsetWidth * 0.5) < 25) {
-          horizOffset += -(origin.x - content.offsetWidth * 0.5) + 25
-        }
-
-        console.log((origin.x + content.offsetWidth * 0.5), (window.innerWidth - 25))
-        if ((origin.x + content.offsetWidth * 0.5) > window.innerWidth - 25) {
-          horizOffset -= (origin.x + content.offsetWidth * 0.5) - (window.innerWidth - 25)
-        }
-        // Default to whatever user wished with placement prop
-        let usingTop = this.placement !== 'bottom'
-
-        // Handle special cases, first force to displaying on top if there's not space on bottom,
-        // regardless of what placement value was. Then check if there's not space on top, and
-        // force to bottom, again regardless of what placement value was.
-        if (origin.y + content.offsetHeight > (window.innerHeight - 25)) usingTop = true
-        if (origin.y - content.offsetHeight < 50) usingTop = false
-
-        const vertAlign = usingTop ?
-          {
-            bottom: `${anchorEl.offsetHeight}px`
-          } :
-          {
-            top: `${anchorEl.offsetHeight}px`
-          }
-        this.styles = {
-          opacity: '100%',
-          left: `${(anchorEl.offsetLeft + anchorEl.offsetWidth * 0.5) - content.offsetWidth * 0.5 + horizOffset}px`,
-          ...vertAlign
-        }
-      })
+      this.$nextTick(this.updateStyles)
     },
     hidePopover () {
+      if (!this.hidden) this.$emit('close')
       this.hidden = true
       this.styles = { opacity: 0 }
     },
     onMouseenter (e) {
-      console.log(this.trigger)
       if (this.trigger === 'hover') this.showPopover()
     },
     onMouseleave (e) {
@@ -97,15 +122,18 @@ const Popover = {
     onClickOutside (e) {
       if (this.hidden) return
       if (this.$el.contains(e.target)) return
-      console.log(e.target)
       this.hidePopover()
     }
   },
+  beforeUpdate () {
+    console.log('beforeupdate')
+    // if (!this.hidden) this.$nextTick(this.updateStyles)
+  },
   created () {
-    document.addEventListener("click", this.onClickOutside)
+    document.addEventListener('click', this.onClickOutside)
   },
   destroyed () {
-    document.removeEventListener("click", this.onClickOutside)
+    document.removeEventListener('click', this.onClickOutside)
     this.hidePopover()
   }
 }

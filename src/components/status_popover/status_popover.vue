@@ -1,9 +1,16 @@
 <template>
-  <Popover trigger="hover">
+  <Popover
+    trigger="hover"
+    bound-to="container"
+    popover-class="status-popover"
+    @show="enter"
+  >
     <template slot="trigger">
       <slot />
     </template>
-    <div slot="content" class="status-popover">
+    <div
+      slot="content"
+    >
       <Status
         v-if="status"
         :is-preview="true"
@@ -31,16 +38,14 @@
   max-width: 95%;
   margin: 0.5em 0;
 
-  .popover-inner {
-    border-color: $fallback--border;
-    border-color: var(--border, $fallback--border);
-    border-style: solid;
-    border-width: 1px;
-    border-radius: $fallback--tooltipRadius;
-    border-radius: var(--tooltipRadius, $fallback--tooltipRadius);
-    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
-    box-shadow: var(--popupShadow);
-  }
+  border-color: $fallback--border;
+  border-color: var(--border, $fallback--border);
+  border-style: solid;
+  border-width: 1px;
+  border-radius: $fallback--tooltipRadius;
+  border-radius: var(--tooltipRadius, $fallback--tooltipRadius);
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--popupShadow);
 
   .popover-arrow::before {
     position: absolute;

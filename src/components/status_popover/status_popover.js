@@ -5,15 +5,6 @@ const StatusPopover = {
   props: [
     'statusId'
   ],
-  data () {
-    return {
-      popperOptions: {
-        modifiers: {
-          preventOverflow: { padding: { top: 50 }, boundariesElement: 'viewport' }
-        }
-      }
-    }
-  },
   computed: {
     status () {
       return find(this.$store.state.statuses.allStatuses, { id: this.statusId })
@@ -28,6 +19,7 @@ const StatusPopover = {
       if (!this.status) {
         this.$store.dispatch('fetchStatus', this.statusId)
       }
+      console.log(this.$el.offsetParent)
     }
   }
 }

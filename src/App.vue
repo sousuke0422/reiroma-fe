@@ -123,7 +123,6 @@
     <UserReportingModal />
     <PostStatusModal />
     <portal-target name="modal" />
-    <PopoverTarget />
   </div>
 </template>
 

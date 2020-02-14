@@ -12,7 +12,6 @@ import MobilePostStatusButton from './components/mobile_post_status_button/mobil
 import MobileNav from './components/mobile_nav/mobile_nav.vue'
 import UserReportingModal from './components/user_reporting_modal/user_reporting_modal.vue'
 import PostStatusModal from './components/post_status_modal/post_status_modal.vue'
-import PopoverTarget from './components/popover/popover_target.vue'
 import { windowWidth } from './services/window_utils/window_utils'
 
 export default {
@@ -31,8 +30,7 @@ export default {
     MobilePostStatusButton,
     MobileNav,
     UserReportingModal,
-    PostStatusModal,
-    PopoverTarget
+    PostStatusModal
   },
   data: () => ({
     mobileActivePanel: 'timeline',

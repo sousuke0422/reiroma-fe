@@ -47,7 +47,10 @@
         </button>
       </div>
     </div>
-    <div slot="trigger" class="button-icon">
+    <div
+      slot="trigger"
+      class="button-icon"
+    >
       <i class="icon-ellipsis" />
     </div>
   </Popover>
@@ -58,10 +61,6 @@
 <style lang="scss">
 @import '../../_variables.scss';
 @import '../popper/popper.scss';
-
-.dropdown-menu {
-  flex-shrink: 0;
-}
 
 .icon-ellipsis {
   cursor: pointer;
