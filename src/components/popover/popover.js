@@ -12,7 +12,8 @@ const Popover = {
   data () {
     return {
       hidden: true,
-      styles: { opacity: 0 }
+      styles: { opacity: 0 },
+      oldSize: { width: 0, height: 0 }
     }
   },
   computed: {
@@ -21,19 +22,6 @@ const Popover = {
     }
   },
   methods: {
-    /*
-    registerPopover (e) {
-      if (!this.targetId) {
-        this.$store.dispatch('registerPopover', e.target).then(id => this.targetId = id)
-      }
-    },
-    unregisterPopover () {
-      if (this.targetId) {
-        this.$store.dispatch('unregisterPopover', this.targetId)
-        this.targetId = null
-      }
-    },
-    */
     updateStyles () {
       if (this.hidden) return { opacity: 0 }
 
@@ -43,32 +31,40 @@ const Popover = {
       // Screen position of the origin point for popover
       const origin = { x: screenBox.left + screenBox.width * 0.5, y: screenBox.top }
       const content = this.$refs.content
-      const parentBounds = this.boundTo === 'container' && this.$el.offsetParent.getBoundingClientRect()
+      // Minor optimization, don't call a slow reflow call if we don't have to
+      const parentBounds =
+        (this.boundTo.x === 'container' || this.boundTo.y === 'container') &&
+        this.$el.offsetParent.getBoundingClientRect()
       const padding = this.padding || {}
-      const bounds = this.boundTo === 'container'
-        ? {
-          xMin: parentBounds.left + (padding.left || 0),
-          xMax: parentBounds.right - (padding.right || 0),
-          yMin: 0 + (padding.top || 50),
-          yMax: window.innerHeight - (padding.bottom || 5)
-        } : {
-          xMin: 0 + (padding.left || 10),
-          xMax: window.innerWidth - (padding.right || 10),
-          yMin: 0 + (padding.top || 50),
-          yMax: window.innerHeight - (padding.bottom || 5)
-        }
-      let horizOffset = 0
 
-      console.log(bounds, content.offsetWidth)
-
-      // If overflowing from left, move it
-      if ((origin.x - content.offsetWidth * 0.5) < bounds.xMin) {
-        horizOffset = -(origin.x - content.offsetWidth * 0.5) + bounds.xMin
+      // What are the screen bounds for the popover? Viewport vs container
+      // when using viewport, using default padding values to dodge the navbar
+      const xBounds = this.boundTo.x === 'container' ? {
+        min: parentBounds.left + (padding.left || 0),
+        max: parentBounds.right - (padding.right || 0)
+      } : {
+        min: 0 + (padding.left || 10),
+        max: window.innerWidth - (padding.right || 10)
       }
 
-      // If overflowing from right, move it
-      if ((origin.x + horizOffset + content.offsetWidth * 0.5) > bounds.xMax) {
-        horizOffset -= (origin.x + horizOffset + content.offsetWidth * 0.5) - bounds.xMax
+      const yBounds = this.boundTo.y === 'container' ? {
+        min: parentBounds.top + (padding.top || 0),
+        max: parentBounds.bottom - (padding.bottom || 0)
+      } : {
+        min: 0 + (padding.top || 50),
+        max: window.innerHeight - (padding.bottom || 5)
+      }
+
+      let horizOffset = 0
+
+      // If overflowing from left, move it so that it doesn't
+      if ((origin.x - content.offsetWidth * 0.5) < xBounds.min) {
+        horizOffset = -(origin.x - content.offsetWidth * 0.5) + xBounds.min
+      }
+
+      // If overflowing from right, move it so that it doesn't
+      if ((origin.x + horizOffset + content.offsetWidth * 0.5) > xBounds.max) {
+        horizOffset -= (origin.x + horizOffset + content.offsetWidth * 0.5) - xBounds.max
       }
 
       // Default to whatever user wished with placement prop
@@ -77,21 +73,20 @@ const Popover = {
       // Handle special cases, first force to displaying on top if there's not space on bottom,
       // regardless of what placement value was. Then check if there's not space on top, and
       // force to bottom, again regardless of what placement value was.
-      if (origin.y + content.offsetHeight > bounds.yMax) usingTop = true
-      if (origin.y - content.offsetHeight < bounds.yMin) usingTop = false
+      if (origin.y + content.offsetHeight > yBounds.max) usingTop = true
+      if (origin.y - content.offsetHeight < yBounds.min) usingTop = false
 
       const yOffset = (this.offset && this.offset.y) || 0
-      const vertAlign = usingTop
-        ? {
-          bottom: `${anchorEl.offsetHeight + yOffset}px`
-        }
-        : {
-          top: `${anchorEl.offsetHeight + yOffset}px`
-        }
+      const translateY = usingTop
+        ? -anchorEl.offsetHeight - yOffset - content.offsetHeight
+        : yOffset + yOffset
+
+      const xOffset = (this.offset && this.offset.x) || 0
+      const translateX = (+anchorEl.offsetWidth * 0.5) - content.offsetWidth * 0.5 + horizOffset + xOffset
+
       this.styles = {
-        opacity: '100%',
-        left: `${(anchorEl.offsetLeft + anchorEl.offsetWidth * 0.5) - content.offsetWidth * 0.5 + horizOffset}px`,
-        ...vertAlign
+        opacity: 1,
+        transform: `translate(${Math.floor(translateX)}px, ${Math.floor(translateY)}px)`
       }
     },
     showPopover () {
@@ -125,9 +120,16 @@ const Popover = {
       this.hidePopover()
     }
   },
-  beforeUpdate () {
-    console.log('beforeupdate')
-    // if (!this.hidden) this.$nextTick(this.updateStyles)
+  updated () {
+    // Monitor changes to content size, update styles only when content sizes have changed,
+    // that should be the only time we need to move the popover box if we don't care about scroll
+    // or resize
+    const content = this.$refs.content
+    if (!content) return
+    if (this.oldSize.width !== content.offsetWidth || this.oldSize.height !== content.offsetHeight) {
+      this.updateStyles()
+      this.oldSize = { width: content.offsetWidth, height: content.offsetHeight }
+    }
   },
   created () {
     document.addEventListener('click', this.onClickOutside)

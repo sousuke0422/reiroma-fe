@@ -1,8 +1,9 @@
 <template>
   <Popover
     trigger="hover"
-    bound-to="container"
     popover-class="status-popover"
+    :bound-to="{ x: 'container' }"
+    :offset="{ x: 0, y: 5 }"
     @show="enter"
   >
     <template slot="trigger">
@@ -36,7 +37,6 @@
   font-size: 1rem;
   min-width: 15em;
   max-width: 95%;
-  margin: 0.5em 0;
 
   border-color: $fallback--border;
   border-color: var(--border, $fallback--border);

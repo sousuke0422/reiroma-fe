@@ -1,4 +1,5 @@
 import DialogModal from '../dialog_modal/dialog_modal.vue'
+import Popover from '../popover/popover.vue'
 
 const FORCE_NSFW = 'mrf_tag:media-force-nsfw'
 const STRIP_MEDIA = 'mrf_tag:media-strip'
@@ -14,7 +15,6 @@ const ModerationTools = {
   ],
   data () {
     return {
-      showDropDown: false,
       tags: {
         FORCE_NSFW,
         STRIP_MEDIA,
@@ -28,7 +28,8 @@ const ModerationTools = {
     }
   },
   components: {
-    DialogModal
+    DialogModal,
+    Popover
   },
   computed: {
     tagsSet () {
