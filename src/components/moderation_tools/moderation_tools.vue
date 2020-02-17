@@ -159,7 +159,6 @@
 
 <style lang="scss">
 @import '../../_variables.scss';
-@import '../popper/popper.scss';
 
 .menu-checkbox {
   float: right;

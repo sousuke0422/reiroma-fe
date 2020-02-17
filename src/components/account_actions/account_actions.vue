@@ -65,7 +65,6 @@
 
 <style lang="scss">
 @import '../../_variables.scss';
-@import '../popper/popper.scss';
 .account-actions {
   margin: 0 .8em;
 }

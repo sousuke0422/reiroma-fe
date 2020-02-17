@@ -11,12 +11,7 @@ const EmojiReactions = {
   },
   props: ['status'],
   data: () => ({
-    showAll: false,
-    popperOptions: {
-      modifiers: {
-        preventOverflow: { padding: { top: 50 }, boundariesElement: 'viewport' }
-      }
-    }
+    showAll: false
   }),
   computed: {
     tooManyReactions () {
