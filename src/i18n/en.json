@@ -16,10 +16,25 @@
     "mrf_policy_simple_media_removal": "Media Removal",
     "mrf_policy_simple_media_removal_desc": "This instance removes media from posts on the following instances:",
     "mrf_policy_simple_media_nsfw": "Media Force-set As Sensitive",
-    "mrf_policy_simple_media_nsfw_desc": "This instance forces media to be set sensitive in posts on the following instances:"
+    "mrf_policy_simple_media_nsfw_desc": "This instance forces media to be set sensitive in posts on the following instances:",
+    "mrf": {
+      "keyword": {
+        "keyword_policies": "Keyword Policies",
+        "ftl_removal": "Removal from \"The Whole Known Network\" Timeline",
+        "reject": "Reject",
+        "replace": "Replace",
+        "is_replaced_by": "→"
+      }
+    }
   },
   "chat": {
     "title": "Chat"
+  },
+  "domain_mute_card": {
+    "mute": "Mute",
+    "mute_progress": "Muting...",
+    "unmute": "Unmute",
+    "unmute_progress": "Unmuting..."
   },
   "exporter": {
     "export": "Export",
@@ -111,7 +126,8 @@
     "read": "Read!",
     "repeated_you": "repeated your status",
     "no_more_notifications": "No more notifications",
-    "migrated_to": "migrated to"
+    "migrated_to": "migrated to",
+    "reacted_with": "reacted with {0}"
   },
   "polls": {
     "add_poll": "Add Poll",
@@ -226,6 +242,7 @@
         "desc": "To enable two-factor authentication, enter the code from your two-factor app:"
       }
     },
+    "allow_following_move": "Allow auto-follow when following account moves",
     "attachmentRadius": "Attachments",
     "attachments": "Attachments",
     "autoload": "Enable automatic loading when scrolled to the bottom",
@@ -264,8 +281,10 @@
     "delete_account_error": "There was an issue deleting your account. If this persists please contact your instance administrator.",
     "delete_account_instructions": "Type your password in the input below to confirm account deletion.",
     "discoverable": "Allow discovery of this account in search results and other services",
+    "domain_mutes": "Domains",
     "avatar_size_instruction": "The recommended minimum size for avatar images is 150x150 pixels.",
     "pad_emoji": "Pad emoji with spaces when adding from picker",
+    "emoji_reactions_on_timeline": "Show emoji reactions on timeline",
     "export_theme": "Save preset",
     "filtering": "Filtering",
     "filtering_explanation": "All statuses containing these words will be muted, one per line",
@@ -314,6 +333,7 @@
     "notification_visibility_mentions": "Mentions",
     "notification_visibility_repeats": "Repeats",
     "notification_visibility_moves": "User Migrates",
+    "notification_visibility_emoji_reactions": "Reactions",
     "no_rich_text_description": "Strip rich text formatting from all posts",
     "no_blocks": "No blocks",
     "no_mutes": "No mutes",
@@ -361,6 +381,7 @@
     "post_status_content_type": "Post status content type",
     "stop_gifs": "Play-on-hover GIFs",
     "streaming": "Enable automatic streaming of new posts when scrolled to the top",
+    "user_mutes": "Users",
     "useStreamingApi": "Receive posts and notifications real-time",
     "useStreamingApiWarning": "(Not recommended, experimental, known to skip posts)",
     "text": "Text",
@@ -369,6 +390,7 @@
     "theme_help_v2_1": "You can also override certain component's colors and opacity by toggling the checkbox, use \"Clear all\" button to clear all overrides.",
     "theme_help_v2_2": "Icons underneath some entries are background/text contrast indicators, hover over for detailed info. Please keep in mind that when using transparency contrast indicators show the worst possible case.",
     "tooltipRadius": "Tooltips/alerts",
+    "type_domains_to_mute": "Type in domains to mute",
     "upload_a_photo": "Upload a photo",
     "user_settings": "User Settings",
     "values": {
@@ -640,6 +662,7 @@
     "repeat": "Repeat",
     "reply": "Reply",
     "favorite": "Favorite",
+    "add_reaction": "Add Reaction",
     "user_settings": "User Settings"
   },
   "upload":{

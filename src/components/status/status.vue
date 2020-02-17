@@ -277,7 +277,21 @@
               href="#"
               class="cw-status-hider"
               @click.prevent="toggleShowMore"
-            >{{ $t("general.show_more") }}</a>
+            >
+              {{ $t("general.show_more") }}
+              <span
+                v-if="hasImageAttachments"
+                class="icon-picture"
+              />
+              <span
+                v-if="hasVideoAttachments"
+                class="icon-video"
+              />
+              <span
+                v-if="status.card"
+                class="icon-link"
+              />
+            </a>
             <a
               v-if="showingMore"
               href="#"
@@ -354,6 +368,11 @@
             </div>
           </transition>
 
+          <EmojiReactions
+            v-if="(mergedConfig.emojiReactionsOnTimeline || isFocused) && (!noHeading && !isPreview)"
+            :status="status"
+          />
+
           <div
             v-if="!noHeading && !isPreview"
             class="status-actions media-body"
@@ -379,6 +398,10 @@
               :status="status"
             />
             <favorite-button
+              :logged-in="loggedIn"
+              :status="status"
+            />
+            <ReactButton
               :logged-in="loggedIn"
               :status="status"
             />
