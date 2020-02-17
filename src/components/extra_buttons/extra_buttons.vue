@@ -2,7 +2,7 @@
   <Popover
     v-if="canDelete || canMute || canPin"
     trigger="click"
-    placement="bottom"
+    placement="top"
     class="extra-button-popover"
   >
     <div slot="content">

@@ -184,7 +184,7 @@
             </button>
           </div>
           <ModerationTools
-            v-if="loggedIn.role === &quot;admin&quot; || loggedIn"
+            v-if="loggedIn.role === &quot;admin&quot;"
             :user="user"
           />
         </div>
