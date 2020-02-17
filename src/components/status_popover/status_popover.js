@@ -19,7 +19,6 @@ const StatusPopover = {
       if (!this.status) {
         this.$store.dispatch('fetchStatus', this.statusId)
       }
-      console.log(this.$el.offsetParent)
     }
   }
 }

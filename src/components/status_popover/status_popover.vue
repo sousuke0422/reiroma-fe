@@ -47,28 +47,6 @@
   box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
   box-shadow: var(--popupShadow);
 
-  .popover-arrow::before {
-    position: absolute;
-    content: '';
-    left: -7px;
-    border: solid 7px transparent;
-    z-index: -1;
-  }
-
-  &[x-placement^="bottom-start"] .popover-arrow::before {
-    top: -2px;
-    border-top-width: 0;
-    border-bottom-color: $fallback--border;
-    border-bottom-color: var(--border, $fallback--border);
-  }
-
-  &[x-placement^="top-start"] .popover-arrow::before {
-    bottom: -2px;
-    border-bottom-width: 0;
-    border-top-color: $fallback--border;
-    border-top-color: var(--border, $fallback--border);
-  }
-
   .status-el.status-el {
     border: none;
   }

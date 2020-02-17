@@ -32,14 +32,14 @@ const Popover = {
       const origin = { x: screenBox.left + screenBox.width * 0.5, y: screenBox.top }
       const content = this.$refs.content
       // Minor optimization, don't call a slow reflow call if we don't have to
-      const parentBounds =
+      const parentBounds = this.boundTo &&
         (this.boundTo.x === 'container' || this.boundTo.y === 'container') &&
         this.$el.offsetParent.getBoundingClientRect()
       const padding = this.padding || {}
 
       // What are the screen bounds for the popover? Viewport vs container
       // when using viewport, using default padding values to dodge the navbar
-      const xBounds = this.boundTo.x === 'container' ? {
+      const xBounds = this.boundTo && this.boundTo.x === 'container' ? {
         min: parentBounds.left + (padding.left || 0),
         max: parentBounds.right - (padding.right || 0)
       } : {
@@ -47,7 +47,7 @@ const Popover = {
         max: window.innerWidth - (padding.right || 10)
       }
 
-      const yBounds = this.boundTo.y === 'container' ? {
+      const yBounds = this.boundTo && this.boundTo.y === 'container' ? {
         min: parentBounds.top + (padding.top || 0),
         max: parentBounds.bottom - (padding.bottom || 0)
       } : {
