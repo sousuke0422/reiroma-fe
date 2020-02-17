@@ -82,7 +82,7 @@ const Popover = {
         : yOffset + yOffset
 
       const xOffset = (this.offset && this.offset.x) || 0
-      const translateX = (+anchorEl.offsetWidth * 0.5) - content.offsetWidth * 0.5 + horizOffset + xOffset
+      const translateX = (anchorEl.offsetWidth * 0.5) - content.offsetWidth * 0.5 + horizOffset + xOffset
 
       this.styles = {
         opacity: 1,
