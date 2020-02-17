@@ -72,7 +72,7 @@ const Timeline = {
     },
     statusesToDisplay () {
       const amount = this.timeline.visibleStatuses.length
-      const statusesPerSide = Math.ceil(Math.max(10, window.innerHeight / 100))
+      const statusesPerSide = Math.ceil(Math.max(15, window.innerHeight / 80))
       const min = Math.max(0, this.virtualScrollIndex - statusesPerSide)
       const max = Math.min(amount, this.virtualScrollIndex + statusesPerSide)
       return this.timeline.visibleStatuses.slice(min, max).map(_ => _.id)
@@ -160,8 +160,7 @@ const Timeline = {
 
       if (statuses.length === 0) return
 
-      const bodyBRect = document.body.getBoundingClientRect()
-      const height = Math.max(bodyBRect.height, -(bodyBRect.y))
+      const height = Math.max(document.body.offsetHeight, window.pageYOffset)
 
       const centerOfScreen = window.pageYOffset + (window.innerHeight * 0.5)
 
@@ -172,23 +171,25 @@ const Timeline = {
 
       // if we have a previous scroll index that can be used, test if it's
       // closer than the previous approximation, use it if so
+
+      const virtualScrollIndexY = statuses[this.virtualScrollIndex].getBoundingClientRect().y
       if (
         this.virtualScrollIndex < statuses.length &&
-        Math.abs(err) > statuses[this.virtualScrollIndex].getBoundingClientRect().y
+        Math.abs(err) > virtualScrollIndexY
       ) {
         approxIndex = this.virtualScrollIndex
-        err = statuses[approxIndex].getBoundingClientRect().y
+        err = virtualScrollIndexY
       }
 
       // if the status is too far from viewport, check the next/previous ones if
       // they happen to be better
       while (err < -100 && approxIndex < statuses.length - 1) {
         approxIndex++
-        err = statuses[approxIndex].getBoundingClientRect().y
+        err += statuses[approxIndex].offsetHeight
       }
       while (err > window.innerHeight + 100 && approxIndex > 0) {
+        err -= statuses[approxIndex].offsetHeight
         approxIndex--
-        err = statuses[approxIndex].getBoundingClientRect().y
       }
 
       // this status is now the center point for virtual scrolling and visible
