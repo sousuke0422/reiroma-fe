@@ -1,13 +1,12 @@
 <template>
   <div>
-    <v-popover
+    <Popover
       trigger="click"
       class="moderation-tools-popover"
-      placement="bottom-end"
-      @show="showDropDown = true"
-      @hide="showDropDown = false"
+      placement="bottom"
+      :offset="{ y: 5 }"
     >
-      <div slot="popover">
+      <div slot="content">
         <div class="dropdown-menu">
           <span v-if="user.is_local">
             <button
@@ -122,12 +121,12 @@
         </div>
       </div>
       <button
+        slot="trigger"
         class="btn btn-default btn-block"
-        :class="{ pressed: showDropDown }"
       >
         {{ $t('user_card.admin_menu.moderation') }}
       </button>
-    </v-popover>
+    </Popover>
     <portal to="modal">
       <DialogModal
         v-if="showDeleteUserDialog"
@@ -160,7 +159,6 @@
 
 <style lang="scss">
 @import '../../_variables.scss';
-@import '../popper/popper.scss';
 
 .menu-checkbox {
   float: right;

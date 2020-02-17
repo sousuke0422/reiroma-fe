@@ -1,13 +1,13 @@
 <template>
-  <v-popover
-    :popper-options="popperOptions"
-    :open="showTooltip"
-    trigger="manual"
+  <Popover
+    trigger="click"
     placement="top"
     class="react-button-popover"
-    @hide="closeReactionSelect"
   >
-    <div slot="popover">
+    <div
+      slot="content"
+      slot-scope="{close}"
+    >
       <div class="reaction-picker-filter">
         <input
           v-model="filterWord"
@@ -19,7 +19,7 @@
           v-for="emoji in commonEmojis"
           :key="emoji"
           class="emoji-button"
-          @click="addReaction($event, emoji)"
+          @click="addReaction($event, emoji, close)"
         >
           {{ emoji }}
         </span>
@@ -28,7 +28,7 @@
           v-for="(emoji, key) in emojis"
           :key="key"
           class="emoji-button"
-          @click="addReaction($event, emoji.replacement)"
+          @click="addReaction($event, emoji.replacement, close)"
         >
           {{ emoji.replacement }}
         </span>
@@ -37,14 +37,14 @@
     </div>
     <div
       v-if="loggedIn"
-      @click.prevent="openReactionSelect"
+      slot="trigger"
     >
       <i
         class="icon-smile button-icon add-reaction-button"
         :title="$t('tool_tip.add_reaction')"
       />
     </div>
-  </v-popover>
+  </Popover>
 </template>
 
 <script src="./react_button.js" ></script>
