@@ -20,6 +20,7 @@ test:
   variables:
     APT_CACHE_DIR: apt-cache
   script:
+    - df -h /dev/shm/
     - mkdir -pv $APT_CACHE_DIR && apt-get -qq update
     - apt install firefox-esr -y --no-install-recommends
     - firefox --version
