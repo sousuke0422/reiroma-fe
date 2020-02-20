@@ -7,7 +7,7 @@ export const visibleTypes = store => ([
   store.state.config.notificationVisibility.mentions && 'mention',
   store.state.config.notificationVisibility.repeats && 'repeat',
   store.state.config.notificationVisibility.follows && 'follow',
-  store.state.config.notificationVisibility.moves && 'move',
+  store.state.config.notificationVisibility.moves && 'pleroma:move',
   store.state.config.notificationVisibility.emojiReactions && 'pleroma:emoji_reaction'
 ].filter(_ => _))
 

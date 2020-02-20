@@ -81,8 +81,8 @@ const visibleNotificationTypes = (rootState) => {
     rootState.config.notificationVisibility.mentions && 'mention',
     rootState.config.notificationVisibility.repeats && 'repeat',
     rootState.config.notificationVisibility.follows && 'follow',
-    rootState.config.notificationVisibility.moves && 'move',
-    rootState.config.notificationVisibility.emojiReactions && 'pleroma:emoji_reactions'
+    rootState.config.notificationVisibility.moves && 'pleroma:move',
+    rootState.config.notificationVisibility.emojiReactions && 'pleroma:emoji_reaction'
   ].filter(_ => _)
 }
 
@@ -358,7 +358,7 @@ const addNewNotifications = (state, { dispatch, notifications, older, visibleNot
           case 'follow':
             i18nString = 'followed_you'
             break
-          case 'move':
+          case 'pleroma:move':
             i18nString = 'migrated_to'
             break
         }

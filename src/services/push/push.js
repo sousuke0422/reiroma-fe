@@ -66,7 +66,8 @@ function sendSubscriptionToBackEnd (subscription, token, notificationVisibility)
           favourite: notificationVisibility.likes,
           mention: notificationVisibility.mentions,
           reblog: notificationVisibility.repeats,
-          move: notificationVisibility.moves
+          'pleroma:move': notificationVisibility.moves,
+          'pleroma:emoji_reaction': notificationVisibility.emoji_reactions
         }
       }
     })

@@ -346,11 +346,11 @@ export const parseNotification = (data) => {
   if (masto) {
     output.type = mastoDict[data.type] || data.type
     output.seen = data.pleroma.is_seen
-    output.status = output.type === 'follow' || output.type === 'move'
+    output.status = output.type === 'follow' || output.type === 'pleroma:move'
       ? null
       : parseStatus(data.status)
     output.action = output.status // TODO: Refactor, this is unneeded
-    output.target = output.type !== 'move'
+    output.target = output.type !== 'pleroma:move'
       ? null
       : parseUser(data.target)
     output.from_profile = parseUser(data.account)

@@ -74,7 +74,7 @@
               <i class="fa icon-user-plus lit" />
               <small>{{ $t('notifications.followed_you') }}</small>
             </span>
-            <span v-if="notification.type === 'move'">
+            <span v-if="notification.type === 'pleroma:move'">
               <i class="fa icon-arrow-curved lit" />
               <small>{{ $t('notifications.migrated_to') }}</small>
             </span>
@@ -87,7 +87,7 @@
             </span>
           </div>
           <div
-            v-if="notification.type === 'follow' || notification.type === 'move'"
+            v-if="notification.type === 'follow' || notification.type === 'pleroma:move'"
             class="timeago"
           >
             <span class="faint">
@@ -127,7 +127,7 @@
           </router-link>
         </div>
         <div
-          v-else-if="notification.type === 'move'"
+          v-else-if="notification.type === 'pleroma:move'"
           class="move-text"
         >
           <router-link :to="targetUserProfileLink">

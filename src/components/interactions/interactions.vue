@@ -26,6 +26,10 @@
         key="moves"
         :label="$t('interactions.moves')"
       />
+      <span
+        key="emoji_reactions"
+        :label="$t('interactions.emoji_reactions')"
+      />
     </tab-switcher>
     <Notifications
       ref="notifications"
