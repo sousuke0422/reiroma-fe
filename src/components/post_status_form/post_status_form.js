@@ -218,7 +218,7 @@ const PostStatusForm = {
             poll: {}
           }
           this.pollFormVisible = false
-          this.$refs.mediaUpload.clearFile()
+          this.$refs.mediaUpload && this.$refs.mediaUpload.clearFile()
           this.clearPollForm()
           this.$emit('posted', data)
           if (this.preserveFocus) {

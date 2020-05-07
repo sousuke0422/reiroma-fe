@@ -17,7 +17,7 @@
             <i class="button-icon icon-mail-alt" /> {{ $t("nav.dms") }}
           </router-link>
         </li>
-        <li style="position: relative">
+        <li v-if="currentUser">
           <router-link :to="{ name: 'chats', params: { username: currentUser.screen_name } }">
             <i class="button-icon icon-chat" /> {{ $t("nav.chats") }}
           </router-link>

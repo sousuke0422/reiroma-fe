@@ -382,6 +382,7 @@ export const parseChat = (chat) => {
 
 export const parseChatMessage = (message) => {
   let output = message
+  output.id = parseInt(message.id, 10)
   output.created_at = new Date(message.created_at)
   output.chat_id = parseInt(message.chat_id, 10)
   return output
