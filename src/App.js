@@ -41,7 +41,8 @@ export default {
         window.CSS.supports('-moz-mask-size', 'contain') ||
         window.CSS.supports('-ms-mask-size', 'contain') ||
         window.CSS.supports('-o-mask-size', 'contain')
-    )
+    ),
+    transitionName: 'fade'
   }),
   created () {
     // Load the locale from the storage
@@ -122,6 +123,15 @@ export default {
       const changed = mobileLayout !== this.isMobileLayout
       if (changed) {
         this.$store.dispatch('setMobileLayout', mobileLayout)
+      }
+    }
+  },
+  watch: {
+    '$route' (to, from) {
+      if ((to.name === 'chat' && from.name === 'chats') || (to.name === 'chats' && from.name === 'chat')) {
+        this.transitionName = 'none'
+      } else {
+        this.transitionName = 'fade'
       }
     }
   }

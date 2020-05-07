@@ -62,14 +62,13 @@
           <span v-else>{{ $t('post_status.direct_warning_to_all') }}</span>
         </p>
         <EmojiInput
-          v-if="newStatus.spoilerText || alwaysShowSubject"
+          v-if="!disableSubject && (newStatus.spoilerText || alwaysShowSubject)"
           v-model="newStatus.spoilerText"
           enable-emoji-picker
           :suggest="emojiSuggestor"
           class="form-control"
         >
           <input
-
             v-model="newStatus.spoilerText"
             type="text"
             :placeholder="$t('post_status.content_warning')"
@@ -91,10 +90,11 @@
           <textarea
             ref="textarea"
             v-model="newStatus.status"
-            :placeholder="$t('post_status.default')"
+            :placeholder="placeholder || $t('post_status.default')"
             rows="1"
             :disabled="posting"
             class="form-post-body"
+            :class="{ 'scrollable-form': !!maxHeight }"
             @keydown.meta.enter="postStatus(newStatus)"
             @keyup.ctrl.enter="postStatus(newStatus)"
             @drop="fileDrop"
@@ -111,7 +111,10 @@
             {{ charactersLeft }}
           </p>
         </EmojiInput>
-        <div class="visibility-tray">
+        <div
+          v-if="!disableScopeSelector"
+          class="visibility-tray"
+        >
           <scope-selector
             :show-all="showAllScopes"
             :user-default="userDefaultScope"
@@ -166,6 +169,7 @@
       >
         <div class="form-bottom-left">
           <media-upload
+            v-if="disableAttachments !== true"
             ref="mediaUpload"
             class="media-upload-icon"
             :drop-files="dropFiles"
@@ -175,6 +179,7 @@
           />
           <div
             class="emoji-icon"
+            :style="{ 'text-align' : (disableAttachments ? 'left' : 'center') }"
           >
             <i
               :title="$t('emoji.add_emoji')"
@@ -295,6 +300,8 @@
 }
 
 .post-status-form {
+  position: relative;
+
   .visibility-tray {
     display: flex;
     justify-content: space-between;
@@ -473,6 +480,10 @@
     padding-bottom: 1.75em;
     min-height: 1px;
     box-sizing: content-box;
+
+    &.scrollable-form {
+      overflow-y: auto;
+    }
   }
 
   .main-input {

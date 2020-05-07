@@ -83,7 +83,8 @@ const visibleNotificationTypes = (rootState) => {
     rootState.config.notificationVisibility.repeats && 'repeat',
     rootState.config.notificationVisibility.follows && 'follow',
     rootState.config.notificationVisibility.moves && 'move',
-    rootState.config.notificationVisibility.emojiReactions && 'pleroma:emoji_reactions'
+    rootState.config.notificationVisibility.emojiReactions && 'pleroma:emoji_reactions',
+    rootState.config.notificationVisibility.chatMention && 'pleroma:chat_mention'
   ].filter(_ => _)
 }
 
@@ -331,6 +332,11 @@ const addNewNotifications = (state, { dispatch, notifications, older, visibleNot
       dispatch('fetchEmojiReactionsBy', notification.status.id)
     }
 
+    if (notification.type === 'pleroma:chat_mention') {
+      dispatch('addChatMessages', { chatId: notification.chatMessage.chat_id, messages: [notification.chatMessage] })
+      dispatch('updateChatByAccountId', { accountId: notification.from_profile.id })
+    }
+
     // Only add a new notification if we don't have one for the same action
     if (!state.notifications.idStore.hasOwnProperty(notification.id)) {
       state.notifications.maxId = notification.id > state.notifications.maxId
@@ -373,6 +379,8 @@ const addNewNotifications = (state, { dispatch, notifications, older, visibleNot
           notifObj.body = rootGetters.i18n.t('notifications.' + i18nString)
         } else if (isStatusNotification(notification.type)) {
           notifObj.body = notification.status.text
+        } else if (notification.type === 'pleroma:chat_mention') {
+          notifObj.body = notification.chatMessage.content
         }
 
         // Shows first attached non-nsfw image, if any. Should add configuration for this somehow...
@@ -489,7 +497,7 @@ export const mutations = {
   },
   setDeleted (state, { status }) {
     const newStatus = state.allStatusesObject[status.id]
-    newStatus.deleted = true
+    if (newStatus) newStatus.deleted = true
   },
   setManyDeleted (state, condition) {
     Object.values(state.allStatusesObject).forEach(status => {

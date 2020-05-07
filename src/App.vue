@@ -76,6 +76,7 @@
         </div>
       </div>
     </nav>
+    <div class="app-bg-wrapper app-container-wrapper" />
     <div
       id="content"
       class="container underlay"
@@ -111,7 +112,7 @@
             {{ $t("login.hint") }}
           </router-link>
         </div>
-        <transition name="fade">
+        <transition :name="transitionName">
           <router-view />
         </transition>
       </div>

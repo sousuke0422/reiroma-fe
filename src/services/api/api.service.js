@@ -1,5 +1,5 @@
 import { each, map, concat, last, get } from 'lodash'
-import { parseStatus, parseUser, parseNotification, parseAttachment } from '../entity_normalizer/entity_normalizer.service.js'
+import { parseStatus, parseUser, parseNotification, parseAttachment, parseChat } from '../entity_normalizer/entity_normalizer.service.js'
 import 'whatwg-fetch'
 import { RegistrationError, StatusCodeError } from '../errors/errors'
 
@@ -78,6 +78,10 @@ const MASTODON_STREAMING = '/api/v1/streaming'
 const PLEROMA_EMOJI_REACTIONS_URL = id => `/api/v1/pleroma/statuses/${id}/reactions`
 const PLEROMA_EMOJI_REACT_URL = (id, emoji) => `/api/v1/pleroma/statuses/${id}/reactions/${emoji}`
 const PLEROMA_EMOJI_UNREACT_URL = (id, emoji) => `/api/v1/pleroma/statuses/${id}/reactions/${emoji}`
+const PLEROMA_CHATS_URL = `/api/v1/pleroma/chats`
+const PLEROMA_CHAT_URL = id => `/api/v1/pleroma/chats/by-account-id/${id}`
+const PLEROMA_CHAT_MESSAGES_URL = id => `/api/v1/pleroma/chats/${id}/messages`
+const PLEROMA_CHAT_READ_URL = id => `/api/v1/pleroma/chats/${id}/read`
 
 const oldfetch = window.fetch
 
@@ -1119,6 +1123,60 @@ export const handleMastoWS = (wsEvent) => {
   }
 }
 
+const chats = ({ maxId, sinceId, limit = 20, recipients = [], credentials }) => {
+  let url = PLEROMA_CHATS_URL
+  const recipientIds = recipients.map(r => `recipients[]=${r}`).join('&')
+  const args = [
+    maxId && `max_id=${maxId}`,
+    sinceId && `since_id=${sinceId}`,
+    limit && `limit=${limit}`,
+    recipientIds && `${recipientIds}`
+  ].filter(_ => _).join('&')
+
+  let pagination = {}
+  url = url + (args ? '?' + args : '')
+  return fetch(url, { headers: authHeaders(credentials) })
+    .then((data) => data.json())
+    .then((data) => {
+      return { chats: data.map(parseChat), pagination }
+    })
+}
+
+const getOrCreateChat = ({ accountId, credentials }) => {
+  return promisedRequest({
+    url: PLEROMA_CHAT_URL(accountId),
+    method: 'POST',
+    credentials
+  })
+}
+
+const chatMessages = ({ id, credentials }) => {
+  return promisedRequest({
+    url: PLEROMA_CHAT_MESSAGES_URL(id),
+    method: 'GET',
+    credentials
+  })
+}
+
+const postChatMessage = ({ id, content, credentials }) => {
+  return promisedRequest({
+    url: PLEROMA_CHAT_MESSAGES_URL(id),
+    method: 'POST',
+    payload: {
+      'content': content
+    },
+    credentials
+  })
+}
+
+const readChat = ({ id, credentials }) => {
+  return promisedRequest({
+    url: PLEROMA_CHAT_READ_URL(id),
+    method: 'POST',
+    credentials
+  })
+}
+
 const apiService = {
   verifyCredentials,
   fetchTimeline,
@@ -1195,7 +1253,12 @@ const apiService = {
   searchUsers,
   fetchDomainMutes,
   muteDomain,
-  unmuteDomain
+  unmuteDomain,
+  chats,
+  getOrCreateChat,
+  chatMessages,
+  postChatMessage,
+  readChat
 }
 
 export default apiService

@@ -969,3 +969,25 @@ nav {
   background-color: $fallback--fg;
   background-color: var(--panel, $fallback--fg);
 }
+
+.alert-dot-number {
+  display: inline-block;
+  border-radius: 1em;
+  min-width: 1.3rem;
+  min-height: 1.3rem;
+  max-height: 1.3rem;
+  font-size: 0.9em;
+  font-weight: bolder;
+  line-height: 1.3rem;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  padding: 0 0.3em;
+  position: absolute;
+  right: 0.6rem;
+  background-color: $fallback--cRed;
+  background-color: var(--badgeNotification, $fallback--cRed);
+  color: white;
+  color: var(--badgeNotificationText, white);
+  font-style: normal;
+}

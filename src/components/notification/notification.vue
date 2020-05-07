@@ -89,6 +89,9 @@
                 </i18n>
               </small>
             </span>
+            <span v-if="notification.type === 'pleroma:chat_mention'">
+              <i class="fa icon-chat lit" />
+            </span>
           </div>
           <div
             v-if="isStatusNotification"
@@ -97,6 +100,20 @@
             <router-link
               v-if="notification.status"
               :to="{ name: 'conversation', params: { id: notification.status.id } }"
+              class="faint-link"
+            >
+              <Timeago
+                :time="notification.created_at"
+                :auto-update="240"
+              />
+            </router-link>
+          </div>
+          <div
+            v-if="notification.type === 'pleroma:chat_mention'"
+            class="timeago"
+          >
+            <router-link
+              :to="{ name: 'chat', params: { recipient_id: notification.chatMessage.account_id } }"
               class="faint-link"
             >
               <Timeago
@@ -155,6 +172,11 @@
           <router-link :to="targetUserProfileLink">
             @{{ notification.target.screen_name }}
           </router-link>
+        </div>
+        <div v-else-if="notification.type === 'pleroma:chat_mention'">
+          <StatusContent
+            :status="messageForStatusContent"
+            :full-content="true" />
         </div>
         <template v-else>
           <status

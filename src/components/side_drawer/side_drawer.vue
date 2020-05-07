@@ -46,6 +46,9 @@
           <router-link :to="{ name: 'dms', params: { username: currentUser.screen_name } }">
             <i class="button-icon icon-mail-alt" /> {{ $t("nav.dms") }}
           </router-link>
+          <router-link :to="{ name: 'chats', params: { username: currentUser.screen_name } }">
+            <i class="button-icon icon-chat" /> {{ $t("nav.chats") }}
+          </router-link>
         </li>
         <li
           v-if="currentUser"

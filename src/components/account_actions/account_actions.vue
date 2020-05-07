@@ -49,6 +49,12 @@
           >
             {{ $t('user_card.report') }}
           </button>
+          <button
+            class="btn btn-default btn-block dropdown-item"
+            @click="openChat"
+          >
+            {{ $t('user_card.message') }}
+          </button>
         </div>
       </div>
       <div

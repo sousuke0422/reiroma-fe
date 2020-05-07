@@ -2,6 +2,7 @@ import Status from '../status/status.vue'
 import UserAvatar from '../user_avatar/user_avatar.vue'
 import UserCard from '../user_card/user_card.vue'
 import Timeago from '../timeago/timeago.vue'
+import StatusContent from '../status_content/status_content.vue'
 import { isStatusNotification } from '../../services/notification_utils/notification_utils.js'
 import { highlightClass, highlightStyle } from '../../services/user_highlighter/user_highlighter.js'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
@@ -19,7 +20,8 @@ const Notification = {
     Status,
     UserAvatar,
     UserCard,
-    Timeago
+    Timeago,
+    StatusContent
   },
   methods: {
     toggleUserExpanded () {
@@ -79,6 +81,15 @@ const Notification = {
     },
     isStatusNotification () {
       return isStatusNotification(this.notification.type)
+    },
+    // TODO:
+    messageForStatusContent () {
+      return {
+        summary: '',
+        statusnet_html: this.notification.chatMessage.content,
+        text: this.notification.chatMessage.content,
+        attachments: []
+      }
     }
   }
 }

@@ -17,6 +17,11 @@
             <i class="button-icon icon-mail-alt" /> {{ $t("nav.dms") }}
           </router-link>
         </li>
+        <li style="position: relative">
+          <router-link :to="{ name: 'chats', params: { username: currentUser.screen_name } }">
+            <i class="button-icon icon-chat" /> {{ $t("nav.chats") }}
+          </router-link>
+        </li>
         <li v-if="currentUser && currentUser.locked">
           <router-link :to="{ name: 'friend-requests' }">
             <i class="button-icon icon-user-plus" /> {{ $t("nav.friend_requests") }}

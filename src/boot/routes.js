@@ -5,6 +5,8 @@ import TagTimeline from 'components/tag_timeline/tag_timeline.vue'
 import ConversationPage from 'components/conversation-page/conversation-page.vue'
 import Interactions from 'components/interactions/interactions.vue'
 import DMs from 'components/dm_timeline/dm_timeline.vue'
+import ChatList from 'components/chat_list/chat_list.vue'
+import Chat from 'components/chat/chat.vue'
 import UserProfile from 'components/user_profile/user_profile.vue'
 import Search from 'components/search/search.vue'
 import Settings from 'components/settings/settings.vue'
@@ -56,6 +58,8 @@ export default (store) => {
     { name: 'external-user-profile', path: '/users/:id', component: UserProfile },
     { name: 'interactions', path: '/users/:username/interactions', component: Interactions, beforeEnter: validateAuthenticatedRoute },
     { name: 'dms', path: '/users/:username/dms', component: DMs, beforeEnter: validateAuthenticatedRoute },
+    { name: 'chat', path: '/chats/:recipient_id', component: Chat, meta: { dontScroll: false }, beforeEnter: validateAuthenticatedRoute },
+    { name: 'chats', path: '/users/:username/chats', component: ChatList, meta: { dontScroll: false }, beforeEnter: validateAuthenticatedRoute },
     { name: 'settings', path: '/settings', component: Settings },
     { name: 'registration', path: '/registration', component: Registration },
     { name: 'password-reset', path: '/password-reset', component: PasswordReset, props: true },

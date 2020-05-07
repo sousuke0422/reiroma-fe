@@ -627,5 +627,51 @@ export const SLOT_INHERITANCE = {
     layer: 'badge',
     variant: 'badgeNotification',
     textColor: 'bw'
+  },
+
+  chatBg: {
+    depends: ['bg'],
+    layer: 'bg'
+  },
+
+  chatMessageIncomingBg: {
+    depends: ['bg'],
+    layer: 'bg'
+  },
+
+  chatMessageIncomingText: {
+    depends: ['text'],
+    layer: 'text'
+  },
+
+  chatMessageIncomingLink: {
+    depends: ['link'],
+    layer: 'link'
+  },
+
+  chatMessageIncomingBorder: {
+    depends: ['fg'],
+    opacity: 'border',
+    color: (mod, fg) => brightness(2 * mod, fg).rgb
+  },
+
+  chatMessageOutgoingBg: {
+    depends: ['bg'],
+    color: (mod, fg) => brightness(5 * mod, fg).rgb
+  },
+
+  chatMessageOutgoingText: {
+    depends: ['text'],
+    layer: 'text'
+  },
+
+  chatMessageOutgoingLink: {
+    depends: ['link'],
+    layer: 'link'
+  },
+
+  chatMessageOutgoingBorder: {
+    depends: ['bg'],
+    opacity: 'bg'
   }
 }

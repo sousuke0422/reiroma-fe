@@ -31,7 +31,16 @@ const PostStatusForm = {
     'repliedUser',
     'attentions',
     'copyMessageScope',
-    'subject'
+    'subject',
+    'disableSubject',
+    'disableScopeSelector',
+    'disableNotice',
+    'disablePolls',
+    'disableAttachments',
+    'placeholder',
+    'maxHeight',
+    'poster',
+    'preserveFocus'
   ],
   components: {
     MediaUpload,
@@ -151,10 +160,11 @@ const PostStatusForm = {
     },
     pollsAvailable () {
       return this.$store.state.instance.pollsAvailable &&
-        this.$store.state.instance.pollLimits.max_options >= 2
+        this.$store.state.instance.pollLimits.max_options >= 2 &&
+        this.disablePolls !== true
     },
     hideScopeNotice () {
-      return this.$store.getters.mergedConfig.hideScopeNotice
+      return this.disableNotice || this.$store.getters.mergedConfig.hideScopeNotice
     },
     pollContentError () {
       return this.pollFormVisible &&
@@ -182,7 +192,8 @@ const PostStatusForm = {
       }
 
       this.posting = true
-      statusPoster.postStatus({
+
+      const postingOptions = {
         status: newStatus.status,
         spoilerText: newStatus.spoilerText || null,
         visibility: newStatus.visibility,
@@ -192,7 +203,11 @@ const PostStatusForm = {
         inReplyToStatusId: this.replyTo,
         contentType: newStatus.contentType,
         poll
-      }).then((data) => {
+      }
+
+      const poster = this.poster ? this.poster : statusPoster.postStatus
+
+      poster(postingOptions).then((data) => {
         if (!data.error) {
           this.newStatus = {
             status: '',
@@ -205,7 +220,12 @@ const PostStatusForm = {
           this.pollFormVisible = false
           this.$refs.mediaUpload.clearFile()
           this.clearPollForm()
-          this.$emit('posted')
+          this.$emit('posted', data)
+          if (this.preserveFocus) {
+            this.$nextTick(() => {
+              this.$refs.textarea.focus()
+            })
+          }
           let el = this.$el.querySelector('textarea')
           el.style.height = 'auto'
           el.style.height = undefined
@@ -270,6 +290,7 @@ const PostStatusForm = {
       // Reset to default height for empty form, nothing else to do here.
       if (target.value === '') {
         target.style.height = null
+        this.$emit('resize', null)
         this.$refs['emoji-input'].resize()
         return
       }
@@ -322,8 +343,10 @@ const PostStatusForm = {
 
       // BEGIN content size update
       target.style.height = 'auto'
-      const newHeight = target.scrollHeight - vertPadding
+      const heightWithoutPadding = target.scrollHeight - vertPadding
+      const newHeight = this.maxHeight ? Math.min(heightWithoutPadding, this.maxHeight) : heightWithoutPadding
       target.style.height = `${newHeight}px`
+      this.$emit('resize', newHeight)
       // END content size update
 
       // We check where the bottom border of form-bottom element is, this uses findOffset

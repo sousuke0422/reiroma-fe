@@ -342,6 +342,7 @@ export const parseNotification = (data) => {
     output.type = mastoDict[data.type] || data.type
     output.seen = data.pleroma.is_seen
     output.status = isStatusNotification(output.type) ? parseStatus(data.status) : null
+    output.chatMessage = output.type === 'pleroma:chat_mention' ? parseChatMessage(data.chat_message) : null
     output.action = output.status // TODO: Refactor, this is unneeded
     output.target = output.type !== 'move'
       ? null
@@ -356,7 +357,7 @@ export const parseNotification = (data) => {
       ? parseStatus(data.notice.favorited_status)
       : parsedNotice
     output.action = parsedNotice
-    output.from_profile = parseUser(data.from_profile)
+    output.from_profile = output.type === 'pleroma:chat_mention' ? parseUser(data.account) : parseUser(data.from_profile)
   }
 
   output.created_at = new Date(data.created_at)
@@ -368,4 +369,20 @@ export const parseNotification = (data) => {
 const isNsfw = (status) => {
   const nsfwRegex = /#nsfw/i
   return (status.tags || []).includes('nsfw') || !!(status.text || '').match(nsfwRegex)
+}
+
+export const parseChat = (chat) => {
+  let output = chat
+  output.id = parseInt(chat.id, 10)
+  output.account = parseUser(chat.account)
+  output.unread = chat.unread
+  output.lastMessage = undefined
+  return output
+}
+
+export const parseChatMessage = (message) => {
+  let output = message
+  output.created_at = new Date(message.created_at)
+  output.chat_id = parseInt(message.chat_id, 10)
+  return output
 }

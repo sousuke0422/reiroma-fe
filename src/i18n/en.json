@@ -118,7 +118,8 @@
     "user_search": "User Search",
     "search": "Search",
     "who_to_follow": "Who to follow",
-    "preferences": "Preferences"
+    "preferences": "Preferences",
+    "chats": "Chats"
   },
   "notifications": {
     "broken_favorite": "Unknown status, searching for it...",
@@ -272,6 +273,7 @@
     "change_password": "Change Password",
     "change_password_error": "There was an issue changing your password.",
     "changed_password": "Password changed successfully!",
+    "chatMessageRadius": "Chat message",
     "collapse_subject": "Collapse posts with subjects",
     "composing": "Composing",
     "confirm_new_password": "Confirm new password",
@@ -492,7 +494,17 @@
         "selectedMenu": "Selected menu item",
         "disabled": "Disabled",
         "toggled": "Toggled",
-        "tabs": "Tabs"
+        "tabs": "Tabs",
+        "chat": {
+          "incoming_background": "Incoming background",
+          "incoming_text": "Incoming text",
+          "incoming_link": "Incoming link",
+          "incoming_border": "Incoming border",
+          "outgoing_background": "Outgoing background",
+          "outgoing_text": "Outgoing text",
+          "outgoing_link": "Outgoing link",
+          "outgoing_border": "Outgoing border"
+        }
       },
       "radii": {
         "_tab_label": "Roundness"
@@ -642,6 +654,7 @@
     "its_you": "It's you!",
     "media": "Media",
     "mention": "Mention",
+    "message": "Message",
     "mute": "Mute",
     "muted": "Muted",
     "per_day": "per day",
@@ -739,5 +752,15 @@
     "password_reset_disabled": "Password reset is disabled. Please contact your instance administrator.",
     "password_reset_required": "You must reset your password to log in.",
     "password_reset_required_but_mailer_is_disabled": "You must reset your password, but password reset is disabled. Please contact your instance administrator."
+  },
+  "chats": {
+    "message_user": "Message {nickname}",
+    "write_message": "Write a message",
+    "delete": "Delete",
+    "chats": "Chats",
+    "new": "New Chat"
+  },
+  "display_date": {
+    "today": "Today"
   }
 }

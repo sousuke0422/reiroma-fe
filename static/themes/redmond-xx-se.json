@@ -286,7 +286,8 @@
       "cGreen": "#008000",
       "cOrange": "#808000",
       "highlight": "--accent",
-      "selectedPost": "--bg,-10"
+      "selectedPost": "--bg,-10",
+      "chatFg": "#808080"
     },
     "radii": {
       "btn": "0",

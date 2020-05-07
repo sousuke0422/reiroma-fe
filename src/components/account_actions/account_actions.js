@@ -27,6 +27,12 @@ const AccountActions = {
     },
     reportUser () {
       this.$store.dispatch('openUserReportingModal', this.user.id)
+    },
+    openChat () {
+      this.$router.push({
+        name: 'chat',
+        params: { recipient_id: this.user.id }
+      })
     }
   }
 }
