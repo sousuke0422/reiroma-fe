@@ -10,6 +10,21 @@
       class="direct-conversation"
       :class="[{ 'outgoing': isCurrentUser, 'incoming': !isCurrentUser }]"
     >
+      <div
+        v-if="!isCurrentUser"
+        class="avatar-wrapper"
+      >
+        <router-link
+          v-if="chatViewItem.isHead"
+          :to="userProfileLink"
+        >
+          <UserAvatar
+            :compact="true"
+            :better-shadow="betterShadow"
+            :user="author"
+          />
+        </router-link>
+      </div>
       <div class="direct-conversation-inner">
         <div class="media status">
           <StatusContent

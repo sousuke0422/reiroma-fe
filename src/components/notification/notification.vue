@@ -113,7 +113,7 @@
             class="timeago"
           >
             <router-link
-              :to="{ name: 'chat', params: { recipient_id: notification.chatMessage.account_id } }"
+              :to="{ name: 'chat', params: { recipient_id: notification.chatMessage.account_id, username: currentUser.screen_name } }"
               class="faint-link"
             >
               <Timeago
@@ -174,9 +174,7 @@
           </router-link>
         </div>
         <div v-else-if="notification.type === 'pleroma:chat_mention'">
-          <StatusContent
-            :status="messageForStatusContent"
-            :full-content="true" />
+          <StatusContent :status="messageForStatusContent" />
         </div>
         <template v-else>
           <status

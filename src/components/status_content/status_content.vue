@@ -71,7 +71,7 @@
         @click.prevent="toggleShowMore"
       >{{ $t("general.show_more") }}</a>
       <a
-        v-if="showingMore"
+        v-if="showingMore && !fullContent"
         href="#"
         class="status-unhider"
         @click.prevent="toggleShowMore"

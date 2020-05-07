@@ -1,3 +1,4 @@
+import { mapState } from 'vuex'
 import Status from '../status/status.vue'
 import UserAvatar from '../user_avatar/user_avatar.vue'
 import UserCard from '../user_card/user_card.vue'
@@ -90,7 +91,10 @@ const Notification = {
         text: this.notification.chatMessage.content,
         attachments: []
       }
-    }
+    },
+    ...mapState({
+      currentUser: state => state.users.currentUser
+    })
   }
 }
 

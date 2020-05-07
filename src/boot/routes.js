@@ -58,7 +58,7 @@ export default (store) => {
     { name: 'external-user-profile', path: '/users/:id', component: UserProfile },
     { name: 'interactions', path: '/users/:username/interactions', component: Interactions, beforeEnter: validateAuthenticatedRoute },
     { name: 'dms', path: '/users/:username/dms', component: DMs, beforeEnter: validateAuthenticatedRoute },
-    { name: 'chat', path: '/chats/:recipient_id', component: Chat, meta: { dontScroll: false }, beforeEnter: validateAuthenticatedRoute },
+    { name: 'chat', path: '/users/:username/chats/:recipient_id', component: Chat, meta: { dontScroll: false }, beforeEnter: validateAuthenticatedRoute },
     { name: 'chats', path: '/users/:username/chats', component: ChatList, meta: { dontScroll: false }, beforeEnter: validateAuthenticatedRoute },
     { name: 'settings', path: '/settings', component: Settings },
     { name: 'registration', path: '/registration', component: Registration },

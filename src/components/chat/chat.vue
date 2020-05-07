@@ -71,6 +71,7 @@
               :poster="poster"
               :preserve-focus="true"
               :polls-available="false"
+              :auto-focus="true"
               :placeholder="formPlaceholder"
               max-height="160"
               @resize="handleResize"

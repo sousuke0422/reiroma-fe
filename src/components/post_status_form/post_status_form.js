@@ -40,7 +40,8 @@ const PostStatusForm = {
     'placeholder',
     'maxHeight',
     'poster',
-    'preserveFocus'
+    'preserveFocus',
+    'autoFocus'
   ],
   components: {
     MediaUpload,
@@ -54,7 +55,7 @@ const PostStatusForm = {
     const textLength = this.$refs.textarea.value.length
     this.$refs.textarea.setSelectionRange(textLength, textLength)
 
-    if (this.replyTo) {
+    if (this.replyTo || this.autoFocus) {
       this.$refs.textarea.focus()
     }
   },

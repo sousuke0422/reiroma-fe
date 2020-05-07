@@ -282,7 +282,7 @@ const Chat = {
       }
     }, 100),
     goBack () {
-      this.$router.push({ name: 'chats', params: { username: this.screen_name } })
+      this.$router.push({ name: 'chats', params: { username: this.currentUser.screen_name } })
     },
     fetchChat (isFirstFetch, chatId) {
       this.chatViewItems = chatService.getView(this.currentChatMessageService)

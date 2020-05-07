@@ -5,6 +5,7 @@ import Gallery from '../gallery/gallery.vue'
 import LinkPreview from '../link-preview/link-preview.vue'
 import StatusContent from '../status_content/status_content.vue'
 import ChatMessageDate from '../chat_message_date/chat_message_date.vue'
+import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
 const ChatMessage = {
   name: 'ChatMessage',
@@ -32,8 +33,14 @@ const ChatMessage = {
     isCurrentUser () {
       return this.message.account_id === this.currentUser.id
     },
+    author () {
+      return this.findUser(this.message.account_id)
+    },
     message () {
       return this.chatViewItem.data
+    },
+    userProfileLink () {
+      return generateProfileLink(this.author.id, this.author.screen_name, this.$store.state.instance.restrictedNicknames)
     },
     isMessage () {
       return this.chatViewItem.type === 'message'
@@ -48,9 +55,10 @@ const ChatMessage = {
     },
     ...mapState({
       betterShadow: state => state.interface.browserSupport.cssFilter,
-      currentUser: state => state.users.currentUser
+      currentUser: state => state.users.currentUser,
+      restrictedNicknames: state => state.instance.restrictedNicknames
     }),
-    ...mapGetters(['mergedConfig'])
+    ...mapGetters(['mergedConfig', 'findUser'])
   },
   methods: {
     onHover (bool) {
