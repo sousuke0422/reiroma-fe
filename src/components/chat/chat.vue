@@ -22,13 +22,20 @@
               :fallback-user="currentUser"
             />
           </div>
-          <div style="visibility: hidden">
-            <ChatAvatar
+          <div style="">
+            <!-- <ChatAvatar
               :users="chatParticipants"
               :fallback-user="currentUser"
               width="23px"
               height="23px"
-            />
+            /> -->
+            <a
+              class=""
+              style="margin-right: 0.3em;"
+              @click="goBack"
+            >
+              <i class="button-icon icon-info-circled" />
+            </a>
           </div>
         </div>
         <template>
