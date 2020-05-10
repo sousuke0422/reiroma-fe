@@ -102,6 +102,9 @@
 }
 
 .direct-conversation-avatar {
+  display: inline-block;
+  vertical-align: middle;
+
   &.single-user {
     border-radius: $fallback--avatarAltRadius;
     border-radius: var(--avatarAltRadius, $fallback--avatarAltRadius);

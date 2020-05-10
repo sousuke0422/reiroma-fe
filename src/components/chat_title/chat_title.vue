@@ -4,6 +4,12 @@
     class="direct-conversation-title"
     :title="title"
   >
+    <ChatAvatar
+      :users="otherUsers"
+      :fallback-user="currentUser"
+      width="23px"
+      height="23px"
+    />
     <span
       v-for="(user, index) in otherUsersTruncated"
       :key="user.id"

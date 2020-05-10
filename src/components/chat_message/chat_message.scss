@@ -37,7 +37,14 @@
 
     .avatar-wrapper {
       margin-right: 10px;
+      // margin-top: 13px;
+      top: 5px;
       width: 32px;
+      position: relative;
+
+      // img {
+      //   position: absolute;
+      // }
     }
 
     .link-preview, .attachments {

@@ -22,12 +22,14 @@
               :fallback-user="currentUser"
             />
           </div>
-          <ChatAvatar
-            :users="chatParticipants"
-            :fallback-user="currentUser"
-            width="35px"
-            height="35px"
-          />
+          <div style="visibility: hidden">
+            <ChatAvatar
+              :users="chatParticipants"
+              :fallback-user="currentUser"
+              width="23px"
+              height="23px"
+            />
+          </div>
         </div>
         <template>
           <div

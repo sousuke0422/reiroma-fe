@@ -1,11 +1,15 @@
 import Vue from 'vue'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
+import ChatAvatar from '../chat_avatar/chat_avatar.vue'
 import { mapState } from 'vuex'
 
 const USER_LIMIT = 10
 
 export default Vue.component('direct-conversation-title', {
   name: 'ChatTitle',
+  components: {
+    ChatAvatar
+  },
   props: [
     'users', 'fallbackUser'
   ],
