@@ -15,6 +15,7 @@ const Chat = {
   },
   data () {
     return {
+      loadingOlderMessages: false,
       loadingMessages: true,
       loadingChat: false,
       editedStatusId: undefined,
@@ -270,8 +271,29 @@ const Chat = {
 
       return bottomedOut
     },
+    getPosition () {
+      let scrollHeight = this.$refs.scrollable.scrollTop
+      let totalHeight = this.$refs.scrollable.scrollHeight - this.$refs.scrollable.offsetHeight
+      return { scrollHeight, totalHeight }
+    },
+    reachedTop (offset) {
+      let res = false
+
+      if (this.$refs.scrollable) {
+        let scrollHeight = this.$refs.scrollable.scrollTop + (offset || 0)
+        if (scrollHeight <= offset) {
+          res = true
+        }
+      }
+
+      return res
+    },
     handleScroll: throttle(function () {
-      if (this.bottomedOut(150)) {
+      if (this.reachedTop(0)) {
+        this.fetchChat(false, this.currentChat.id, {
+          maxId: this.currentChatMessageService.minId
+        })
+      } else if (this.bottomedOut(150)) {
         this.jumpToBottomButtonVisible = false
         let newMessageCount = this.newMessageCount
         if (newMessageCount > 0) {
@@ -284,16 +306,36 @@ const Chat = {
     goBack () {
       this.$router.push({ name: 'chats', params: { username: this.currentUser.screen_name } })
     },
-    fetchChat (isFirstFetch, chatId) {
+    fetchChat (isFirstFetch, chatId, opts = {}) {
+      let maxId = opts.maxId
       this.chatViewItems = chatService.getView(this.currentChatMessageService)
       if (isFirstFetch) {
         this.scrollDown({ forceRead: true })
       }
-      this.backendInteractor.chatMessages({ id: chatId })
+      let positionBeforeLoading = null
+      let previousScrollTop
+      if (maxId) {
+        this.loadingOlderMessages = true
+        positionBeforeLoading = this.getPosition()
+        previousScrollTop = this.$refs.scrollable.scrollTop
+      }
+      this.backendInteractor.chatMessages({ id: chatId, maxId })
         .then((messages) => {
           let bottomedOut = this.bottomedOut()
+          this.loadingOlderMessages = false
           this.$store.dispatch('addChatMessages', { chatId, messages }).then(() => {
             this.chatViewItems = chatService.getView(this.currentChatMessageService)
+            if (positionBeforeLoading) {
+              this.$nextTick(() => {
+                let positionAfterLoading = this.getPosition()
+                let scrollable = this.$refs.scrollable
+                scrollable.scrollTo({
+                  top: previousScrollTop + (positionAfterLoading.totalHeight - positionBeforeLoading.totalHeight),
+                  left: 0
+                })
+              })
+            }
+
             this.newMessageCount = this.currentChatMessageService.newMessageCount
             if (isFirstFetch) {
               this.$nextTick(() => {

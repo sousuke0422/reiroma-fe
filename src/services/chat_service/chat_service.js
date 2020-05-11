@@ -6,7 +6,8 @@ const empty = (chatId) => {
     messages: [],
     newMessageCount: 0,
     lastSeenTimestamp: 0,
-    chatId: chatId
+    chatId: chatId,
+    minId: undefined
   }
 }
 
@@ -17,6 +18,10 @@ const add = (storage, { messages: newMessages }) => {
 
     // sanity check
     if (message.chat_id !== storage.chatId) { return }
+
+    if (!storage.minId || message.id < storage.minId) {
+      storage.minId = message.id
+    }
 
     if (!storage.idIndex[message.id]) {
       if (storage.lastSeenTimestamp < message.created_at) {

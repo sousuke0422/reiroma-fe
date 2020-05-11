@@ -1150,9 +1150,18 @@ const getOrCreateChat = ({ accountId, credentials }) => {
   })
 }
 
-const chatMessages = ({ id, credentials }) => {
+const chatMessages = ({ id, credentials, maxId, sinceId, limit = 20 }) => {
+  let url = PLEROMA_CHAT_MESSAGES_URL(id)
+  const args = [
+    maxId && `max_id=${maxId}`,
+    sinceId && `since_id=${sinceId}`,
+    limit && `limit=${limit}`
+  ].filter(_ => _).join('&')
+
+  url = url + (args ? '?' + args : '')
+
   return promisedRequest({
-    url: PLEROMA_CHAT_MESSAGES_URL(id),
+    url,
     method: 'GET',
     credentials
   })
