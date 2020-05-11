@@ -376,11 +376,12 @@ export const parseChat = (chat) => {
   output.id = parseInt(chat.id, 10)
   output.account = parseUser(chat.account)
   output.unread = chat.unread
-  output.lastMessage = undefined
+  output.lastMessage = parseChatMessage(chat.last_message)
   return output
 }
 
 export const parseChatMessage = (message) => {
+  if (!message) { return }
   let output = message
   output.id = parseInt(message.id, 10)
   output.created_at = new Date(message.created_at)

@@ -1138,7 +1138,7 @@ const chats = ({ maxId, sinceId, limit = 20, recipients = [], credentials }) => 
   return fetch(url, { headers: authHeaders(credentials) })
     .then((data) => data.json())
     .then((data) => {
-      return { chats: data.map(parseChat), pagination }
+      return { chats: data.map(parseChat).filter(c => c), pagination }
     })
 }
 

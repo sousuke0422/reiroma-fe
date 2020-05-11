@@ -27,7 +27,10 @@
       </div>
       <!-- eslint-disable vue/no-v-html -->
       <div class="chat-preview">
-        {{ 'Last message placeholder' }}
+        <span
+          class="content"
+          v-html="chat.lastMessage && chat.lastMessage.content"
+        />
         <div
           v-if="chat.unread > 0"
           class="alert-dot-number"
