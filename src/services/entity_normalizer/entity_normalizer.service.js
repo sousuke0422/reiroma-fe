@@ -176,6 +176,7 @@ export const parseUser = (data) => {
     output.deactivated = data.pleroma.deactivated
 
     output.notification_settings = data.pleroma.notification_settings
+    output.unread_chat_count = data.pleroma.unread_chat_count
   }
 
   output.tags = output.tags || []

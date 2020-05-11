@@ -1,4 +1,4 @@
-import { throttle } from 'lodash'
+import _ from 'lodash'
 import { mapGetters, mapState } from 'vuex'
 import ChatMessage from '../chat_message/chat_message.vue'
 import ChatAvatar from '../chat_avatar/chat_avatar.vue'
@@ -78,7 +78,8 @@ const Chat = {
     ...mapState({
       backendInteractor: state => state.api.backendInteractor,
       currentUser: state => state.users.currentUser,
-      isMobileLayout: state => state.interface.mobileLayout
+      isMobileLayout: state => state.interface.mobileLayout,
+      openedChats: state => state.chats.openedChats
     })
   },
   watch: {
@@ -288,7 +289,9 @@ const Chat = {
 
       return res
     },
-    handleScroll: throttle(function () {
+    handleScroll: _.throttle(function () {
+      if (!this.currentChat) { return }
+
       if (this.reachedTop(0)) {
         this.fetchChat(false, this.currentChat.id, {
           maxId: this.currentChatMessageService.minId
@@ -351,12 +354,19 @@ const Chat = {
         })
     },
     readChat () {
-      if (!this.currentChat.id) { return }
+      if (!(this.currentChat && this.currentChat.id)) { return }
       this.$store.dispatch('readChat', { id: this.currentChat.id })
       this.newMessageCount = this.currentChatMessageService.newMessageCount
     },
     async startFetching () {
-      const chat = await this.backendInteractor.getOrCreateChat({ accountId: this.recipientId })
+      let chat = _.find(this.openedChats, c => c.account.id === this.recipientId)
+      if (!chat) {
+        chat = await this.backendInteractor.getOrCreateChat({ accountId: this.recipientId })
+      }
+      this.$nextTick(() => {
+        this.scrollDown({ forceRead: true })
+      })
+
       this.$store.dispatch('addOpenedChat', { chat })
       this.doStartFetching()
     },
