@@ -9,8 +9,7 @@ export const visibleTypes = store => ([
   store.state.config.notificationVisibility.follows && 'follow',
   store.state.config.notificationVisibility.followRequest && 'follow_request',
   store.state.config.notificationVisibility.moves && 'move',
-  store.state.config.notificationVisibility.emojiReactions && 'pleroma:emoji_reaction',
-  store.state.config.notificationVisibility.chatMention && 'pleroma:chat_mention'
+  store.state.config.notificationVisibility.emojiReactions && 'pleroma:emoji_reaction'
 ].filter(_ => _))
 
 const statusNotifications = ['like', 'mention', 'repeat', 'pleroma:emoji_reaction']

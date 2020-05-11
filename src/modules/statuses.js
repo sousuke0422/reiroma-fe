@@ -335,6 +335,7 @@ const addNewNotifications = (state, { dispatch, notifications, older, visibleNot
     if (notification.type === 'pleroma:chat_mention') {
       dispatch('addChatMessages', { chatId: notification.chatMessage.chat_id, messages: [notification.chatMessage] })
       dispatch('updateChatByAccountId', { accountId: notification.from_profile.id })
+      // dispatch('updateUnreadChatCount', { userId, unreadChatCount })
     }
 
     // Only add a new notification if we don't have one for the same action
@@ -540,6 +541,9 @@ export const mutations = {
   dismissNotification (state, { id }) {
     state.notifications.data = state.notifications.data.filter(n => n.id !== id)
   },
+  dismissNotifications (state, { finder }) {
+    state.notifications.data = state.notifications.data.filter(n => finder)
+  },
   updateNotification (state, { id, updater }) {
     const notification = find(state.notifications.data, n => n.id === id)
     notification && updater(notification)
@@ -616,6 +620,22 @@ export const mutations = {
 
 const statuses = {
   state: defaultState(),
+  getters: {
+    unreadChatCount: state => currentChat => {
+      let res = 0
+      state.notifications.data.forEach(n => {
+        let isMsg = !n.seen && n.chatMessage
+        if (!isMsg) { return }
+
+        if (currentChat) {
+          if (currentChat.id !== n.chatMessage.chat_id) { res++ }
+        } else {
+          res++
+        }
+      })
+      return res
+    }
+  },
   actions: {
     addNewStatuses ({ rootState, commit }, { statuses, showImmediately = false, timeline = false, noIdUpdate = false, userId }) {
       commit('addNewStatuses', { statuses, showImmediately, timeline, noIdUpdate, user: rootState.users.currentUser, userId })
@@ -717,6 +737,14 @@ const statuses = {
     dismissNotification ({ rootState, commit }, { id }) {
       commit('dismissNotification', { id })
       rootState.api.backendInteractor.dismissNotification({ id })
+    },
+    markMultipleNotificationsAsSeen ({ rootState, commit }, { finder }) {
+      const notifications = rootState.statuses.notifications.data.filter(finder)
+
+      notifications.forEach(n => {
+        commit('markSingleNotificationAsSeen', { id: n.id })
+        rootState.api.backendInteractor.markNotificationsAsSeen({ id: n.id, single: true })
+      })
     },
     updateNotification ({ rootState, commit }, { id, updater }) {
       commit('updateNotification', { id, updater })

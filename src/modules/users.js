@@ -225,6 +225,12 @@ export const mutations = {
   signUpFailure (state, errors) {
     state.signUpPending = false
     state.signUpErrors = errors
+  },
+  updateUnreadChatCount (state, { userId, unreadChatCount }) {
+    const user = state.usersObject[userId]
+    if (user) {
+      user.unread_chat_count = unreadChatCount
+    }
   }
 }
 
@@ -259,6 +265,9 @@ const users = {
   mutations,
   getters,
   actions: {
+    updateUnreadChatCount (store, { userId, unreadChatCount }) {
+      store.commit('updateUnreadChatCount', { userId, unreadChatCount })
+    },
     fetchUser (store, id) {
       return store.rootState.api.backendInteractor.fetchUser({ id })
         .then((user) => {

@@ -1,4 +1,4 @@
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 const NavPanel = {
   created () {
@@ -6,13 +6,16 @@ const NavPanel = {
       this.$store.dispatch('startFetchingFollowRequests')
     }
   },
-  computed: mapState({
-    currentUser: state => state.users.currentUser,
-    chat: state => state.chat.channel,
-    followRequestCount: state => state.api.followRequests.length,
-    privateMode: state => state.instance.private,
-    federating: state => state.instance.federating
-  })
+  computed: {
+    ...mapState({
+      currentUser: state => state.users.currentUser,
+      chat: state => state.chat.channel,
+      followRequestCount: state => state.api.followRequests.length,
+      privateMode: state => state.instance.private,
+      federating: state => state.instance.federating
+    }),
+    ...mapGetters(['unreadChatCount', 'currentChat'])
+  }
 }
 
 export default NavPanel

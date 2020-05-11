@@ -19,6 +19,12 @@
         </li>
         <li v-if="currentUser">
           <router-link :to="{ name: 'chats', params: { username: currentUser.screen_name } }">
+            <div
+              v-if="unreadChatCount(currentChat)"
+              class="alert-dot-number"
+            >
+              {{ unreadChatCount(currentChat) }}
+            </div>
             <i class="button-icon icon-chat" /> {{ $t("nav.chats") }}
           </router-link>
         </li>

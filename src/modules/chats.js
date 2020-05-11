@@ -79,6 +79,9 @@ const chats = {
     },
     readChat ({ rootState, dispatch }, { id }) {
       dispatch('resetChatNewMessageCount')
+      dispatch('markMultipleNotificationsAsSeen', {
+        finder: n => n.chatMessage && n.chatMessage.chat_id === id && !n.seen
+      })
       rootState.api.backendInteractor.readChat({ id }).then(() => {
         // dispatch('refreshCurrentUser')
       })
@@ -124,11 +127,10 @@ const chats = {
     updateChat (state, { _dispatch, chat: updatedChat, _rootGetters }) {
       let chat = find(state.chatList.data, { id: updatedChat.id })
       if (chat) {
-        state.chatList.data = state.chatList.data.filter(d => {
-          return d.id !== updatedChat.id
-        })
+        chat.lastMessage = updatedChat.lastMessage
+        chat.unread = updatedChat.unread
       }
-      state.chatList.data.unshift(updatedChat)
+      if (!chat) { state.chatList.data.unshift(updatedChat) }
       state.chatList.idStore[updatedChat.id] = updatedChat
     },
     deleteChat (state, { _dispatch, id, _rootGetters }) {
