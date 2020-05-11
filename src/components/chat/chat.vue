@@ -10,16 +10,17 @@
           ref="header"
           class="panel-heading direct-conversation-view-heading mobile-hidden"
         >
-          <a
+          <!-- <a
             class="go-back-button"
             @click="goBack"
-          >
-            <i class="button-icon icon-left-open" />
-          </a>
+          > -->
+            <i class="button-icon icon-left-open" @click="goBack" />
+          <!-- </a> -->
           <div class="title text-center">
             <ChatTitle
               :users="chatParticipants"
               :fallback-user="currentUser"
+              :with-avatar="true"
             />
           </div>
           <div style="">
@@ -29,13 +30,13 @@
               width="23px"
               height="23px"
             /> -->
-            <a
+            <!-- <a
               class=""
               style="margin-right: 0.3em;"
               @click="goBack"
-            >
+            > -->
               <i class="button-icon icon-info-circled" />
-            </a>
+            <!-- </a> -->
           </div>
         </div>
         <template>

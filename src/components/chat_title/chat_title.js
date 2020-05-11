@@ -11,7 +11,7 @@ export default Vue.component('direct-conversation-title', {
     ChatAvatar
   },
   props: [
-    'users', 'fallbackUser'
+    'users', 'fallbackUser', 'withAvatar'
   ],
   computed: {
     ...mapState({

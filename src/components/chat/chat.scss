@@ -44,6 +44,12 @@
         position: -webkit-sticky;
         position: sticky;
 
+        .button-icon {
+          display: flex;
+          align-content: center;
+          align-items: center;
+        }
+
         .go-back-button {
           cursor: pointer;
           margin-right: 0.7em;
@@ -66,8 +72,9 @@
           text-overflow: ellipsis;
           white-space: nowrap;
           flex-shrink: 0;
-          max-width: 70%;
+          max-width: 80%;
           display: grid;
+          display: flex;
         }
       }
 
