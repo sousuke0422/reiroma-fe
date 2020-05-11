@@ -26,17 +26,19 @@
         </router-link>
       </div>
       <div class="direct-conversation-inner">
-        <div class="media status">
-          <StatusContent
-            :status="messageForStatusContent"
-            :full-content="true">
-            <span
-              slot="footer"
-              class="created-at"
-            >
-              {{ createdAt }}
-            </span>
-          </StatusContent>
+        <div class="status-body" :style="{ 'min-width': message.attachment ? '80%' : '' }">
+          <div class="media status">
+            <StatusContent
+              :status="messageForStatusContent"
+              :full-content="true">
+              <span
+                slot="footer"
+                class="created-at"
+              >
+                {{ createdAt }}
+              </span>
+            </StatusContent>
+          </div>
         </div>
       </div>
     </div>
