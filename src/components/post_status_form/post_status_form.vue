@@ -169,7 +169,6 @@
       >
         <div class="form-bottom-left">
           <media-upload
-            v-if="disableAttachments !== true"
             ref="mediaUpload"
             class="media-upload-icon"
             :drop-files="dropFiles"
@@ -179,7 +178,6 @@
           />
           <div
             class="emoji-icon"
-            :style="{ 'text-align' : (disableAttachments ? 'left' : 'center') }"
           >
             <i
               :title="$t('emoji.add_emoji')"
@@ -515,5 +513,12 @@
     cursor: pointer;
     z-index: 4;
   }
+}
+
+// todo: unify with attachment.vue (otherwise images the uploaded images are not minified unless a status with an attachment was displayed before)
+img.media-upload {
+  line-height: 0;
+  max-height: 200px;
+  max-width: 100%;
 }
 </style>

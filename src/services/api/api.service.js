@@ -1158,13 +1158,19 @@ const chatMessages = ({ id, credentials }) => {
   })
 }
 
-const postChatMessage = ({ id, content, credentials }) => {
+const postChatMessage = ({ id, content, mediaId = null, credentials }) => {
+  let payload = {
+    'content': content
+  }
+
+  if (mediaId) {
+    payload['media_id'] = mediaId
+  }
+
   return promisedRequest({
     url: PLEROMA_CHAT_MESSAGES_URL(id),
     method: 'POST',
-    payload: {
-      'content': content
-    },
+    payload: payload,
     credentials
   })
 }

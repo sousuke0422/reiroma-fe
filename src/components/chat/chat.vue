@@ -76,7 +76,6 @@
               :disable-subject="true"
               :disable-scope-selector="true"
               :disable-notice="true"
-              :disable-attachments="true"
               :disable-polls="true"
               :poster="poster"
               :preserve-focus="true"

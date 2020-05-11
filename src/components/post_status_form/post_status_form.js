@@ -36,7 +36,6 @@ const PostStatusForm = {
     'disableScopeSelector',
     'disableNotice',
     'disablePolls',
-    'disableAttachments',
     'placeholder',
     'maxHeight',
     'poster',

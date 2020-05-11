@@ -386,5 +386,8 @@ export const parseChatMessage = (message) => {
   output.id = parseInt(message.id, 10)
   output.created_at = new Date(message.created_at)
   output.chat_id = parseInt(message.chat_id, 10)
+  if (message.attachment) {
+    output.attachment = parseAttachment(message.attachment)
+  }
   return output
 }

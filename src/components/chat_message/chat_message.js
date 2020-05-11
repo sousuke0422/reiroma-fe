@@ -46,12 +46,19 @@ const ChatMessage = {
       return this.chatViewItem.type === 'message'
     },
     messageForStatusContent () {
-      return {
+      let result = {
         summary: '',
         statusnet_html: this.message.content,
-        text: this.message.content,
-        attachments: []
+        text: this.message.content
       }
+
+      if (this.message.attachment) {
+        result.attachments = [this.message.attachment]
+      } else {
+        result.attachments = []
+      }
+
+      return result
     },
     ...mapState({
       betterShadow: state => state.interface.browserSupport.cssFilter,

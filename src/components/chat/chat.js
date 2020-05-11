@@ -325,11 +325,24 @@ const Chat = {
       })
       this.fetchChat(true, chatId)
     },
-    poster ({ status }) {
-      return this.backendInteractor.postChatMessage({
+    poster (opts) {
+      const status = opts.status
+
+      if (!status) {
+        // TODO:
+        return Promise.resolve({ error: this.$t('chats.empty_message_error') })
+      }
+
+      let params = {
         id: this.currentChat.id,
         content: status
-      })
+      }
+
+      if (opts.media && opts.media[0]) {
+        params.mediaId = opts.media[0].id
+      }
+
+      return this.backendInteractor.postChatMessage(params)
     }
   }
 }

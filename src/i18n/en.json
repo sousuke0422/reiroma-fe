@@ -758,7 +758,8 @@
     "write_message": "Write a message",
     "delete": "Delete",
     "chats": "Chats",
-    "new": "New Chat"
+    "new": "New Chat",
+    "empty_message_error": "Cannot post empty message"
   },
   "display_date": {
     "today": "Today"
