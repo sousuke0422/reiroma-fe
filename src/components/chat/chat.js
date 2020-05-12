@@ -74,12 +74,16 @@ const Chat = {
         return this.$t('chats.write_message')
       }
     },
+    customRef () {
+      return this.$store.state.chats.ref
+    },
     ...mapGetters(['currentChat', 'currentChatMessageService', 'findUser']),
     ...mapState({
       backendInteractor: state => state.api.backendInteractor,
       currentUser: state => state.users.currentUser,
       isMobileLayout: state => state.interface.mobileLayout,
-      openedChats: state => state.chats.openedChats
+      openedChats: state => state.chats.openedChats,
+      openedChatMessageServices: state => state.chats.openedChatMessageServices
     })
   },
   watch: {
@@ -91,6 +95,11 @@ const Chat = {
           this.scrollDown({ forceRead: true })
         }
       })
+    },
+    'currentChatMessageService.messages.length': {
+      handler: function () {
+        this.chatViewItems = chatService.getView(this.currentChatMessageService)
+      }
     },
     '$route': function (prev, next) {
       this.recipientId = this.$route.params.recipient_id
@@ -106,11 +115,6 @@ const Chat = {
         this.chatViewItems = chatService.getView(this.currentChatMessageService)
         this.updateSize()
         this.scrollDown({ forceRead: true })
-      })
-    },
-    onScopeNoticeDismissed () {
-      this.$nextTick(() => {
-        this.updateSize()
       })
     },
     onFilesDropped () {
@@ -327,7 +331,6 @@ const Chat = {
           let bottomedOut = this.bottomedOut()
           this.loadingOlderMessages = false
           this.$store.dispatch('addChatMessages', { chatId, messages }).then(() => {
-            this.chatViewItems = chatService.getView(this.currentChatMessageService)
             if (positionBeforeLoading) {
               this.$nextTick(() => {
                 let positionAfterLoading = this.getPosition()

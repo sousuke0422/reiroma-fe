@@ -11,7 +11,10 @@
       width="23px"
       height="23px"
     />
-    <span v-if="withAvatar" style="margin-right: 0.5em" />
+    <span
+      v-if="withAvatar"
+      style="margin-right: 0.5em"
+    />
     <span
       v-for="(user, index) in otherUsersTruncated"
       :key="user.id"

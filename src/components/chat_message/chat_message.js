@@ -1,4 +1,5 @@
 import { mapState, mapGetters } from 'vuex'
+import Popover from '../popover/popover.vue'
 import Attachment from '../attachment/attachment.vue'
 import UserAvatar from '../user_avatar/user_avatar.vue'
 import Gallery from '../gallery/gallery.vue'
@@ -16,6 +17,7 @@ const ChatMessage = {
     'sequenceHovered'
   ],
   components: {
+    Popover,
     Attachment,
     StatusContent,
     UserAvatar,
@@ -46,30 +48,45 @@ const ChatMessage = {
       return this.chatViewItem.type === 'message'
     },
     messageForStatusContent () {
-      let result = {
+      return {
         summary: '',
         statusnet_html: this.message.content,
-        text: this.message.content
+        text: this.message.content,
+        attachments: this.message.attachments
       }
-
-      if (this.message.attachment) {
-        result.attachments = [this.message.attachment]
-      } else {
-        result.attachments = []
-      }
-
-      return result
     },
     ...mapState({
       betterShadow: state => state.interface.browserSupport.cssFilter,
       currentUser: state => state.users.currentUser,
       restrictedNicknames: state => state.instance.restrictedNicknames
     }),
+    wrapperStyle () {
+      return {
+        'opacity': this.hovered || this.menuOpened ? '1' : '0'
+      }
+    },
     ...mapGetters(['mergedConfig', 'findUser'])
+  },
+  data () {
+    return {
+      hovered: false,
+      menuOpened: false
+    }
   },
   methods: {
     onHover (bool) {
       this.$emit('hover', { state: bool, sequenceId: this.chatViewItem.sequenceId })
+    },
+    async deleteMessage () {
+      const confirmed = window.confirm(this.$t('chats.delete_confirm'))
+      if (confirmed) {
+        await this.$store.dispatch('deleteChatMessage', {
+          messageId: this.chatViewItem.data.id,
+          chatId: this.chatViewItem.data.chat_id
+        })
+      }
+      this.hovered = false
+      this.menuOpened = false
     }
   }
 }

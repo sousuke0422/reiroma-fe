@@ -26,24 +26,54 @@
         </router-link>
       </div>
       <div class="direct-conversation-inner">
-        <div class="status-body" :style="{ 'min-width': message.attachment ? '80%' : '' }">
+        <div
+          class="status-body"
+          :style="{ 'min-width': message.attachment ? '80%' : '' }"
+        >
           <div
             class="media status"
             style="position: relative"
-            >
+            @mouseenter="hovered = true"
+            @mouseleave="hovered = false"
+          >
             <div
+              v-if="isCurrentUser"
               class="chat-message-menu"
               style="position: absolute; right: 5px; top: -10px"
+              :style="wrapperStyle"
+            >
+              <Popover
+                trigger="click"
+                placement="top"
+                :bound-to="{ x: 'container' }"
+                @show="menuOpened = true"
+                @close="menuOpened = false"
               >
-              <button
-                title="more"
-              >
-                <i class="icon-dot-3" />
-              </button>
+                <div
+                  slot="content"
+                  slot-scope=""
+                >
+                  <div class="dropdown-menu">
+                    <button
+                      class="dropdown-item dropdown-item-icon"
+                      @click="deleteMessage"
+                    >
+                      <i class="icon-cancel" /> {{ $t("chats.delete") }}
+                    </button>
+                  </div>
+                </div>
+                <button
+                  slot="trigger"
+                  :title="$t('chats.more')"
+                >
+                  <i class="icon-dot-3" />
+                </button>
+              </Popover>
             </div>
             <StatusContent
               :status="messageForStatusContent"
-              :full-content="true">
+              :full-content="true"
+            >
               <span
                 slot="footer"
                 class="created-at"

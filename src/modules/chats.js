@@ -1,3 +1,4 @@
+import { set } from 'vue'
 import { find, omitBy, debounce, last } from 'lodash'
 import chatService from '../services/chat_service/chat_service.js'
 import { parseChat, parseChatMessage } from '../services/entity_normalizer/entity_normalizer.service.js'
@@ -57,7 +58,7 @@ const chats = {
     setCurrentChatFetcher ({ rootState, commit }, { fetcher }) {
       commit('setCurrentChatFetcher', { fetcher })
     },
-    addOpenedChat ({ commit, dispatch }, { chat }) {
+    addOpenedChat ({ rootState, commit, dispatch }, { chat }) {
       commit('addOpenedChat', { dispatch, chat: parseChat(chat) })
       dispatch('addNewUsers', [chat.account])
     },
@@ -85,6 +86,10 @@ const chats = {
       rootState.api.backendInteractor.readChat({ id }).then(() => {
         // dispatch('refreshCurrentUser')
       })
+    },
+    deleteChatMessage ({ rootState, commit, dispatch }, value) {
+      rootState.api.backendInteractor.deleteChatMessage(value)
+      commit('deleteChatMessage', value)
     }
   },
   mutations: {
@@ -97,10 +102,10 @@ const chats = {
     },
     addOpenedChat (state, { _dispatch, chat }) {
       state.currentChatId = chat.id
-      state.openedChats[chat.id] = chat
+      set(state.openedChats, chat.id, chat)
 
       if (!state.openedChatMessageServices[chat.id]) {
-        state.openedChatMessageServices[chat.id] = chatService.empty(chat.id)
+        set(state.openedChatMessageServices, chat.id, chatService.empty(chat.id))
       }
     },
     setCurrentChatId (state, { chatId }) {
@@ -150,6 +155,12 @@ const chats = {
       const chatMessageService = state.openedChatMessageServices[chatId]
       if (chatMessageService) {
         chatService.add(chatMessageService, { messages: messages.map(parseChatMessage) })
+      }
+    },
+    deleteChatMessage (state, { chatId, messageId }) {
+      const chatMessageService = state.openedChatMessageServices[chatId]
+      if (chatMessageService) {
+        chatService.deleteMessage(chatMessageService, messageId)
       }
     },
     resetChatNewMessageCount (state, _value) {

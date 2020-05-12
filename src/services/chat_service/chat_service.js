@@ -11,6 +11,12 @@ const empty = (chatId) => {
   }
 }
 
+const deleteMessage = (storage, messageId) => {
+  if (!storage) { return }
+  storage.messages = storage.messages.filter(m => m.id !== messageId)
+  delete storage.idIndex[messageId]
+}
+
 const add = (storage, { messages: newMessages }) => {
   if (!storage) { return }
   for (let i = 0; i < newMessages.length; i++) {
@@ -99,6 +105,7 @@ const ChatService = {
   add,
   empty,
   getView,
+  deleteMessage,
   resetNewMessageCount
 }
 

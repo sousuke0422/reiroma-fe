@@ -14,7 +14,10 @@
             class="go-back-button"
             @click="goBack"
           > -->
-            <i class="button-icon icon-left-open" @click="goBack" />
+          <i
+            class="button-icon icon-left-open"
+            @click="goBack"
+          />
           <!-- </a> -->
           <div class="title text-center">
             <ChatTitle
@@ -35,7 +38,7 @@
               style="margin-right: 0.3em;"
               @click="goBack"
             > -->
-              <i class="button-icon icon-info-circled" />
+            <i class="button-icon icon-info-circled" />
             <!-- </a> -->
           </div>
         </div>

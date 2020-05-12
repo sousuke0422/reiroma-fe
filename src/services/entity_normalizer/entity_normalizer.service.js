@@ -389,7 +389,9 @@ export const parseChatMessage = (message) => {
   output.chat_id = parseInt(message.chat_id, 10)
   output.content = addEmojis(message.content, message.emojis)
   if (message.attachment) {
-    output.attachment = parseAttachment(message.attachment)
+    output.attachments = [parseAttachment(message.attachment)]
+  } else {
+    output.attachments = []
   }
   return output
 }

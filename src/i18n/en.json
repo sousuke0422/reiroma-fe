@@ -759,7 +759,9 @@
     "delete": "Delete",
     "chats": "Chats",
     "new": "New Chat",
-    "empty_message_error": "Cannot post empty message"
+    "empty_message_error": "Cannot post empty message",
+    "more": "More",
+    "delete_confirm": "Do you really want to delete this message?"
   },
   "display_date": {
     "today": "Today"

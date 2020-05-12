@@ -82,6 +82,7 @@ const PLEROMA_CHATS_URL = `/api/v1/pleroma/chats`
 const PLEROMA_CHAT_URL = id => `/api/v1/pleroma/chats/by-account-id/${id}`
 const PLEROMA_CHAT_MESSAGES_URL = id => `/api/v1/pleroma/chats/${id}/messages`
 const PLEROMA_CHAT_READ_URL = id => `/api/v1/pleroma/chats/${id}/read`
+const PLEROMA_DELETE_CHAT_MESSAGE_URL = (chatId, messageId) => `/api/v1/pleroma/chats/${chatId}/messages/${messageId}`
 
 const oldfetch = window.fetch
 
@@ -1192,6 +1193,14 @@ const readChat = ({ id, credentials }) => {
   })
 }
 
+const deleteChatMessage = ({ chatId, messageId, credentials }) => {
+  return promisedRequest({
+    url: PLEROMA_DELETE_CHAT_MESSAGE_URL(chatId, messageId),
+    method: 'DELETE',
+    credentials
+  })
+}
+
 const apiService = {
   verifyCredentials,
   fetchTimeline,
@@ -1273,7 +1282,8 @@ const apiService = {
   getOrCreateChat,
   chatMessages,
   postChatMessage,
-  readChat
+  readChat,
+  deleteChatMessage
 }
 
 export default apiService
