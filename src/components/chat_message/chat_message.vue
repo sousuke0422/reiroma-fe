@@ -27,7 +27,20 @@
       </div>
       <div class="direct-conversation-inner">
         <div class="status-body" :style="{ 'min-width': message.attachment ? '80%' : '' }">
-          <div class="media status">
+          <div
+            class="media status"
+            style="position: relative"
+            >
+            <div
+              class="chat-message-menu"
+              style="position: absolute; right: 5px; top: -10px"
+              >
+              <button
+                title="more"
+              >
+                <i class="icon-dot-3" />
+              </button>
+            </div>
             <StatusContent
               :status="messageForStatusContent"
               :full-content="true">

@@ -23,6 +23,24 @@
 
   .status {
     padding: 0.75em;
+
+    &:hover {
+      .chat-message-menu {
+        // visibility: visible;
+        opacity: 1;
+      }
+    }
+
+    .chat-message-menu {
+      transition: opacity 0.1s;
+      // visibility: hidden;
+      opacity: 0;
+
+      button {
+        padding-top: 3px;
+        padding-bottom: 3px;
+      }
+    }
   }
 
   .direct-conversation {
