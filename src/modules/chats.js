@@ -22,7 +22,8 @@ const chats = {
   state: { ...defaultState },
   getters: {
     currentChat: state => state.openedChats[state.currentChatId],
-    currentChatMessageService: state => state.openedChatMessageServices[state.currentChatId]
+    currentChatMessageService: state => state.openedChatMessageServices[state.currentChatId],
+    findOpenedChatByRecipientId: state => recipientId => find(state.openedChats, c => c.account.id === recipientId)
   },
   actions: {
     // Chat list

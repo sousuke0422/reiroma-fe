@@ -24,7 +24,6 @@ const Chat = {
       mobileLayout: this.$store.state.interface.mobileLayout,
       recipientId: this.$route.params.recipient_id,
       hoveredSequenceId: undefined,
-      chatViewItems: chatService.getView(this.currentChatMessageService),
       newMessageCount: this.currentChatMessageService && this.currentChatMessageService.newMessageCount
     }
   },
@@ -74,16 +73,15 @@ const Chat = {
         return this.$t('chats.write_message')
       }
     },
-    customRef () {
-      return this.$store.state.chats.ref
+    chatViewItems () {
+      return chatService.getView(this.currentChatMessageService)
     },
-    ...mapGetters(['currentChat', 'currentChatMessageService', 'findUser']),
+    ...mapGetters(['currentChat', 'currentChatMessageService', 'findUser', 'findOpenedChatByRecipientId']),
     ...mapState({
       backendInteractor: state => state.api.backendInteractor,
       currentUser: state => state.users.currentUser,
       isMobileLayout: state => state.interface.mobileLayout,
-      openedChats: state => state.chats.openedChats,
-      openedChatMessageServices: state => state.chats.openedChatMessageServices
+      openedChats: state => state.chats.openedChats
     })
   },
   watch: {
@@ -96,11 +94,6 @@ const Chat = {
         }
       })
     },
-    'currentChatMessageService.messages.length': {
-      handler: function () {
-        this.chatViewItems = chatService.getView(this.currentChatMessageService)
-      }
-    },
     '$route': function (prev, next) {
       this.recipientId = this.$route.params.recipient_id
       this.startFetching()
@@ -112,9 +105,10 @@ const Chat = {
     },
     onPosted (data) {
       this.$store.dispatch('addChatMessages', { chatId: this.currentChat.id, messages: [data] }).then(() => {
-        this.chatViewItems = chatService.getView(this.currentChatMessageService)
-        this.updateSize()
-        this.scrollDown({ forceRead: true })
+        this.$nextTick(() => {
+          this.updateSize()
+          this.scrollDown({ forceRead: true })
+        })
       })
     },
     onFilesDropped () {
@@ -315,7 +309,6 @@ const Chat = {
     },
     fetchChat (isFirstFetch, chatId, opts = {}) {
       let maxId = opts.maxId
-      this.chatViewItems = chatService.getView(this.currentChatMessageService)
       if (isFirstFetch) {
         this.scrollDown({ forceRead: true })
       }
@@ -362,7 +355,7 @@ const Chat = {
       this.newMessageCount = this.currentChatMessageService.newMessageCount
     },
     async startFetching () {
-      let chat = _.find(this.openedChats, c => c.account.id === this.recipientId)
+      let chat = this.findOpenedChatByRecipientId(this.recipientId)
       if (!chat) {
         chat = await this.backendInteractor.getOrCreateChat({ accountId: this.recipientId })
       }
