@@ -383,11 +383,6 @@ const Chat = {
     poster (opts) {
       const status = opts.status
 
-      if (!status) {
-        // TODO:
-        return Promise.resolve({ error: this.$t('chats.empty_message_error') })
-      }
-
       let params = {
         id: this.currentChat.id,
         content: status
