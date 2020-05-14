@@ -763,6 +763,12 @@
     "more": "More",
     "delete_confirm": "Do you really want to delete this message?"
   },
+  "file_type": {
+    "audio": "Audio",
+    "video": "Video",
+    "image": "Image",
+    "file": "File"
+  },
   "display_date": {
     "today": "Today"
   }

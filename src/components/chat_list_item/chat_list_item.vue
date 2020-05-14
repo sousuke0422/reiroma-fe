@@ -29,7 +29,7 @@
       <div class="chat-preview">
         <span
           class="content"
-          v-html="chat.lastMessage && chat.lastMessage.content"
+          v-html="chat.lastMessage && (attachmentInfo || chat.lastMessage.content)"
         />
         <div
           v-if="chat.unread > 0"
