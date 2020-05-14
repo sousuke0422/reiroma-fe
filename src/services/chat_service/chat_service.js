@@ -7,7 +7,8 @@ const empty = (chatId) => {
     newMessageCount: 0,
     lastSeenTimestamp: 0,
     chatId: chatId,
-    minId: undefined
+    minId: undefined,
+    lastMessage: undefined
   }
 }
 
@@ -15,6 +16,14 @@ const deleteMessage = (storage, messageId) => {
   if (!storage) { return }
   storage.messages = storage.messages.filter(m => m.id !== messageId)
   delete storage.idIndex[messageId]
+
+  if (storage.lastMessage && (storage.lastMessage.id === messageId)) {
+    storage.lastMessage = _.maxBy(storage.messages, 'id')
+  }
+
+  if (storage.minId === messageId) {
+    storage.minId = _.minBy(storage.messages, 'id')
+  }
 }
 
 const add = (storage, { messages: newMessages }) => {
@@ -27,6 +36,10 @@ const add = (storage, { messages: newMessages }) => {
 
     if (!storage.minId || message.id < storage.minId) {
       storage.minId = message.id
+    }
+
+    if (!storage.lastMessage || message.id > storage.lastMessage.id) {
+      storage.lastMessage = message
     }
 
     if (!storage.idIndex[message.id]) {

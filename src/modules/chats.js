@@ -64,7 +64,7 @@ const chats = {
       dispatch('addNewUsers', [chat.account])
     },
     addChatMessages ({ commit }, value) {
-      commit('addChatMessages', value)
+      commit('addChatMessages', { commit, ...value })
     },
     setChatFocused ({ commit }, value) {
       commit('setChatFocused', value)
@@ -90,7 +90,7 @@ const chats = {
     },
     deleteChatMessage ({ rootState, commit, dispatch }, value) {
       rootState.api.backendInteractor.deleteChatMessage(value)
-      commit('deleteChatMessage', value)
+      commit('deleteChatMessage', { commit, ...value })
     }
   },
   mutations: {
@@ -152,16 +152,27 @@ const chats = {
     setChatsLoading (state, { value }) {
       state.chats.loading = value
     },
-    addChatMessages (state, { chatId, messages }) {
+    addChatMessages (state, { commit, chatId, messages }) {
       const chatMessageService = state.openedChatMessageServices[chatId]
       if (chatMessageService) {
         chatService.add(chatMessageService, { messages: messages.map(parseChatMessage) })
+        commit('refreshLastMessage', { commit, chatId })
       }
     },
-    deleteChatMessage (state, { chatId, messageId }) {
+    refreshLastMessage (state, { chatId }) {
+      const chatMessageService = state.openedChatMessageServices[chatId]
+      if (chatMessageService) {
+        const chat = state.chatList.data.find(c => c.id === chatId)
+        if (chat) {
+          chat.lastMessage = chatMessageService.lastMessage
+        }
+      }
+    },
+    deleteChatMessage (state, { commit, chatId, messageId }) {
       const chatMessageService = state.openedChatMessageServices[chatId]
       if (chatMessageService) {
         chatService.deleteMessage(chatMessageService, messageId)
+        commit('refreshLastMessage', { commit, chatId })
       }
     },
     resetChatNewMessageCount (state, _value) {
