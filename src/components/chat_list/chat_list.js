@@ -6,7 +6,7 @@ import withLoadMore from '../../hocs/with_load_more/with_load_more'
 
 const Chats = withLoadMore({
   fetch: (props, $store) => $store.dispatch('fetchChats'),
-  select: (props, $store) => $store.state.chats.chatList.data,
+  select: (props, $store) => $store.getters.sortedChatList,
   destroy: (props, $store) => undefined,
   childPropName: 'items'
 })(List)

@@ -1124,22 +1124,19 @@ export const handleMastoWS = (wsEvent) => {
   }
 }
 
-const chats = ({ maxId, sinceId, limit = 20, recipients = [], credentials }) => {
+const chats = ({ maxId, sinceId, limit = 20, credentials }) => {
   let url = PLEROMA_CHATS_URL
-  const recipientIds = recipients.map(r => `recipients[]=${r}`).join('&')
   const args = [
     maxId && `max_id=${maxId}`,
     sinceId && `since_id=${sinceId}`,
-    limit && `limit=${limit}`,
-    recipientIds && `${recipientIds}`
+    limit && `limit=${limit}`
   ].filter(_ => _).join('&')
 
-  let pagination = {}
   url = url + (args ? '?' + args : '')
   return fetch(url, { headers: authHeaders(credentials) })
     .then((data) => data.json())
     .then((data) => {
-      return { chats: data.map(parseChat).filter(c => c), pagination }
+      return { chats: data.map(parseChat).filter(c => c) }
     })
 }
 

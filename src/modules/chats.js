@@ -1,5 +1,5 @@
 import { set } from 'vue'
-import { find, omitBy, debounce, last } from 'lodash'
+import { find, omitBy, debounce, last, orderBy } from 'lodash'
 import chatService from '../services/chat_service/chat_service.js'
 import { parseChat, parseChatMessage } from '../services/entity_normalizer/entity_normalizer.service.js'
 
@@ -18,12 +18,21 @@ const defaultState = {
   currentChatId: null
 }
 
+const getChatById = (state, id) => {
+  return find(state.chatList.data, { id })
+}
+
+const sortedChatList = (state) => {
+  return orderBy(state.chatList.data, ['updated_at'], ['desc'])
+}
+
 const chats = {
   state: { ...defaultState },
   getters: {
     currentChat: state => state.openedChats[state.currentChatId],
     currentChatMessageService: state => state.openedChatMessageServices[state.currentChatId],
-    findOpenedChatByRecipientId: state => recipientId => find(state.openedChats, c => c.account.id === recipientId)
+    findOpenedChatByRecipientId: state => recipientId => find(state.openedChats, c => c.account.id === recipientId),
+    sortedChatList
   },
   actions: {
     // Chat list
@@ -116,28 +125,27 @@ const chats = {
       if (chats.length > 0) {
         state.chatList.pagination = { maxId: last(chats).id }
       }
-      chats.forEach((conversation) => {
-        // This is to prevent duplicate conversations being added
-        // (right now, backend can return the same conversation on different pages)
-        if (!state.chatList.idStore[conversation.id]) {
-          state.chatList.data.push(conversation)
-          state.chatList.idStore[conversation.id] = conversation
+      chats.forEach((updatedChat) => {
+        let chat = getChatById(state, updatedChat.id)
+
+        if (chat) {
+          chat.lastMessage = updatedChat.lastMessage
+          chat.unread = updatedChat.unread
         } else {
-          const chat = find(state.chatList.data, { id: conversation.id })
-          chat.last_status = conversation.last_status
-          chat.unread = conversation.unread
-          state.chatList.idStore[conversation.id] = conversation
+          state.chatList.data.push(updatedChat)
+          set(state.chatList.idStore, updatedChat.id, updatedChat)
         }
       })
     },
     updateChat (state, { _dispatch, chat: updatedChat, _rootGetters }) {
-      let chat = find(state.chatList.data, { id: updatedChat.id })
+      let chat = getChatById(state, updatedChat.id)
       if (chat) {
         chat.lastMessage = updatedChat.lastMessage
         chat.unread = updatedChat.unread
+        chat.updated_at = updatedChat.updated_at
       }
       if (!chat) { state.chatList.data.unshift(updatedChat) }
-      state.chatList.idStore[updatedChat.id] = updatedChat
+      set(state.chatList.idStore, updatedChat.id, updatedChat)
     },
     deleteChat (state, { _dispatch, id, _rootGetters }) {
       state.chats.data = state.chats.data.filter(conversation =>
@@ -156,15 +164,16 @@ const chats = {
       const chatMessageService = state.openedChatMessageServices[chatId]
       if (chatMessageService) {
         chatService.add(chatMessageService, { messages: messages.map(parseChatMessage) })
-        commit('refreshLastMessage', { commit, chatId })
+        commit('refreshLastMessage', { chatId })
       }
     },
     refreshLastMessage (state, { chatId }) {
       const chatMessageService = state.openedChatMessageServices[chatId]
       if (chatMessageService) {
-        const chat = state.chatList.data.find(c => c.id === chatId)
+        let chat = getChatById(state, chatId)
         if (chat) {
           chat.lastMessage = chatMessageService.lastMessage
+          chat.updated_at = chatMessageService.lastMessage.created_at
         }
       }
     },
@@ -172,7 +181,7 @@ const chats = {
       const chatMessageService = state.openedChatMessageServices[chatId]
       if (chatMessageService) {
         chatService.deleteMessage(chatMessageService, messageId)
-        commit('refreshLastMessage', { commit, chatId })
+        commit('refreshLastMessage', { chatId })
       }
     },
     resetChatNewMessageCount (state, _value) {

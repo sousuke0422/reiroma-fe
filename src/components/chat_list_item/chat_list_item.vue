@@ -40,6 +40,12 @@
       </div>
       <!-- eslint-enable vue/no-v-html -->
     </div>
+    <div style="float: right; text-align: right;">
+      <Timeago
+        :time="chat.updated_at"
+        :auto-update="60"
+      />
+    </div>
   </div>
 </template>
 

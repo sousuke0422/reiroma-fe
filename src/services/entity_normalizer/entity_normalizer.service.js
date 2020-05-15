@@ -373,11 +373,12 @@ const isNsfw = (status) => {
 }
 
 export const parseChat = (chat) => {
-  let output = chat
+  let output = {}
   output.id = parseInt(chat.id, 10)
   output.account = parseUser(chat.account)
   output.unread = chat.unread
   output.lastMessage = parseChatMessage(chat.last_message)
+  output.updated_at = new Date(chat.updated_at)
   return output
 }
 
