@@ -1,6 +1,7 @@
 <template>
   <div
     class="media-upload"
+    :class="{ disabled: disabled }"
     @drop.prevent
     @dragover.prevent="fileDrag"
     @drop="fileDrop"
@@ -19,6 +20,7 @@
       />
       <input
         v-if="uploadReady"
+        :disabled="disabled"
         type="file"
         style="position: fixed; top: -100em"
         multiple="true"
@@ -31,7 +33,22 @@
 <script src="./media_upload.js" ></script>
 
 <style lang="scss">
+@import '../../_variables.scss';
+
 .media-upload {
+  &.disabled {
+    .new-icon {
+      cursor: not-allowed;
+    }
+
+    &:hover {
+      i, label {
+        color: $fallback--faint;
+        color: var(--faint, $fallback--faint);
+      }
+    }
+  }
+
   .label {
     display: inline-block;
   }

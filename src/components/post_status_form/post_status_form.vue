@@ -172,6 +172,7 @@
             ref="mediaUpload"
             class="media-upload-icon"
             :drop-files="dropFiles"
+            :disabled="newStatus.files.length >= fileLimit"
             @uploading="disableSubmit"
             @uploaded="addMediaFile"
             @upload-failed="uploadFailed"

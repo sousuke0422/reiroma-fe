@@ -62,7 +62,8 @@ const mediaUpload = {
     }
   },
   props: [
-    'dropFiles'
+    'dropFiles',
+    'disabled'
   ],
   watch: {
     'dropFiles': function (fileInfos) {

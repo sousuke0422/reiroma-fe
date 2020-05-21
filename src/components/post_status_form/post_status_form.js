@@ -40,7 +40,8 @@ const PostStatusForm = {
     'maxHeight',
     'poster',
     'preserveFocus',
-    'autoFocus'
+    'autoFocus',
+    'fileLimit'
   ],
   components: {
     MediaUpload,

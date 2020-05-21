@@ -70,6 +70,7 @@
               :polls-available="false"
               :auto-focus="true"
               :placeholder="formPlaceholder"
+              :file-limit="1"
               max-height="160"
               @resize="handleResize"
               @posted="onPosted"
