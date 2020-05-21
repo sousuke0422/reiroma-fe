@@ -10,36 +10,21 @@
           ref="header"
           class="panel-heading direct-conversation-view-heading mobile-hidden"
         >
-          <!-- <a
-            class="go-back-button"
-            @click="goBack"
-          > -->
-          <i
-            class="button-icon icon-left-open"
-            @click="goBack"
-          />
-          <!-- </a> -->
-          <div class="title text-center">
-            <ChatTitle
-              :users="chatParticipants"
-              :fallback-user="currentUser"
-              :with-avatar="true"
+          <div class="go-back-button-wrapper">
+            <i
+              class="button-icon icon-left-open go-back-button"
+              @click="goBack"
             />
+            <div class="title text-center">
+              <ChatTitle
+                :users="chatParticipants"
+                :fallback-user="currentUser"
+                :with-avatar="true"
+              />
+            </div>
           </div>
           <div style="">
-            <!-- <ChatAvatar
-              :users="chatParticipants"
-              :fallback-user="currentUser"
-              width="23px"
-              height="23px"
-            /> -->
-            <!-- <a
-              class=""
-              style="margin-right: 0.3em;"
-              @click="goBack"
-            > -->
             <i class="button-icon icon-info-circled" />
-            <!-- </a> -->
           </div>
         </div>
         <template>

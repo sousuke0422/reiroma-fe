@@ -60,7 +60,12 @@ const Chat = {
       if (this.currentChat) {
         return [this.currentChat.account]
       } else {
-        return []
+        const user = this.findUser(this.recipientId)
+        if (user) {
+          return [user]
+        } else {
+          return []
+        }
       }
     },
     recipient () {
