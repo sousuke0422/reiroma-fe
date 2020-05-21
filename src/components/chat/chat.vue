@@ -23,7 +23,7 @@
               />
             </div>
           </div>
-          <div style="">
+          <div style="visibility: hidden">
             <i class="button-icon icon-info-circled" />
           </div>
         </div>
