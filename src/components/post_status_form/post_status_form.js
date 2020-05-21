@@ -238,12 +238,19 @@ const PostStatusForm = {
       })
     },
     addMediaFile (fileInfo) {
+      this.$emit('resize')
       this.newStatus.files.push(fileInfo)
       this.enableSubmit()
+      // TODO: use fixed dimensions instead so relying on timeout
+      setTimeout(() => {
+        this.$emit('resize')
+      }, 150)
     },
     removeMediaFile (fileInfo) {
+      this.$emit('resize')
       let index = this.newStatus.files.indexOf(fileInfo)
       this.newStatus.files.splice(index, 1)
+      this.$emit('resize')
     },
     uploadFailed (errString, templateArgs) {
       templateArgs = templateArgs || {}

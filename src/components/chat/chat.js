@@ -24,7 +24,8 @@ const Chat = {
       mobileLayout: this.$store.state.interface.mobileLayout,
       recipientId: this.$route.params.recipient_id,
       hoveredSequenceId: undefined,
-      newMessageCount: this.currentChatMessageService && this.currentChatMessageService.newMessageCount
+      newMessageCount: this.currentChatMessageService && this.currentChatMessageService.newMessageCount,
+      lastPosition: undefined
     }
   },
   created () {
@@ -38,6 +39,7 @@ const Chat = {
         window.addEventListener('scroll', this.handleScroll)
       }
       this.updateSize()
+      this.handleResize()
     })
     if (this.isMobileLayout) {
       this.setMobileChatLayout()
@@ -47,11 +49,19 @@ const Chat = {
       document.addEventListener('visibilitychange', this.handleVisibilityChange, false)
       this.$store.commit('setChatFocused', !document.hidden)
     }
+    let body = document.querySelector('body')
+    if (body) {
+      body.style.overscrollBehavior = 'none'
+    }
   },
   destroyed () {
     window.removeEventListener('scroll', this.handleScroll)
     window.removeEventListener('resize', this.handleLayoutChange)
     this.unsetMobileChatLayout()
+    let body = document.querySelector('body')
+    if (body) {
+      body.style.overscrollBehavior = 'unset'
+    }
     if (typeof document.hidden !== 'undefined') document.removeEventListener('visibilitychange', this.handleVisibilityChange, false)
     this.$store.dispatch('clearCurrentChat')
   },
@@ -86,7 +96,8 @@ const Chat = {
       backendInteractor: state => state.api.backendInteractor,
       currentUser: state => state.users.currentUser,
       isMobileLayout: state => state.interface.mobileLayout,
-      openedChats: state => state.chats.openedChats
+      openedChats: state => state.chats.openedChats,
+      windowHeight: state => state.interface.layoutHeight
     })
   },
   watch: {
@@ -102,6 +113,9 @@ const Chat = {
     '$route': function (prev, next) {
       this.recipientId = this.$route.params.recipient_id
       this.startFetching()
+    },
+    windowHeight () {
+      this.handleResize({ expand: true })
     }
   },
   methods: {
@@ -159,7 +173,6 @@ const Chat = {
       let body = document.querySelector('body')
       if (body) {
         body.style.height = '100%'
-        body.style.overscrollBehavior = 'none'
       }
 
       let app = document.getElementById('app')
@@ -201,7 +214,6 @@ const Chat = {
       let body = document.querySelector('body')
       if (body) {
         body.style.height = 'unset'
-        body.style.overscrollBehavior = 'unset'
       }
 
       let app = document.getElementById('app')
@@ -229,8 +241,37 @@ const Chat = {
         content.style.overflow = 'unset'
       }
     },
-    handleResize (newHeight) {
-      this.updateSize(newHeight)
+    handleResize (opts) {
+      this.$nextTick(() => {
+        this.updateSize()
+
+        let prevOffsetHeight
+        if (this.lastPosition) {
+          prevOffsetHeight = this.lastPosition.offsetHeight
+        }
+
+        this.lastPosition = {
+          scrollTop: this.$refs.scrollable.scrollTop,
+          totalHeight: this.$refs.scrollable.scrollHeight,
+          offsetHeight: this.$refs.scrollable.offsetHeight
+        }
+
+        if (this.lastPosition) {
+          const diff = this.lastPosition.offsetHeight - prevOffsetHeight
+          const bottomedOut = this.bottomedOut()
+          if (diff < 0 || (!bottomedOut && opts && opts.expand)) {
+            this.$nextTick(() => {
+              this.updateSize()
+              this.$nextTick(() => {
+                this.$refs.scrollable.scrollTo({
+                  top: this.$refs.scrollable.scrollTop - diff,
+                  left: 0
+                })
+              })
+            })
+          }
+        }
+      })
     },
     updateSize (newHeight, _diff) {
       let h = this.$refs.header

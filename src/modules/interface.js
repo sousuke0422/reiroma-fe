@@ -12,7 +12,8 @@ const defaultState = {
       window.CSS.supports('-webkit-filter', 'drop-shadow(0 0)')
     )
   },
-  mobileLayout: false
+  mobileLayout: false,
+  layoutHeight: 0
 }
 
 const interfaceMod = {
@@ -35,6 +36,9 @@ const interfaceMod = {
     },
     setMobileLayout (state, value) {
       state.mobileLayout = value
+    },
+    setLayoutHeight (state, value) {
+      state.layoutHeight = value
     }
   },
   actions: {
@@ -49,6 +53,9 @@ const interfaceMod = {
     },
     setMobileLayout ({ commit }, value) {
       commit('setMobileLayout', value)
+    },
+    setLayoutHeight ({ commit }, value) {
+      commit('setLayoutHeight', value)
     }
   }
 }
