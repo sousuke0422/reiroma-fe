@@ -5,6 +5,7 @@ import ChatAvatar from '../chat_avatar/chat_avatar.vue'
 import PostStatusForm from '../post_status_form/post_status_form.vue'
 import ChatTitle from '../chat_title/chat_title.vue'
 import chatService from '../../services/chat_service/chat_service.js'
+import ChatLayout from './chat_layout.js'
 
 const Chat = {
   components: {
@@ -13,6 +14,7 @@ const Chat = {
     ChatAvatar,
     PostStatusForm
   },
+  mixins: [ChatLayout],
   data () {
     return {
       loadingOlderMessages: false,
@@ -24,7 +26,6 @@ const Chat = {
       mobileLayout: this.$store.state.interface.mobileLayout,
       recipientId: this.$route.params.recipient_id,
       hoveredSequenceId: undefined,
-      newMessageCount: this.currentChatMessageService && this.currentChatMessageService.newMessageCount,
       lastPosition: undefined
     }
   },
@@ -41,27 +42,17 @@ const Chat = {
       this.updateSize()
       this.handleResize()
     })
-    if (this.isMobileLayout) {
-      this.setMobileChatLayout()
-    }
+    this.setChatLayout()
 
     if (typeof document.hidden !== 'undefined') {
       document.addEventListener('visibilitychange', this.handleVisibilityChange, false)
       this.$store.commit('setChatFocused', !document.hidden)
     }
-    let body = document.querySelector('body')
-    if (body) {
-      body.style.overscrollBehavior = 'none'
-    }
   },
   destroyed () {
     window.removeEventListener('scroll', this.handleScroll)
     window.removeEventListener('resize', this.handleLayoutChange)
-    this.unsetMobileChatLayout()
-    let body = document.querySelector('body')
-    if (body) {
-      body.style.overscrollBehavior = 'unset'
-    }
+    this.unsetChatLayout()
     if (typeof document.hidden !== 'undefined') document.removeEventListener('visibilitychange', this.handleVisibilityChange, false)
     this.$store.dispatch('clearCurrentChat')
   },
@@ -91,6 +82,9 @@ const Chat = {
     chatViewItems () {
       return chatService.getView(this.currentChatMessageService)
     },
+    newMessageCount () {
+      return this.currentChatMessageService && this.currentChatMessageService.newMessageCount
+    },
     ...mapGetters(['currentChat', 'currentChatMessageService', 'findUser', 'findOpenedChatByRecipientId']),
     ...mapState({
       backendInteractor: state => state.api.backendInteractor,
@@ -105,7 +99,6 @@ const Chat = {
       let bottomedOut = this.bottomedOut(10)
       this.$nextTick(() => {
         if (bottomedOut && prev.length !== next.length) {
-          this.newMessageCount = this.currentChatMessageService.newMessageCount
           this.scrollDown({ forceRead: true })
         }
       })
@@ -153,92 +146,6 @@ const Chat = {
           this.updateSize()
           this.scrollDown()
         })
-      }
-    },
-    setMobileChatLayout () {
-      // This is a hacky way to adjust the global layout to the mobile chat (without modifying the rest of the app).
-      // This layout prevents empty spaces from being visible at the bottom
-      // of the chat on iOS Safari (`safe-area-inset`) when
-      // - the on-screen keyboard appears and the user starts typing
-      // - the user selects the text inside the input area
-      // - the user selects and deletes the text that is multiple lines long
-      // TODO: unify the chat layout with the global layout.
-
-      let html = document.querySelector('html')
-      if (html) {
-        html.style.overflow = 'hidden'
-        html.style.height = '100%'
-      }
-
-      let body = document.querySelector('body')
-      if (body) {
-        body.style.height = '100%'
-      }
-
-      let app = document.getElementById('app')
-      if (app) {
-        app.style.height = '100%'
-        app.style.overflow = 'hidden'
-        app.style.minHeight = 'auto'
-      }
-
-      let appBgWrapper = window.document.getElementById('app_bg_wrapper')
-      if (appBgWrapper) {
-        appBgWrapper.style.overflow = 'hidden'
-      }
-
-      let main = document.getElementsByClassName('main')[0]
-      if (main) {
-        main.style.overflow = 'hidden'
-        main.style.height = '100%'
-      }
-
-      let content = document.getElementById('content')
-      if (content) {
-        content.style.paddingTop = '0'
-        content.style.height = '100%'
-        content.style.overflow = 'visible'
-      }
-
-      this.$nextTick(() => {
-        this.updateSize()
-      })
-    },
-    unsetMobileChatLayout () {
-      let html = document.querySelector('html')
-      if (html) {
-        html.style.overflow = 'visible'
-        html.style.height = 'unset'
-      }
-
-      let body = document.querySelector('body')
-      if (body) {
-        body.style.height = 'unset'
-      }
-
-      let app = document.getElementById('app')
-      if (app) {
-        app.style.height = '100%'
-        app.style.overflow = 'visible'
-        app.style.minHeight = '100vh'
-      }
-
-      let appBgWrapper = document.getElementById('app_bg_wrapper')
-      if (appBgWrapper) {
-        appBgWrapper.style.overflow = 'visible'
-      }
-
-      let main = document.getElementsByClassName('main')[0]
-      if (main) {
-        main.style.overflow = 'visible'
-        main.style.height = 'unset'
-      }
-
-      let content = document.getElementById('content')
-      if (content) {
-        content.style.paddingTop = '60px'
-        content.style.height = 'unset'
-        content.style.overflow = 'unset'
       }
     },
     handleResize (opts) {
@@ -321,29 +228,20 @@ const Chat = {
       let totalHeight = this.$refs.scrollable.scrollHeight - this.$refs.scrollable.offsetHeight
       return { scrollHeight, totalHeight }
     },
-    reachedTop (offset) {
-      let res = false
-
-      if (this.$refs.scrollable) {
-        let scrollHeight = this.$refs.scrollable.scrollTop + (offset || 0)
-        if (scrollHeight <= offset) {
-          res = true
-        }
-      }
-
-      return res
+    reachedTop () {
+      const scrollable = this.$refs.scrollable
+      return scrollable && scrollable.scrollTop <= 0
     },
     handleScroll: _.throttle(function () {
       if (!this.currentChat) { return }
 
-      if (this.reachedTop(0)) {
+      if (this.reachedTop()) {
         this.fetchChat(false, this.currentChat.id, {
           maxId: this.currentChatMessageService.minId
         })
       } else if (this.bottomedOut(150)) {
         this.jumpToBottomButtonVisible = false
-        let newMessageCount = this.newMessageCount
-        if (newMessageCount > 0) {
+        if (this.newMessageCount > 0) {
           this.readChat()
         }
       } else {
@@ -381,7 +279,6 @@ const Chat = {
               })
             }
 
-            this.newMessageCount = this.currentChatMessageService.newMessageCount
             if (isFirstFetch) {
               this.$nextTick(() => {
                 this.updateSize()
@@ -398,7 +295,6 @@ const Chat = {
     readChat () {
       if (!(this.currentChat && this.currentChat.id)) { return }
       this.$store.dispatch('readChat', { id: this.currentChat.id })
-      this.newMessageCount = this.currentChatMessageService.newMessageCount
     },
     async startFetching () {
       let chat = this.findOpenedChatByRecipientId(this.recipientId)
