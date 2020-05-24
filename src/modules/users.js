@@ -495,6 +495,7 @@ const users = {
           store.dispatch('stopFetchingFollowRequests')
           store.commit('clearNotifications')
           store.commit('resetStatuses')
+          store.dispatch('resetChats')
         })
     },
     loginUser (store, accessToken) {

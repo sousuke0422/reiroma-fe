@@ -100,6 +100,10 @@ const chats = {
     deleteChatMessage ({ rootState, commit, dispatch }, value) {
       rootState.api.backendInteractor.deleteChatMessage(value)
       commit('deleteChatMessage', { commit, ...value })
+    },
+    resetChats ({ commit, dispatch }) {
+      dispatch('clearCurrentChat')
+      commit('resetChats', { commit })
     }
   },
   mutations: {
@@ -154,8 +158,12 @@ const chats = {
       state.chats.idStore = omitBy(state.chats.idStore, conversation => conversation.last_status.id === id)
     },
     resetChats (state, { _dispatch }) {
-      state.chats.data = []
-      state.chats.idStore = {}
+      state.chatList = emptyChatList()
+      state.chats.openedChats = {}
+      state.chats.openedChatMessageServices = {}
+      state.chats.fetcher = undefined
+      state.chats.chatFocused = false
+      state.chats.currentChatId = null
     },
     setChatsLoading (state, { value }) {
       state.chats.loading = value
