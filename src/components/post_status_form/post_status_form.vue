@@ -214,8 +214,9 @@
         </button>
         <button
           v-else
+          @touchstart.stop.prevent="postStatus(newStatus)"
+          @mousedown.stop.prevent="postStatus(newStatus)"
           :disabled="submitDisabled"
-          type="submit"
           class="btn btn-default"
         >
           {{ $t('general.submit') }}
