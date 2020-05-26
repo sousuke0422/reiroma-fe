@@ -41,7 +41,8 @@ const PostStatusForm = {
     'poster',
     'preserveFocus',
     'autoFocus',
-    'fileLimit'
+    'fileLimit',
+    'submitOnEnter'
   ],
   components: {
     MediaUpload,
@@ -92,7 +93,8 @@ const PostStatusForm = {
         contentType
       },
       caret: 0,
-      pollFormVisible: false
+      pollFormVisible: false,
+      emojiInputShown: false
     }
   },
   computed: {
@@ -175,9 +177,14 @@ const PostStatusForm = {
     ...mapGetters(['mergedConfig'])
   },
   methods: {
-    postStatus (newStatus) {
+    postStatus (newStatus, opts = {}) {
       if (this.posting) { return }
       if (this.submitDisabled) { return }
+      if (this.emojiInputShown) { return }
+      if (opts.control && this.submitOnEnter) {
+        newStatus.status = `${newStatus.status}\n`
+        return
+      }
 
       if (this.newStatus.status === '') {
         if (this.newStatus.files.length === 0) {
@@ -405,6 +412,9 @@ const PostStatusForm = {
     },
     dismissScopeNotice () {
       this.$store.dispatch('setOption', { name: 'hideScopeNotice', value: true })
+    },
+    handleEmojiInputShow (value) {
+      this.emojiInputShown = value
     }
   }
 }

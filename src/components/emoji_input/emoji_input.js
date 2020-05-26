@@ -162,6 +162,11 @@ const EmojiInput = {
       input.elm.removeEventListener('input', this.onInput)
     }
   },
+  watch: {
+    showSuggestions: function (newValue) {
+      this.$emit('shown', newValue)
+    }
+  },
   methods: {
     triggerShowPicker () {
       this.showPicker = true

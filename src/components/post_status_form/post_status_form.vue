@@ -86,6 +86,7 @@
           @input="onEmojiInputInput"
           @sticker-uploaded="addMediaFile"
           @sticker-upload-failed="uploadFailed"
+          @shown="handleEmojiInputShow"
         >
           <textarea
             ref="textarea"
@@ -95,7 +96,8 @@
             :disabled="posting"
             class="form-post-body"
             :class="{ 'scrollable-form': !!maxHeight }"
-            @keydown.meta.enter="postStatus(newStatus)"
+            @keydown.exact.stop.prevent.enter="submitOnEnter && postStatus(newStatus)"
+            @keydown.meta.enter="postStatus(newStatus, { control: true })"
             @keyup.ctrl.enter="postStatus(newStatus)"
             @drop="fileDrop"
             @dragover.prevent="fileDrag"
@@ -214,10 +216,10 @@
         </button>
         <button
           v-else
-          @touchstart.stop.prevent="postStatus(newStatus)"
-          @mousedown.stop.prevent="postStatus(newStatus)"
           :disabled="submitDisabled"
           class="btn btn-default"
+          @touchstart.stop.prevent="postStatus(newStatus)"
+          @mousedown.stop.prevent="postStatus(newStatus)"
         >
           {{ $t('general.submit') }}
         </button>
