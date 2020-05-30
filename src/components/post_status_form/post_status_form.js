@@ -177,10 +177,14 @@ const PostStatusForm = {
     ...mapGetters(['mergedConfig'])
   },
   methods: {
-    postStatus (newStatus, opts = {}) {
+    postStatus (event, newStatus, opts = {}) {
       if (this.posting) { return }
       if (this.submitDisabled) { return }
       if (this.emojiInputShown) { return }
+      if (this.submitOnEnter) {
+        event.stopPropagation()
+        event.preventDefault()
+      }
       if (opts.control && this.submitOnEnter) {
         newStatus.status = `${newStatus.status}\n`
         return

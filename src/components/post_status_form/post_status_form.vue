@@ -96,9 +96,9 @@
             :disabled="posting"
             class="form-post-body"
             :class="{ 'scrollable-form': !!maxHeight }"
-            @keydown.exact.stop.prevent.enter="submitOnEnter && postStatus(newStatus)"
-            @keydown.meta.enter="postStatus(newStatus, { control: true })"
-            @keyup.ctrl.enter="postStatus(newStatus)"
+            @keydown.exact.enter="submitOnEnter && postStatus($event, newStatus)"
+            @keydown.meta.enter="postStatus($event, newStatus, { control: true })"
+            @keyup.ctrl.enter="postStatus($event, newStatus)"
             @drop="fileDrop"
             @dragover.prevent="fileDrag"
             @input="resize"
@@ -218,8 +218,8 @@
           v-else
           :disabled="submitDisabled"
           class="btn btn-default"
-          @touchstart.stop.prevent="postStatus(newStatus)"
-          @mousedown.stop.prevent="postStatus(newStatus)"
+          @touchstart.stop.prevent="postStatus($event, newStatus)"
+          @mousedown.stop.prevent="postStatus($event, newStatus)"
         >
           {{ $t('general.submit') }}
         </button>
