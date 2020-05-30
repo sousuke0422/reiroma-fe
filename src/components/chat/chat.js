@@ -85,7 +85,13 @@ const Chat = {
     newMessageCount () {
       return this.currentChatMessageService && this.currentChatMessageService.newMessageCount
     },
-    ...mapGetters(['currentChat', 'currentChatMessageService', 'findUser', 'findOpenedChatByRecipientId']),
+    ...mapGetters([
+      'currentChat',
+      'currentChatMessageService',
+      'findUser',
+      'findOpenedChatByRecipientId',
+      'mergedConfig'
+    ]),
     ...mapState({
       backendInteractor: state => state.api.backendInteractor,
       currentUser: state => state.users.currentUser,
@@ -253,7 +259,15 @@ const Chat = {
       this.$router.push({ name: 'chats', params: { username: this.currentUser.screen_name } })
     },
     fetchChat (isFirstFetch, chatId, opts = {}) {
+      const chatMessageService = this.openedChatMessageServices[chatId]
       let maxId = opts.maxId
+      let sinceId
+      if (opts.sinceId && this.mergedConfig.useStreamingApi) {
+        return
+      }
+      if (opts.sinceId) {
+        sinceId = chatMessageService.lastMessage && chatMessageService.lastMessage.id
+      }
       if (isFirstFetch) {
         this.scrollDown({ forceRead: true })
       }
@@ -264,8 +278,6 @@ const Chat = {
         positionBeforeLoading = this.getPosition()
         previousScrollTop = this.$refs.scrollable.scrollTop
       }
-      const chatMessageService = this.openedChatMessageServices[chatId]
-      const sinceId = chatMessageService.lastMessage && chatMessageService.lastMessage.id
 
       this.backendInteractor.chatMessages({ id: chatId, maxId, sinceId })
         .then((messages) => {
@@ -315,7 +327,7 @@ const Chat = {
     doStartFetching () {
       let chatId = this.currentChat.id
       this.$store.dispatch('startFetchingCurrentChat', {
-        fetcher: () => setInterval(() => this.fetchChat(false, chatId), 5000)
+        fetcher: () => setInterval(() => this.fetchChat(false, chatId, { sinceId: true }), 5000)
       })
       this.fetchChat(true, chatId)
     },

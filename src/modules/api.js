@@ -66,6 +66,13 @@ const api = {
                   showImmediately: timelineData.visibleStatuses.length === 0,
                   timeline: 'friends'
                 })
+              } else if (message.event === 'pleroma:chat_update') {
+                dispatch('addChatMessages', {
+                  chatId: message.chatUpdate.id,
+                  messages: [message.chatUpdate.lastMessage]
+                })
+                dispatch('updateChatByAccountId', { accountId: message.chatUpdate.account.id })
+                // dispatch('updateUnreadChatCount', { userId, unreadChatCount })
               }
             }
           )

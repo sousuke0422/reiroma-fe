@@ -332,12 +332,6 @@ const addNewNotifications = (state, { dispatch, notifications, older, visibleNot
       dispatch('fetchEmojiReactionsBy', notification.status.id)
     }
 
-    // if (notification.type === 'pleroma:chat_mention') {
-    //   dispatch('addChatMessages', { chatId: notification.chatMessage.chat_id, messages: [notification.chatMessage] })
-    //   dispatch('updateChatByAccountId', { accountId: notification.from_profile.id })
-    //   // dispatch('updateUnreadChatCount', { userId, unreadChatCount })
-    // }
-
     // Only add a new notification if we don't have one for the same action
     if (!state.notifications.idStore.hasOwnProperty(notification.id)) {
       state.notifications.maxId = notification.id > state.notifications.maxId

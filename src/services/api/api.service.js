@@ -1051,6 +1051,10 @@ const MASTODON_STREAMING_EVENTS = new Set([
   'filters_changed'
 ])
 
+const PLEROMA_STREAMING_EVENTS = new Set([
+  'pleroma:chat_update'
+])
+
 // A thin wrapper around WebSocket API that allows adding a pre-processor to it
 // Uses EventTarget and a CustomEvent to proxy events
 export const ProcessedWS = ({
@@ -1107,7 +1111,7 @@ export const handleMastoWS = (wsEvent) => {
   if (!data) return
   const parsedEvent = JSON.parse(data)
   const { event, payload } = parsedEvent
-  if (MASTODON_STREAMING_EVENTS.has(event)) {
+  if (MASTODON_STREAMING_EVENTS.has(event) || PLEROMA_STREAMING_EVENTS.has(event)) {
     // MastoBE and PleromaBE both send payload for delete as a PLAIN string
     if (event === 'delete') {
       return { event, id: payload }
@@ -1117,6 +1121,8 @@ export const handleMastoWS = (wsEvent) => {
       return { event, status: parseStatus(data) }
     } else if (event === 'notification') {
       return { event, notification: parseNotification(data) }
+    } else if (event === 'pleroma:chat_update') {
+      return { event, chatUpdate: parseChat(data) }
     }
   } else {
     console.warn('Unknown event', wsEvent)
