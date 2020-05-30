@@ -91,6 +91,7 @@ const Chat = {
       currentUser: state => state.users.currentUser,
       isMobileLayout: state => state.interface.mobileLayout,
       openedChats: state => state.chats.openedChats,
+      openedChatMessageServices: state => state.chats.openedChatMessageServices,
       windowHeight: state => state.interface.layoutHeight
     })
   },
@@ -263,7 +264,10 @@ const Chat = {
         positionBeforeLoading = this.getPosition()
         previousScrollTop = this.$refs.scrollable.scrollTop
       }
-      this.backendInteractor.chatMessages({ id: chatId, maxId })
+      const chatMessageService = this.openedChatMessageServices[chatId]
+      const sinceId = chatMessageService.lastMessage && chatMessageService.lastMessage.id
+
+      this.backendInteractor.chatMessages({ id: chatId, maxId, sinceId })
         .then((messages) => {
           let bottomedOut = this.bottomedOut()
           this.loadingOlderMessages = false
