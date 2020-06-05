@@ -1,54 +1,58 @@
 import { set } from 'vue'
 import { getPreset, applyTheme } from '../services/style_setter/style_setter.js'
+import { CURRENT_VERSION } from '../services/theme_data/theme_data.service.js'
 import { instanceDefaultProperties } from './config.js'
 
 const defaultState = {
-  // Stuff from static/config.json and apiConfig
+  // Stuff from apiConfig
   name: 'Pleroma FE',
   registrationOpen: true,
-  safeDM: true,
-  textlimit: 5000,
   server: 'http://localhost:4040/',
-  theme: 'pleroma-dark',
+  textlimit: 5000,
   themeData: undefined,
-  background: '/static/aurora_borealis.jpg',
-  logo: '/static/logo.png',
-  logoMask: true,
-  logoMargin: '.2em',
-  redirectRootNoLogin: '/main/all',
-  redirectRootLogin: '/main/friends',
-  showInstanceSpecificPanel: false,
-  alwaysShowSubjectInput: true,
-  hideMutedPosts: false,
-  collapseMessageWithSubject: false,
-  hidePostStats: false,
-  hideUserStats: false,
-  hideFilteredStatuses: false,
-  disableChat: false,
-  scopeCopy: true,
-  subjectLineBehavior: 'email',
-  postContentType: 'text/plain',
-  hideSitename: false,
-  nsfwCensorImage: undefined,
   vapidPublicKey: undefined,
-  noAttachmentLinks: false,
-  showFeaturesPanel: true,
-  minimalScopesMode: false,
+
+  // Stuff from static/config.json
+  alwaysShowSubjectInput: true,
+  background: '/static/aurora_borealis.jpg',
+  collapseMessageWithSubject: false,
+  disableChat: false,
   greentext: false,
+  hideFilteredStatuses: false,
+  hideMutedPosts: false,
+  hidePostStats: false,
+  hideSitename: false,
+  hideUserStats: false,
+  loginMethod: 'password',
+  logo: '/static/logo.png',
+  logoMargin: '.2em',
+  logoMask: true,
+  minimalScopesMode: false,
+  nsfwCensorImage: undefined,
+  postContentType: 'text/plain',
+  redirectRootLogin: '/main/friends',
+  redirectRootNoLogin: '/main/all',
+  scopeCopy: true,
+  showFeaturesPanel: true,
+  showInstanceSpecificPanel: false,
+  sidebarRight: false,
+  subjectLineBehavior: 'email',
+  theme: 'pleroma-dark',
 
   // Nasty stuff
-  pleromaBackend: true,
-  emoji: [],
-  emojiFetched: false,
   customEmoji: [],
   customEmojiFetched: false,
-  restrictedNicknames: [],
+  emoji: [],
+  emojiFetched: false,
+  pleromaBackend: true,
   postFormats: [],
+  restrictedNicknames: [],
+  safeDM: true,
 
   // Feature-set, apparently, not everything here is reported...
-  mediaProxyAvailable: false,
   chatAvailable: false,
   gopherAvailable: false,
+  mediaProxyAvailable: false,
   suggestionsEnabled: false,
   suggestionsWeb: '',
 
@@ -159,7 +163,14 @@ const instance = {
           // No need to apply theme if there's user theme already
           const { customTheme } = rootState.config
           if (customTheme) return
-          applyTheme(themeData.theme)
+
+          // New theme presets don't have 'theme' property, they use 'source'
+          const themeSource = themeData.source
+          if (!themeData.theme || (themeSource && themeSource.themeEngineVersion === CURRENT_VERSION)) {
+            applyTheme(themeSource)
+          } else {
+            applyTheme(themeData.theme)
+          }
         })
     },
     fetchEmoji ({ dispatch, state }) {
