@@ -1,6 +1,7 @@
 import merge from 'lodash.merge'
 import objectPath from 'object-path'
-import localforage from 'localforage'
+// import localforage from 'localforage'
+import localforage2 from './localforage_redux'
 import { each } from 'lodash'
 
 let loaded = false
@@ -24,7 +25,9 @@ const saveImmedeatelyActions = [
 ]
 
 const defaultStorage = (() => {
-  return localforage
+  // Use this to use the existing localforage db
+  // return localforage2('localforage', 2)
+  return localforage2()
 })()
 
 export default function createPersistedState ({
