@@ -14,29 +14,52 @@ const getDb = (database, version) => {
   return wrap(request)
 }
 
-const storageBuilder = (database = 'storage_2', version = 1) => ({
-  getItem: async (key) => {
-    const db = await getDb(database, version)
-    const dataRequest =
-      db
-        .transaction(['keyvaluepairs'])
-        .objectStore('keyvaluepairs')
-        .get(key)
+const storageBuilder = async (database = 'storage_2', version = 1) => {
+  try {
+    let db = await getDb(database, version)
+    const storage = {
+      getItem: async (key) => {
+        const dataRequest =
+          db
+            .transaction(['keyvaluepairs'])
+            .objectStore('keyvaluepairs')
+            .get(key)
 
-    const dataRequestPromise = wrap(dataRequest)
+        const dataRequestPromise = wrap(dataRequest)
 
-    return dataRequestPromise
-  },
-  setItem: async (key, value) => {
-    const db = await getDb(database, version)
-    const dataRequest =
-      db
-        .transaction(['keyvaluepairs'], 'readwrite')
-        .objectStore('keyvaluepairs')
-        .put(value, key)
+        return dataRequestPromise
+      },
+      setItem: async (key, value) => {
+        const dataRequest =
+          db
+            .transaction(['keyvaluepairs'], 'readwrite')
+            .objectStore('keyvaluepairs')
+            .put(value, key)
 
-    return wrap(dataRequest)
+        return wrap(dataRequest)
+      }
+    }
+
+    return storage
+  } catch (e) {
+    console.log("Can't get indexeddb going, let's use localstorage")
+
+    const storage = {
+      getItem: async (key) => {
+        const result = window.localStorage.getItem(`${database}/${key}`)
+        try {
+          return JSON.parse(result)
+        } catch (e) {
+          return undefined
+        }
+      },
+      setItem: async (key, value) => {
+        const json = JSON.stringify(value)
+        return window.localStorage.setItem(`${database}/${key}`, json)
+      }
+    }
+    return storage
   }
-})
+}
 
 export default storageBuilder

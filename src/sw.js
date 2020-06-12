@@ -1,9 +1,10 @@
 /* eslint-env serviceworker */
 
-import localForage from 'localforage'
+import localForage from './lib/localforage_redux'
 
-function isEnabled () {
-  return localForage.getItem('vuex-lz')
+async function isEnabled () {
+  const storage = await localForage()
+  return storage.getItem('vuex-lz')
     .then(data => data.config.webPushNotifications)
 }
 

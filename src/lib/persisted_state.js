@@ -1,14 +1,11 @@
-import merge from 'lodash.merge'
-import objectPath from 'object-path'
-// import localforage from 'localforage'
 import localforage2 from './localforage_redux'
-import { each } from 'lodash'
+import { merge, each, get, set } from 'lodash'
 
 let loaded = false
 
 const defaultReducer = (state, paths) => (
   paths.length === 0 ? state : paths.reduce((substate, path) => {
-    objectPath.set(substate, path, objectPath.get(state, path))
+    set(substate, path, get(state, path))
     return substate
   }, {})
 )
@@ -24,13 +21,13 @@ const saveImmedeatelyActions = [
   'clearToken'
 ]
 
-const defaultStorage = (() => {
+const defaultStorageBuilder = () => {
   // Use this to use the existing localforage db
   // return localforage2('localforage', 2)
   return localforage2()
-})()
+}
 
-export default function createPersistedState ({
+export default async function createPersistedState ({
   key = 'vuex-lz',
   paths = [],
   getState = (key, storage) => {
@@ -46,9 +43,10 @@ export default function createPersistedState ({
     }
   },
   reducer = defaultReducer,
-  storage = defaultStorage,
+  storageBuilder = defaultStorageBuilder,
   subscriber = store => handler => store.subscribe(handler)
 } = {}) {
+  const storage = await storageBuilder()
   return getState(key, storage).then((savedState) => {
     return store => {
       try {
