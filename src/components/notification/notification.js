@@ -31,7 +31,7 @@ const Notification = {
       return generateProfileLink(user.id, user.screen_name, this.$store.state.instance.restrictedNicknames)
     },
     getUser (notification) {
-      return this.$store.state.users.usersObject[notification.from_profile.id]
+      return this.$store.state.users.usersObject[notification.redux.account.id]
     },
     toggleMute () {
       this.unmuted = !this.unmuted
@@ -57,21 +57,21 @@ const Notification = {
   },
   computed: {
     userClass () {
-      return highlightClass(this.notification.from_profile)
+      return highlightClass(this.notification.redux.account)
     },
     userStyle () {
       const highlight = this.$store.getters.mergedConfig.highlight
-      const user = this.notification.from_profile
+      const user = this.notification.redux.account
       return highlightStyle(highlight[user.screen_name])
     },
     user () {
-      return this.$store.getters.findUser(this.notification.from_profile.id)
+      return this.$store.getters.findUser(this.notification.redux.account.id)
     },
     userProfileLink () {
       return this.generateUserProfileLink(this.user)
     },
     targetUser () {
-      return this.$store.getters.findUser(this.notification.target.id)
+      return this.$store.getters.findUser(this.notification.redux.target.id)
     },
     targetUserProfileLink () {
       return this.generateUserProfileLink(this.targetUser)
@@ -80,7 +80,7 @@ const Notification = {
       return this.$store.getters.relationship(this.user.id).muting
     },
     isStatusNotification () {
-      return isStatusNotification(this.notification.type)
+      return (this.notification.redux.type)
     }
   }
 }

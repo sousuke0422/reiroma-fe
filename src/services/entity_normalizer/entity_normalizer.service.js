@@ -188,6 +188,8 @@ export const parseUser = (data) => {
   output.rights = output.rights || {}
   output.notification_settings = output.notification_settings || {}
 
+  output.redux = data
+
   return output
 }
 
@@ -357,6 +359,11 @@ export const parseNotification = (data) => {
 
   output.created_at = new Date(data.created_at)
   output.id = parseInt(data.id)
+
+  output.redux = data
+  output.redux.account = parseUser(data.account)
+  output.redux.status = isStatusNotification(output.type) ? parseStatus(data.status) : null
+  output.redux.target = output.type !== 'move' ? null : parseUser(data.target)
 
   return output
 }

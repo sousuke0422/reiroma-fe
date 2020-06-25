@@ -1,8 +1,8 @@
 <template>
   <status
-    v-if="notification.type === 'mention'"
+    v-if="notification.redux.type === 'mention'"
     :compact="true"
-    :statusoid="notification.status"
+    :statusoid="notification.redux.status"
   />
   <div v-else>
     <div
@@ -11,7 +11,7 @@
     >
       <small>
         <router-link :to="userProfileLink">
-          {{ notification.from_profile.screen_name }}
+          {{ notification.redux.account.redux.acct }}
         </router-link>
       </small>
       <a
@@ -28,13 +28,13 @@
     >
       <a
         class="avatar-container"
-        :href="notification.from_profile.statusnet_profile_url"
+        :href="notification.redux.account.redux.url"
         @click.stop.prevent.capture="toggleUserExpanded"
       >
         <UserAvatar
           :compact="true"
           :better-shadow="betterShadow"
-          :user="notification.from_profile"
+          :user="notification.redux.account"
         />
       </a>
       <div class="notification-right">
@@ -48,44 +48,44 @@
           <div class="name-and-action">
             <!-- eslint-disable vue/no-v-html -->
             <bdi
-              v-if="!!notification.from_profile.name_html"
+              v-if="!!notification.redux.account.name_html"
               class="username"
-              :title="'@'+notification.from_profile.screen_name"
-              v-html="notification.from_profile.name_html"
+              :title="'@'+notification.redux.account.screen_name"
+              v-html="notification.redux.account.name_html"
             />
             <!-- eslint-enable vue/no-v-html -->
             <span
               v-else
               class="username"
-              :title="'@'+notification.from_profile.screen_name"
-            >{{ notification.from_profile.name }}</span>
-            <span v-if="notification.type === 'like'">
+              :title="'@'+notification.redux.account.redux.acct"
+            >{{ notification.redux.account.display_name }}</span>
+            <span v-if="notification.redux.type === 'favourite'">
               <i class="fa icon-star lit" />
               <small>{{ $t('notifications.favorited_you') }}</small>
             </span>
-            <span v-if="notification.type === 'repeat'">
+            <span v-if="notification.redux.type === 'reblog'">
               <i
                 class="fa icon-retweet lit"
                 :title="$t('tool_tip.repeat')"
               />
               <small>{{ $t('notifications.repeated_you') }}</small>
             </span>
-            <span v-if="notification.type === 'follow'">
+            <span v-if="notification.redux.type === 'follow'">
               <i class="fa icon-user-plus lit" />
               <small>{{ $t('notifications.followed_you') }}</small>
             </span>
-            <span v-if="notification.type === 'follow_request'">
+            <span v-if="notification.redux.type === 'follow_request'">
               <i class="fa icon-user lit" />
               <small>{{ $t('notifications.follow_request') }}</small>
             </span>
-            <span v-if="notification.type === 'move'">
+            <span v-if="notification.redux.type === 'move'">
               <i class="fa icon-arrow-curved lit" />
               <small>{{ $t('notifications.migrated_to') }}</small>
             </span>
-            <span v-if="notification.type === 'pleroma:emoji_reaction'">
+            <span v-if="notification.redux.type === 'pleroma:emoji_reaction'">
               <small>
                 <i18n path="notifications.reacted_with">
-                  <span class="emoji-reaction-emoji">{{ notification.emoji }}</span>
+                  <span class="emoji-reaction-emoji">{{ notification.redux.emoji }}</span>
                 </i18n>
               </small>
             </span>
@@ -96,11 +96,11 @@
           >
             <router-link
               v-if="notification.status"
-              :to="{ name: 'conversation', params: { id: notification.status.id } }"
+              :to="{ name: 'conversation', params: { id: notification.redux.status.id } }"
               class="faint-link"
             >
               <Timeago
-                :time="notification.created_at"
+                :time="notification.redux.created_at"
                 :auto-update="240"
               />
             </router-link>
@@ -111,7 +111,7 @@
           >
             <span class="faint">
               <Timeago
-                :time="notification.created_at"
+                :time="notification.redux.created_at"
                 :auto-update="240"
               />
             </span>
@@ -123,14 +123,14 @@
           ><i class="button-icon icon-eye-off" /></a>
         </span>
         <div
-          v-if="notification.type === 'follow' || notification.type === 'follow_request'"
+          v-if="notification.redux.type === 'follow' || notification.redux.type === 'follow_request'"
           class="follow-text"
         >
           <router-link
             :to="userProfileLink"
             class="follow-name"
           >
-            @{{ notification.from_profile.screen_name }}
+            @{{ notification.redux.account.redux.acct }}
           </router-link>
           <div
             v-if="notification.type === 'follow_request'"
@@ -153,13 +153,13 @@
           class="move-text"
         >
           <router-link :to="targetUserProfileLink">
-            @{{ notification.target.screen_name }}
+            @{{ notification.target.redux.acct }}
           </router-link>
         </div>
         <template v-else>
           <status-content
             class="faint"
-            :status="notification.action"
+            :status="notification.status"
           />
         </template>
       </div>
