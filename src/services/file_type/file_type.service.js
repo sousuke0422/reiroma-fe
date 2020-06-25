@@ -22,7 +22,7 @@ const fileType = mimetype => {
 }
 
 const fileMatchesSomeType = (types, file) =>
-  types.some(type => fileType(file.mimetype) === type)
+  types.some(type => fileType(file.pleroma.mime_type) === type)
 
 const fileTypeService = {
   fileType,

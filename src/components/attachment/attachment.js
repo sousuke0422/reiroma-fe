@@ -20,7 +20,7 @@ const Attachment = {
       hideNsfwLocal: this.$store.getters.mergedConfig.hideNsfw,
       preloadImage: this.$store.getters.mergedConfig.preloadImage,
       loading: false,
-      img: fileTypeService.fileType(this.attachment.mimetype) === 'image' && document.createElement('img'),
+      img: fileTypeService.fileType(this.attachment.pleroma.mime_type) === 'image' && document.createElement('img'),
       modalOpen: false,
       showHidden: false
     }
@@ -37,7 +37,7 @@ const Attachment = {
       return this.$store.state.instance.mediaProxyAvailable ? '' : 'no-referrer'
     },
     type () {
-      return fileTypeService.fileType(this.attachment.mimetype)
+      return fileTypeService.fileType(this.attachment.pleroma.mime_type)
     },
     hidden () {
       return this.nsfw && this.hideNsfwLocal && !this.showHidden

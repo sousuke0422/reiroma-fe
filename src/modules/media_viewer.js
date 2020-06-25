@@ -21,7 +21,7 @@ const mediaViewer = {
   actions: {
     setMedia ({ commit }, attachments) {
       const media = attachments.filter(attachment => {
-        const type = fileTypeService.fileType(attachment.mimetype)
+        const type = fileTypeService.fileType(attachment.pleroma.mime_type)
         return type === 'image' || type === 'video'
       })
       commit('setMedia', media)
