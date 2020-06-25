@@ -133,7 +133,7 @@
             @{{ notification.redux.account.redux.acct }}
           </router-link>
           <div
-            v-if="notification.type === 'follow_request'"
+            v-if="notification.redux.type === 'follow_request'"
             style="white-space: nowrap;"
           >
             <i
@@ -149,17 +149,17 @@
           </div>
         </div>
         <div
-          v-else-if="notification.type === 'move'"
+          v-else-if="notification.redux.type === 'move'"
           class="move-text"
         >
           <router-link :to="targetUserProfileLink">
-            @{{ notification.target.redux.acct }}
+            @{{ notification.redux.target.redux.acct }}
           </router-link>
         </div>
         <template v-else>
           <status-content
             class="faint"
-            :status="notification.status"
+            :status="notification.redux.status"
           />
         </template>
       </div>

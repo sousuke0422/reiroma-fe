@@ -2,14 +2,14 @@ import { filter, sortBy, includes } from 'lodash'
 
 export const notificationsFromStore = store => store.state.statuses.notifications.data
 
-export const visibleTypes = store => ([
-  store.state.config.notificationVisibility.likes && 'like',
-  store.state.config.notificationVisibility.mentions && 'mention',
-  store.state.config.notificationVisibility.repeats && 'repeat',
-  store.state.config.notificationVisibility.follows && 'follow',
-  store.state.config.notificationVisibility.followRequest && 'follow_request',
-  store.state.config.notificationVisibility.moves && 'move',
-  store.state.config.notificationVisibility.emojiReactions && 'pleroma:emoji_reaction'
+export const visibleTypes = state => ([
+  state.config.notificationVisibility.likes && 'favourite',
+  state.config.notificationVisibility.mentions && 'mention',
+  state.config.notificationVisibility.repeats && 'reblog',
+  state.config.notificationVisibility.follows && 'follow',
+  state.config.notificationVisibility.followRequest && 'follow_request',
+  state.config.notificationVisibility.moves && 'move',
+  state.config.notificationVisibility.emojiReactions && 'pleroma:emoji_reaction'
 ].filter(_ => _))
 
 const statusNotifications = ['like', 'mention', 'repeat', 'pleroma:emoji_reaction']
@@ -37,7 +37,7 @@ export const filteredNotificationsFromStore = (store, types) => {
   let sortedNotifications = notificationsFromStore(store).map(_ => _).sort(sortById)
   sortedNotifications = sortBy(sortedNotifications, 'seen')
   return sortedNotifications.filter(
-    (notification) => (types || visibleTypes(store)).includes(notification.type)
+    (notification) => (types || visibleTypes(store.state)).includes(notification.type)
   )
 }
 

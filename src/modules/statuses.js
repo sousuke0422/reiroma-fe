@@ -13,7 +13,7 @@ import {
   omitBy
 } from 'lodash'
 import { set } from 'vue'
-import { isStatusNotification, prepareNotificationObject } from '../services/notification_utils/notification_utils.js'
+import { isStatusNotification, prepareNotificationObject, visibleTypes } from '../services/notification_utils/notification_utils.js'
 import apiService from '../services/api/api.service.js'
 import { muteWordHits } from '../services/status_parser/status_parser.js'
 
@@ -74,17 +74,6 @@ export const prepareStatus = (status) => {
   status.attachments = status.attachments || []
 
   return status
-}
-
-const visibleNotificationTypes = (rootState) => {
-  return [
-    rootState.config.notificationVisibility.likes && 'like',
-    rootState.config.notificationVisibility.mentions && 'mention',
-    rootState.config.notificationVisibility.repeats && 'repeat',
-    rootState.config.notificationVisibility.follows && 'follow',
-    rootState.config.notificationVisibility.moves && 'move',
-    rootState.config.notificationVisibility.emojiReactions && 'pleroma:emoji_reactions'
-  ].filter(_ => _)
 }
 
 const mergeOrAdd = (arr, obj, item) => {
@@ -323,12 +312,11 @@ const addNewStatuses = (state, { statuses, showImmediately = false, timeline, us
 const addNewNotifications = (state, { dispatch, notifications, older, visibleNotificationTypes, rootGetters }) => {
   each(notifications, (notification) => {
     if (isStatusNotification(notification.type)) {
-      notification.action = addStatusToGlobalStorage(state, notification.action).item
-      notification.status = notification.status && addStatusToGlobalStorage(state, notification.status).item
+      notification.redux.status = notification.redux.status && addStatusToGlobalStorage(state, notification.redux.status).item
     }
 
-    if (notification.type === 'pleroma:emoji_reaction') {
-      dispatch('fetchEmojiReactionsBy', notification.status.id)
+    if (notification.redux.type === 'pleroma:emoji_reaction') {
+      dispatch('fetchEmojiReactionsBy', notification.redux.status.id)
     }
 
     // Only add a new notification if we don't have one for the same action
@@ -347,11 +335,11 @@ const addNewNotifications = (state, { dispatch, notifications, older, visibleNot
         const notifObj = prepareNotificationObject(notification, rootGetters.i18n)
 
         const reasonsToMuteNotif = (
-          notification.seen ||
+          notification.redux.is_seen ||
             state.notifications.desktopNotificationSilence ||
-            !visibleNotificationTypes.includes(notification.type) ||
+            !visibleNotificationTypes.includes(notification.redux.type) ||
             (
-              notification.type === 'mention' && status && (
+              notification.redux.type === 'mention' && status && (
                 status.muted ||
                   muteWordHits(status, rootGetters.mergedConfig.muteWords).length === 0
               )
@@ -364,7 +352,7 @@ const addNewNotifications = (state, { dispatch, notifications, older, visibleNot
           setTimeout(desktopNotification.close.bind(desktopNotification), 5000)
         }
       }
-    } else if (notification.seen) {
+    } else if (notification.redux.is_seen) {
       state.notifications.idStore[notification.id].seen = true
     }
   })
@@ -589,7 +577,7 @@ const statuses = {
       commit('addNewStatuses', { statuses, showImmediately, timeline, noIdUpdate, user: rootState.users.currentUser, userId })
     },
     addNewNotifications ({ rootState, commit, dispatch, rootGetters }, { notifications, older }) {
-      commit('addNewNotifications', { visibleNotificationTypes: visibleNotificationTypes(rootState), dispatch, notifications, older, rootGetters })
+      commit('addNewNotifications', { visibleNotificationTypes: visibleTypes(rootState), dispatch, notifications, older, rootGetters })
     },
     setError ({ rootState, commit }, { value }) {
       commit('setError', { value })
