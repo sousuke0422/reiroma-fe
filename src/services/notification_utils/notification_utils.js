@@ -12,7 +12,7 @@ export const visibleTypes = state => ([
   state.config.notificationVisibility.emojiReactions && 'pleroma:emoji_reaction'
 ].filter(_ => _))
 
-const statusNotifications = ['like', 'mention', 'repeat', 'pleroma:emoji_reaction']
+const statusNotifications = ['favourite', 'mention', 'reblog', 'pleroma:emoji_reaction']
 
 export const isStatusNotification = (type) => includes(statusNotifications, type)
 
@@ -37,7 +37,7 @@ export const filteredNotificationsFromStore = (store, types) => {
   let sortedNotifications = notificationsFromStore(store).map(_ => _).sort(sortById)
   sortedNotifications = sortBy(sortedNotifications, 'seen')
   return sortedNotifications.filter(
-    (notification) => (types || visibleTypes(store.state)).includes(notification.type)
+    (notification) => (types || visibleTypes(store.state)).includes(notification.redux.type)
   )
 }
 
@@ -46,18 +46,18 @@ export const unseenNotificationsFromStore = store =>
 
 export const prepareNotificationObject = (notification, i18n) => {
   const notifObj = {
-    tag: notification.id
+    tag: notification.redux.id
   }
-  const status = notification.status
-  const title = notification.from_profile.name
+  const status = notification.redux.status
+  const title = notification.redux.account.name
   notifObj.title = title
-  notifObj.icon = notification.from_profile.profile_image_url
+  notifObj.icon = notification.redux.account.profile_image_url
   let i18nString
-  switch (notification.type) {
-    case 'like':
+  switch (notification.redux.type) {
+    case 'favourite':
       i18nString = 'favorited_you'
       break
-    case 'repeat':
+    case 'reblog':
       i18nString = 'repeated_you'
       break
     case 'follow':
@@ -71,12 +71,12 @@ export const prepareNotificationObject = (notification, i18n) => {
       break
   }
 
-  if (notification.type === 'pleroma:emoji_reaction') {
-    notifObj.body = i18n.t('notifications.reacted_with', [notification.emoji])
+  if (notification.redux.type === 'pleroma:emoji_reaction') {
+    notifObj.body = i18n.t('notifications.reacted_with', [notification.redux.emoji])
   } else if (i18nString) {
     notifObj.body = i18n.t('notifications.' + i18nString)
-  } else if (isStatusNotification(notification.type)) {
-    notifObj.body = notification.status.text
+  } else if (isStatusNotification(notification.redux.type)) {
+    notifObj.body = notification.redux.status.text
   }
 
   // Shows first attached non-nsfw image, if any. Should add configuration for this somehow...

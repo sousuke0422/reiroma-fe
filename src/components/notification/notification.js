@@ -39,18 +39,18 @@ const Notification = {
     approveUser () {
       this.$store.state.api.backendInteractor.approveUser({ id: this.user.id })
       this.$store.dispatch('removeFollowRequest', this.user)
-      this.$store.dispatch('markSingleNotificationAsSeen', { id: this.notification.id })
+      this.$store.dispatch('markSingleNotificationAsSeen', { id: this.notification.redux.id })
       this.$store.dispatch('updateNotification', {
-        id: this.notification.id,
+        id: this.notification.redux.id,
         updater: notification => {
-          notification.type = 'follow'
+          notification.redux.type = 'follow'
         }
       })
     },
     denyUser () {
       this.$store.state.api.backendInteractor.denyUser({ id: this.user.id })
         .then(() => {
-          this.$store.dispatch('dismissNotificationLocal', { id: this.notification.id })
+          this.$store.dispatch('dismissNotificationLocal', { id: this.notification.redux.id })
           this.$store.dispatch('removeFollowRequest', this.user)
         })
     }

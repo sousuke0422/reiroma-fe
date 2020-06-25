@@ -311,7 +311,7 @@ const addNewStatuses = (state, { statuses, showImmediately = false, timeline, us
 
 const addNewNotifications = (state, { dispatch, notifications, older, visibleNotificationTypes, rootGetters }) => {
   each(notifications, (notification) => {
-    if (isStatusNotification(notification.type)) {
+    if (isStatusNotification(notification.redux.type)) {
       notification.redux.status = notification.redux.status && addStatusToGlobalStorage(state, notification.redux.status).item
     }
 
@@ -320,22 +320,22 @@ const addNewNotifications = (state, { dispatch, notifications, older, visibleNot
     }
 
     // Only add a new notification if we don't have one for the same action
-    if (!state.notifications.idStore.hasOwnProperty(notification.id)) {
-      state.notifications.maxId = notification.id > state.notifications.maxId
-        ? notification.id
+    if (!state.notifications.idStore.hasOwnProperty(notification.redux.id)) {
+      state.notifications.maxId = notification.redux.id > state.notifications.maxId
+        ? notification.redux.id
         : state.notifications.maxId
-      state.notifications.minId = notification.id < state.notifications.minId
-        ? notification.id
+      state.notifications.minId = notification.redux.id < state.notifications.minId
+        ? notification.redux.id
         : state.notifications.minId
 
       state.notifications.data.push(notification)
-      state.notifications.idStore[notification.id] = notification
+      state.notifications.idStore[notification.redux.id] = notification
 
       if ('Notification' in window && window.Notification.permission === 'granted') {
         const notifObj = prepareNotificationObject(notification, rootGetters.i18n)
 
         const reasonsToMuteNotif = (
-          notification.redux.is_seen ||
+          notification.redux.pleroma.is_seen ||
             state.notifications.desktopNotificationSilence ||
             !visibleNotificationTypes.includes(notification.redux.type) ||
             (
@@ -352,8 +352,8 @@ const addNewNotifications = (state, { dispatch, notifications, older, visibleNot
           setTimeout(desktopNotification.close.bind(desktopNotification), 5000)
         }
       }
-    } else if (notification.redux.is_seen) {
-      state.notifications.idStore[notification.id].seen = true
+    } else if (notification.redux.pleroma.is_seen) {
+      state.notifications.idStore[notification.redux.id].pleroma.is_seen = true
     }
   })
 }
@@ -486,12 +486,12 @@ export const mutations = {
   },
   markNotificationsAsSeen (state) {
     each(state.notifications.data, (notification) => {
-      notification.seen = true
+      notification.redux.pleroma.is_seen = true
     })
   },
   markSingleNotificationAsSeen (state, { id }) {
     const notification = find(state.notifications.data, n => n.id === id)
-    if (notification) notification.seen = true
+    if (notification) notification.redux.pleroma.is_seen = true
   },
   dismissNotification (state, { id }) {
     state.notifications.data = state.notifications.data.filter(n => n.id !== id)

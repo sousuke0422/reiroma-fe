@@ -95,7 +95,7 @@
             class="timeago"
           >
             <router-link
-              v-if="notification.status"
+              v-if="notification.redux.status"
               :to="{ name: 'conversation', params: { id: notification.redux.status.id } }"
               class="faint-link"
             >

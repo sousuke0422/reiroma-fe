@@ -362,8 +362,9 @@ export const parseNotification = (data) => {
 
   output.redux = data
   output.redux.account = parseUser(data.account)
-  output.redux.status = isStatusNotification(output.type) ? parseStatus(data.status) : null
+  output.redux.status = isStatusNotification(data.type) ? parseStatus(data.status) : null
   output.redux.target = output.type !== 'move' ? null : parseUser(data.target)
+  console.log(output.redux.pleroma.is_seen)
 
   return output
 }

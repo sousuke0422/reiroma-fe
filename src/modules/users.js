@@ -206,10 +206,8 @@ export const mutations = {
     status.user = state.usersObject[status.user.id]
   },
   setUserForNotification (state, notification) {
-    if (notification.type !== 'follow') {
-      notification.action.user = state.usersObject[notification.action.user.id]
-    }
     notification.from_profile = state.usersObject[notification.from_profile.id]
+    notification.redux.account = state.usersObject[notification.redux.account.id]
   },
   setColor (state, { user: { id }, highlighted }) {
     const user = state.usersObject[id]

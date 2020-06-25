@@ -22,7 +22,7 @@ const FollowRequestCard = {
       this.$store.dispatch('updateNotification', {
         id: notifId,
         updater: notification => {
-          notification.type = 'follow'
+          notification.redux.type = 'follow'
         }
       })
     },
