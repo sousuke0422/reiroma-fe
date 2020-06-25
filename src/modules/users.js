@@ -206,8 +206,7 @@ export const mutations = {
     status.user = state.usersObject[status.user.id]
   },
   setUserForNotification (state, notification) {
-    notification.from_profile = state.usersObject[notification.from_profile.id]
-    notification.redux.account = state.usersObject[notification.redux.account.id]
+    notification.account = state.usersObject[notification.account.id]
   },
   setColor (state, { user: { id }, highlighted }) {
     const user = state.usersObject[id]
@@ -410,7 +409,7 @@ const users = {
       })
     },
     addNewNotifications (store, { notifications }) {
-      const users = map(notifications, 'from_profile')
+      const users = map(notifications, 'account')
       const targetUsers = map(notifications, 'target').filter(_ => _)
       const notificationIds = notifications.map(_ => _.id)
       store.commit('addNewUsers', users)

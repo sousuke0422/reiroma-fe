@@ -35,25 +35,25 @@ const sortById = (a, b) => {
 export const filteredNotificationsFromStore = (store, types) => {
   // map is just to clone the array since sort mutates it and it causes some issues
   let sortedNotifications = notificationsFromStore(store).map(_ => _).sort(sortById)
-  sortedNotifications = sortBy(sortedNotifications, 'seen')
+  sortedNotifications = sortBy(sortedNotifications, 'pleroma.is_seen')
   return sortedNotifications.filter(
-    (notification) => (types || visibleTypes(store.state)).includes(notification.redux.type)
+    (notification) => (types || visibleTypes(store.state)).includes(notification.type)
   )
 }
 
 export const unseenNotificationsFromStore = store =>
-  filter(filteredNotificationsFromStore(store), ({ seen }) => !seen)
+  filter(filteredNotificationsFromStore(store), ({ pleroma }) => !pleroma.is_seen)
 
 export const prepareNotificationObject = (notification, i18n) => {
   const notifObj = {
-    tag: notification.redux.id
+    tag: notification.id
   }
-  const status = notification.redux.status
-  const title = notification.redux.account.name
+  const status = notification.status
+  const title = notification.account.name
   notifObj.title = title
-  notifObj.icon = notification.redux.account.profile_image_url
+  notifObj.icon = notification.account.profile_image_url
   let i18nString
-  switch (notification.redux.type) {
+  switch (notification.type) {
     case 'favourite':
       i18nString = 'favorited_you'
       break
@@ -71,12 +71,12 @@ export const prepareNotificationObject = (notification, i18n) => {
       break
   }
 
-  if (notification.redux.type === 'pleroma:emoji_reaction') {
-    notifObj.body = i18n.t('notifications.reacted_with', [notification.redux.emoji])
+  if (notification.type === 'pleroma:emoji_reaction') {
+    notifObj.body = i18n.t('notifications.reacted_with', [notification.emoji])
   } else if (i18nString) {
     notifObj.body = i18n.t('notifications.' + i18nString)
-  } else if (isStatusNotification(notification.redux.type)) {
-    notifObj.body = notification.redux.status.text
+  } else if (isStatusNotification(notification.type)) {
+    notifObj.body = notification.status.text
   }
 
   // Shows first attached non-nsfw image, if any. Should add configuration for this somehow...

@@ -329,44 +329,12 @@ export const parseStatus = (data) => {
 }
 
 export const parseNotification = (data) => {
-  const mastoDict = {
-    'favourite': 'like',
-    'reblog': 'repeat'
-  }
-  const masto = !data.hasOwnProperty('ntype')
-  const output = {}
+  const redux = data
+  redux.account = parseUser(data.account)
+  redux.status = isStatusNotification(data.type) ? parseStatus(data.status) : null
+  redux.target = data.type !== 'move' ? null : parseUser(data.target)
 
-  if (masto) {
-    output.type = mastoDict[data.type] || data.type
-    output.seen = data.pleroma.is_seen
-    output.status = isStatusNotification(output.type) ? parseStatus(data.status) : null
-    output.action = output.status // TODO: Refactor, this is unneeded
-    output.target = output.type !== 'move'
-      ? null
-      : parseUser(data.target)
-    output.from_profile = parseUser(data.account)
-    output.emoji = data.emoji
-  } else {
-    const parsedNotice = parseStatus(data.notice)
-    output.type = data.ntype
-    output.seen = Boolean(data.is_seen)
-    output.status = output.type === 'like'
-      ? parseStatus(data.notice.favorited_status)
-      : parsedNotice
-    output.action = parsedNotice
-    output.from_profile = parseUser(data.from_profile)
-  }
-
-  output.created_at = new Date(data.created_at)
-  output.id = parseInt(data.id)
-
-  output.redux = data
-  output.redux.account = parseUser(data.account)
-  output.redux.status = isStatusNotification(data.type) ? parseStatus(data.status) : null
-  output.redux.target = output.type !== 'move' ? null : parseUser(data.target)
-  console.log(output.redux.pleroma.is_seen)
-
-  return output
+  return redux
 }
 
 const isNsfw = (status) => {

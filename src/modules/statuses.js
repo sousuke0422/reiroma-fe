@@ -311,35 +311,35 @@ const addNewStatuses = (state, { statuses, showImmediately = false, timeline, us
 
 const addNewNotifications = (state, { dispatch, notifications, older, visibleNotificationTypes, rootGetters }) => {
   each(notifications, (notification) => {
-    if (isStatusNotification(notification.redux.type)) {
-      notification.redux.status = notification.redux.status && addStatusToGlobalStorage(state, notification.redux.status).item
+    if (isStatusNotification(notification.type)) {
+      notification.status = notification.status && addStatusToGlobalStorage(state, notification.status).item
     }
 
-    if (notification.redux.type === 'pleroma:emoji_reaction') {
-      dispatch('fetchEmojiReactionsBy', notification.redux.status.id)
+    if (notification.type === 'pleroma:emoji_reaction') {
+      dispatch('fetchEmojiReactionsBy', notification.status.id)
     }
 
     // Only add a new notification if we don't have one for the same action
-    if (!state.notifications.idStore.hasOwnProperty(notification.redux.id)) {
-      state.notifications.maxId = notification.redux.id > state.notifications.maxId
-        ? notification.redux.id
+    if (!state.notifications.idStore.hasOwnProperty(notification.id)) {
+      state.notifications.maxId = notification.id > state.notifications.maxId
+        ? notification.id
         : state.notifications.maxId
-      state.notifications.minId = notification.redux.id < state.notifications.minId
-        ? notification.redux.id
+      state.notifications.minId = notification.id < state.notifications.minId
+        ? notification.id
         : state.notifications.minId
 
       state.notifications.data.push(notification)
-      state.notifications.idStore[notification.redux.id] = notification
+      state.notifications.idStore[notification.id] = notification
 
       if ('Notification' in window && window.Notification.permission === 'granted') {
         const notifObj = prepareNotificationObject(notification, rootGetters.i18n)
 
         const reasonsToMuteNotif = (
-          notification.redux.pleroma.is_seen ||
+          notification.pleroma.is_seen ||
             state.notifications.desktopNotificationSilence ||
-            !visibleNotificationTypes.includes(notification.redux.type) ||
+            !visibleNotificationTypes.includes(notification.type) ||
             (
-              notification.redux.type === 'mention' && status && (
+              notification.type === 'mention' && status && (
                 status.muted ||
                   muteWordHits(status, rootGetters.mergedConfig.muteWords).length === 0
               )
@@ -352,8 +352,8 @@ const addNewNotifications = (state, { dispatch, notifications, older, visibleNot
           setTimeout(desktopNotification.close.bind(desktopNotification), 5000)
         }
       }
-    } else if (notification.redux.pleroma.is_seen) {
-      state.notifications.idStore[notification.redux.id].pleroma.is_seen = true
+    } else if (notification.pleroma.is_seen) {
+      state.notifications.idStore[notification.id].pleroma.is_seen = true
     }
   })
 }
@@ -486,12 +486,12 @@ export const mutations = {
   },
   markNotificationsAsSeen (state) {
     each(state.notifications.data, (notification) => {
-      notification.redux.pleroma.is_seen = true
+      notification.pleroma.is_seen = true
     })
   },
   markSingleNotificationAsSeen (state, { id }) {
     const notification = find(state.notifications.data, n => n.id === id)
-    if (notification) notification.redux.pleroma.is_seen = true
+    if (notification) notification.pleroma.is_seen = true
   },
   dismissNotification (state, { id }) {
     state.notifications.data = state.notifications.data.filter(n => n.id !== id)

@@ -33,9 +33,9 @@
       <div class="panel-body">
         <div
           v-for="notification in notificationsToDisplay"
-          :key="notification.redux.id"
+          :key="notification.id"
           class="notification"
-          :class="{&quot;unseen&quot;: !minimalMode && !notification.redux.pleroma.is_seen}"
+          :class="{&quot;unseen&quot;: !minimalMode && !notification.pleroma.is_seen}"
         >
           <div class="notification-overlay" />
           <notification :notification="notification" />
