@@ -334,6 +334,12 @@
     "loop_video_silent_only": "Loop only videos without sound (i.e. Mastodon's \"gifs\")",
     "mutes_tab": "Mutes",
     "play_videos_in_modal": "Play videos in a popup frame",
+    "profile_fields": {
+      "label": "Profile metadata",
+      "add_field": "Add Field",
+      "name": "Label",
+      "value": "Content"
+    },
     "use_contain_fit": "Don't crop the attachment in thumbnails",
     "name": "Name",
     "name_bio": "Name & Bio",
@@ -630,7 +636,11 @@
     "status_unavailable": "Status unavailable",
     "copy_link": "Copy link to status",
     "thread_muted": "Thread muted",
-    "thread_muted_and_words": ", has words:"
+    "thread_muted_and_words": ", has words:",
+    "show_full_subject": "Show full subject",
+    "hide_full_subject": "Hide full subject",
+    "show_content": "Show content",
+    "hide_content": "Hide content"
   },
   "user_card": {
     "approve": "Approve",
