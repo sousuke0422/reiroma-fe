@@ -18,7 +18,7 @@ export default {
     }
   },
   created () {
-    this.$store.dispatch('fetchUserRelationship', this.user.id)
+    this.$store.dispatch('fetchUserRelationship', this.user.redux.id)
   },
   computed: {
     user () {
@@ -38,61 +38,61 @@ export default {
       return {
         backgroundImage: [
           `linear-gradient(to bottom, var(--profileTint), var(--profileTint))`,
-          `url(${this.user.cover_photo})`
+          `url(${this.user.redux.header})`
         ].join(', ')
       }
     },
     isOtherUser () {
-      return this.user.id !== this.$store.state.users.currentUser.id
+      return this.user.redux.id !== this.$store.state.users.currentUser.id
     },
     subscribeUrl () {
       // eslint-disable-next-line no-undef
-      const serverUrl = new URL(this.user.statusnet_profile_url)
+      const serverUrl = new URL(this.user.redux.url)
       return `${serverUrl.protocol}//${serverUrl.host}/main/ostatus`
     },
     loggedIn () {
       return this.$store.state.users.currentUser
     },
     dailyAvg () {
-      const days = Math.ceil((new Date() - new Date(this.user.created_at)) / (60 * 60 * 24 * 1000))
-      return Math.round(this.user.statuses_count / days)
+      const days = Math.ceil((new Date() - new Date(this.user.redux.created_at)) / (60 * 60 * 24 * 1000))
+      return Math.round(this.user.redux.statuses_count / days)
     },
     userHighlightType: {
       get () {
-        const data = this.$store.getters.mergedConfig.highlight[this.user.screen_name]
+        const data = this.$store.getters.mergedConfig.highlight[this.user.redux.acct]
         return (data && data.type) || 'disabled'
       },
       set (type) {
-        const data = this.$store.getters.mergedConfig.highlight[this.user.screen_name]
+        const data = this.$store.getters.mergedConfig.highlight[this.user.redux.acct]
         if (type !== 'disabled') {
-          this.$store.dispatch('setHighlight', { user: this.user.screen_name, color: (data && data.color) || '#FFFFFF', type })
+          this.$store.dispatch('setHighlight', { user: this.user.redux.acct, color: (data && data.color) || '#FFFFFF', type })
         } else {
-          this.$store.dispatch('setHighlight', { user: this.user.screen_name, color: undefined })
+          this.$store.dispatch('setHighlight', { user: this.user.redux.acct, color: undefined })
         }
       },
       ...mapGetters(['mergedConfig'])
     },
     userHighlightColor: {
       get () {
-        const data = this.$store.getters.mergedConfig.highlight[this.user.screen_name]
+        const data = this.$store.getters.mergedConfig.highlight[this.user.redux.acct]
         return data && data.color
       },
       set (color) {
-        this.$store.dispatch('setHighlight', { user: this.user.screen_name, color })
+        this.$store.dispatch('setHighlight', { user: this.user.redux.acct, color })
       }
     },
     visibleRole () {
-      const rights = this.user.rights
+      const rights = this.user.redux.pleroma
       if (!rights) { return }
-      const validRole = rights.admin || rights.moderator
-      const roleTitle = rights.admin ? 'admin' : 'moderator'
+      const validRole = rights.is_admin || rights.is_moderator
+      const roleTitle = rights.is_admin ? 'admin' : 'moderator'
       return validRole && roleTitle
     },
     hideFollowsCount () {
-      return this.isOtherUser && this.user.hide_follows_count
+      return this.isOtherUser && this.user.redux.hide_follows_count
     },
     hideFollowersCount () {
-      return this.isOtherUser && this.user.hide_followers_count
+      return this.isOtherUser && this.user.redux.hide_followers_count
     },
     ...mapGetters(['mergedConfig'])
   },
@@ -106,16 +106,16 @@ export default {
   },
   methods: {
     muteUser () {
-      this.$store.dispatch('muteUser', this.user.id)
+      this.$store.dispatch('muteUser', this.user.redux.id)
     },
     unmuteUser () {
-      this.$store.dispatch('unmuteUser', this.user.id)
+      this.$store.dispatch('unmuteUser', this.user.redux.id)
     },
     subscribeUser () {
-      return this.$store.dispatch('subscribeUser', this.user.id)
+      return this.$store.dispatch('subscribeUser', this.user.redux.id)
     },
     unsubscribeUser () {
-      return this.$store.dispatch('unsubscribeUser', this.user.id)
+      return this.$store.dispatch('unsubscribeUser', this.user.redux.id)
     },
     setProfileView (v) {
       if (this.switcher) {
@@ -133,14 +133,16 @@ export default {
     },
     userProfileLink (user) {
       return generateProfileLink(
-        user.id, user.screen_name,
+        user.redux.id, user.redux.acct,
         this.$store.state.instance.restrictedNicknames
       )
     },
     zoomAvatar () {
       const attachment = {
-        url: this.user.profile_image_url_original,
-        mimetype: 'image'
+        url: this.user.redux.avatar,
+        pleroma: {
+          mime_type: 'image'
+        }
       }
       this.$store.dispatch('setMedia', [attachment])
       this.$store.dispatch('setCurrent', attachment)
