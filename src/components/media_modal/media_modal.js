@@ -27,7 +27,7 @@ const MediaModal = {
       return this.media.length > 1
     },
     type () {
-      return this.currentMedia ? fileTypeService.fileType(this.currentMedia.mimetype) : null
+      return this.currentMedia ? fileTypeService.fileType(this.currentMedia.pleroma.mime_type) : null
     }
   },
   created () {
