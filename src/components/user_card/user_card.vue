@@ -37,22 +37,22 @@
             <div class="top-line">
               <!-- eslint-disable vue/no-v-html -->
               <div
-                v-if="user.name_html"
-                :title="user.name"
+                v-if="user.redux.display_name_html"
+                :title="user.redux.display_name"
                 class="user-name"
-                v-html="user.name_html"
+                v-html="user.redux.display_name_html"
               />
               <!-- eslint-enable vue/no-v-html -->
               <div
                 v-else
-                :title="user.name"
+                :title="user.redux.display_name"
                 class="user-name"
               >
-                {{ user.name }}
+                {{ user.redux.display_name }}
               </div>
               <a
-                v-if="isOtherUser && !user.is_local"
-                :href="user.statusnet_profile_url"
+                v-if="isOtherUser && !user.redux.is_local"
+                :href="user.redux.url"
                 target="_blank"
               >
                 <i class="icon-link-ext usersettings" />
@@ -68,7 +68,7 @@
                 class="user-screen-name"
                 :to="userProfileLink(user)"
               >
-                @{{ user.screen_name }}
+                @{{ user.redux.acct }}
               </router-link>
               <template v-if="!hideBio">
                 <span
@@ -78,13 +78,13 @@
                   {{ visibleRole }}
                 </span>
                 <span
-                  v-if="user.bot"
+                  v-if="user.redux.bot"
                   class="alert user-role"
                 >
                   bot
                 </span>
               </template>
-              <span v-if="user.locked"><i class="icon icon-lock" /></span>
+              <span v-if="user.redux.locked"><i class="icon icon-lock" /></span>
               <span
                 v-if="!mergedConfig.hideUserStats && !hideBio"
                 class="dailyAvg"
@@ -106,14 +106,14 @@
             <!-- id's need to be unique, otherwise vue confuses which user-card checkbox belongs to -->
             <input
               v-if="userHighlightType !== 'disabled'"
-              :id="'userHighlightColorTx'+user.id"
+              :id="'userHighlightColorTx'+user.redux.id"
               v-model="userHighlightColor"
               class="userHighlightText"
               type="text"
             >
             <input
               v-if="userHighlightType !== 'disabled'"
-              :id="'userHighlightColor'+user.id"
+              :id="'userHighlightColor'+user.redux.id"
               v-model="userHighlightColor"
               class="userHighlightCl"
               type="color"
@@ -123,7 +123,7 @@
               class="userHighlightSel select"
             >
               <select
-                :id="'userHighlightSel'+user.id"
+                :id="'userHighlightSel'+user.redux.id"
                 v-model="userHighlightType"
                 class="userHighlightSel"
               >
@@ -191,7 +191,7 @@
           />
         </div>
         <div
-          v-if="!loggedIn && user.is_local"
+          v-if="!loggedIn && user.redux.is_local"
           class="user-interactions"
         >
           <RemoteFollow :user="user" />
@@ -211,36 +211,36 @@
           @click.prevent="setProfileView('statuses')"
         >
           <h5>{{ $t('user_card.statuses') }}</h5>
-          <span>{{ user.statuses_count }} <br></span>
+          <span>{{ user.redux.statuses_count }} <br></span>
         </div>
         <div
           class="user-count"
           @click.prevent="setProfileView('friends')"
         >
           <h5>{{ $t('user_card.followees') }}</h5>
-          <span>{{ hideFollowsCount ? $t('user_card.hidden') : user.friends_count }}</span>
+          <span>{{ hideFollowsCount ? $t('user_card.hidden') : user.redux.following_count }}</span>
         </div>
         <div
           class="user-count"
           @click.prevent="setProfileView('followers')"
         >
           <h5>{{ $t('user_card.followers') }}</h5>
-          <span>{{ hideFollowersCount ? $t('user_card.hidden') : user.followers_count }}</span>
+          <span>{{ hideFollowersCount ? $t('user_card.hidden') : user.redux.followers_count }}</span>
         </div>
       </div>
       <!-- eslint-disable vue/no-v-html -->
       <p
-        v-if="!hideBio && user.description_html"
+        v-if="!hideBio && user.redux.note_html"
         class="user-card-bio"
         @click.prevent="linkClicked"
-        v-html="user.description_html"
+        v-html="user.redux.note_html"
       />
       <!-- eslint-enable vue/no-v-html -->
       <p
         v-else-if="!hideBio"
         class="user-card-bio"
       >
-        {{ user.description }}
+        {{ user.redux.note }}
       </p>
     </div>
   </div>

@@ -189,6 +189,23 @@ export const parseUser = (data) => {
   output.notification_settings = output.notification_settings || {}
 
   output.redux = data
+  output.redux.display_name_html = addEmojis(escape(data.display_name), data.emojis)
+  output.redux.note_html = addEmojis(data.note, data.emojis)
+
+  output.redux.fields_html = data.fields.map(field => {
+    return {
+      name: addEmojis(field.name, data.emojis),
+      value: addEmojis(field.value, data.emojis)
+    }
+  })
+  output.redux.fields_text = data.fields.map(field => {
+    return {
+      name: unescape(field.name.replace(/<[^>]*>/g, '')),
+      value: unescape(field.value.replace(/<[^>]*>/g, ''))
+    }
+  })
+
+  output.redux.is_local = !data.acct.includes('@')
 
   return output
 }

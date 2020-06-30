@@ -16,7 +16,7 @@ const UserAvatar = {
   },
   computed: {
     imgSrc () {
-      return this.showPlaceholder ? '/images/avi.png' : this.user.profile_image_url_original
+      return this.showPlaceholder ? '/images/avi.png' : this.user.redux.avatar
     }
   },
   methods: {
