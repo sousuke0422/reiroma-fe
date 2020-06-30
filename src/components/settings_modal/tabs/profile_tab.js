@@ -102,8 +102,8 @@ const ProfileTab = {
             show_role: this.showRole
             /* eslint-enable camelcase */
           } }).then((user) => {
-          this.newFields.splice(user.fields.length)
-          merge(this.newFields, user.fields)
+          this.newFields.splice(user.redux.fields.length)
+          merge(this.newFields, user.redux.fields)
           this.$store.commit('addNewUsers', [user])
           this.$store.commit('setCurrentUser', user)
         })

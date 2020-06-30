@@ -163,7 +163,7 @@
       </p>
       <p>{{ $t('settings.current_avatar') }}</p>
       <img
-        :src="user.profile_image_url_original"
+        :src="user.redux.avatar"
         class="current-avatar"
       >
       <p>{{ $t('settings.set_new_avatar') }}</p>
@@ -186,7 +186,7 @@
       <h2>{{ $t('settings.profile_banner') }}</h2>
       <p>{{ $t('settings.current_profile_banner') }}</p>
       <img
-        :src="user.cover_photo"
+        :src="user.redux.header"
         class="banner"
       >
       <p>{{ $t('settings.set_new_profile_banner') }}</p>
