@@ -12,7 +12,7 @@
       class="basic-user-card-expanded-content"
     >
       <UserCard
-        :user-id="user.id"
+        :user-id="user.redux.id"
         :rounded="true"
         :bordered="true"
       />
@@ -22,27 +22,27 @@
       class="basic-user-card-collapsed-content"
     >
       <div
-        :title="user.name"
+        :title="user.redux.display_name"
         class="basic-user-card-user-name"
       >
         <!-- eslint-disable vue/no-v-html -->
         <span
-          v-if="user.name_html"
+          v-if="user.redux.display_name_html"
           class="basic-user-card-user-name-value"
-          v-html="user.name_html"
+          v-html="user.redux.display_name_html"
         />
         <!-- eslint-enable vue/no-v-html -->
         <span
           v-else
           class="basic-user-card-user-name-value"
-        >{{ user.name }}</span>
+        >{{ user.redux.display_name }}</span>
       </div>
       <div>
         <router-link
           class="basic-user-card-screen-name"
           :to="userProfileLink(user)"
         >
-          @{{ user.screen_name }}
+          @{{ user.redux.acct }}
         </router-link>
       </div>
       <slot />
