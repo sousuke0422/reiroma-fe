@@ -80,12 +80,12 @@ const MutesAndBlocks = {
       // Get addresses
       return users.map((user) => {
         // check is it's a local user
-        if (user && user.is_local) {
+        if (user && user.redux.is_local) {
           // append the instance address
           // eslint-disable-next-line no-undef
-          return user.screen_name + '@' + location.hostname
+          return user.redux.acct + '@' + location.hostname
         }
-        return user.screen_name
+        return user.redux.acct
       }).join('\n')
     },
     activateTab (tabName) {
@@ -94,13 +94,13 @@ const MutesAndBlocks = {
     filterUnblockedUsers (userIds) {
       return reject(userIds, (userId) => {
         const relationship = this.$store.getters.relationship(this.userId)
-        return relationship.blocking || userId === this.user.id
+        return relationship.blocking || userId === this.user.redux.id
       })
     },
     filterUnMutedUsers (userIds) {
       return reject(userIds, (userId) => {
         const relationship = this.$store.getters.relationship(this.userId)
-        return relationship.muting || userId === this.user.id
+        return relationship.muting || userId === this.user.redux.id
       })
     },
     queryUserIds (query) {
