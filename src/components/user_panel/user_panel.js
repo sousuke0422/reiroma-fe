@@ -5,7 +5,7 @@ import { mapState } from 'vuex'
 
 const UserPanel = {
   computed: {
-    signedIn () { return this.user },
+    signedIn () { return this.redux.user },
     ...mapState({ user: state => state.users.currentUser })
   },
   components: {

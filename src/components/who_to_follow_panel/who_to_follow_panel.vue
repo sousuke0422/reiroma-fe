@@ -9,12 +9,12 @@
       <div class="who-to-follow">
         <p
           v-for="user in usersToFollow"
-          :key="user.id"
+          :key="user.redux.id"
           class="who-to-follow-items"
         >
-          <img :src="user.img">
-          <router-link :to="userProfileLink(user.id, user.name)">
-            {{ user.name }}
+          <img :src="user.redux.avatar">
+          <router-link :to="userProfileLink(user.redux.id, user.redux.display_name)">
+            {{ user.redux.display_name }}
           </router-link><br>
         </p>
         <p class="who-to-follow-more">

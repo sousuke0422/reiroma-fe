@@ -6,7 +6,7 @@
     <div class="panel-body">
       <FollowCard
         v-for="user in users"
-        :key="user.id"
+        :key="user.redux.id"
         :user="user"
         class="list-item"
       />
