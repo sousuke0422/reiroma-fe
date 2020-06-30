@@ -14,7 +14,7 @@ const FollowCard = {
   },
   computed: {
     isMe () {
-      return this.$store.state.users.currentUser.id === this.user.id
+      return this.$store.state.users.currentUser.id === this.user.redux.id
     },
     loggedIn () {
       return this.$store.state.users.currentUser

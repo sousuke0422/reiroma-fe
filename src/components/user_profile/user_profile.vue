@@ -12,23 +12,23 @@
         rounded="top"
       />
       <div
-        v-if="user.fields_html && user.fields_html.length > 0"
+        v-if="user.redux.fields_html && user.redux.fields_html.length > 0"
         class="user-profile-fields"
       >
         <dl
-          v-for="(field, index) in user.fields_html"
+          v-for="(field, index) in user.redux.fields_html"
           :key="index"
           class="user-profile-field"
         >
           <!-- eslint-disable vue/no-v-html -->
           <dt
-            :title="user.fields_text[index].name"
+            :title="user.redux.fields_text[index].name"
             class="user-profile-field-name"
             @click.prevent="linkClicked"
             v-html="field.name"
           />
           <dd
-            :title="user.fields_text[index].value"
+            :title="user.redux.fields_text[index].value"
             class="user-profile-field-value"
             @click.prevent="linkClicked"
             v-html="field.value"
@@ -44,7 +44,7 @@
         <Timeline
           key="statuses"
           :label="$t('user_card.statuses')"
-          :count="user.statuses_count"
+          :count="user.redux.statuses_count"
           :embedded="true"
           :title="$t('user_profile.timeline_title')"
           :timeline="timeline"
@@ -57,7 +57,7 @@
           v-if="followsTabVisible"
           key="followees"
           :label="$t('user_card.followees')"
-          :disabled="!user.friends_count"
+          :disabled="!user.redux.following_count"
         >
           <FriendList :user-id="userId">
             <template
@@ -72,7 +72,7 @@
           v-if="followersTabVisible"
           key="followers"
           :label="$t('user_card.followers')"
-          :disabled="!user.followers_count"
+          :disabled="!user.redux.followers_count"
         >
           <FollowerList :user-id="userId">
             <template
