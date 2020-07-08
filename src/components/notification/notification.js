@@ -1,4 +1,3 @@
-import StatusContent from '../status_content/status_content.vue'
 import { mapState } from 'vuex'
 import Status from '../status/status.vue'
 import UserAvatar from '../user_avatar/user_avatar.vue'
