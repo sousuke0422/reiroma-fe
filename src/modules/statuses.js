@@ -606,22 +606,6 @@ export const mutations = {
 
 const statuses = {
   state: defaultState(),
-  getters: {
-    unreadChatCount: state => currentChat => {
-      let res = 0
-      state.notifications.data.forEach(n => {
-        let isMsg = !n.seen && n.chatMessage
-        if (!isMsg) { return }
-
-        if (currentChat) {
-          if (currentChat.id !== n.chatMessage.chat_id) { res++ }
-        } else {
-          res++
-        }
-      })
-      return res
-    }
-  },
   actions: {
     addNewStatuses ({ rootState, commit }, { statuses, showImmediately = false, timeline = false, noIdUpdate = false, userId, pagination }) {
       commit('addNewStatuses', { statuses, showImmediately, timeline, noIdUpdate, user: rootState.users.currentUser, userId, pagination })
