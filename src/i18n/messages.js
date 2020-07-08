@@ -8,6 +8,7 @@
 // There's only problem that apostrophe character ' gets replaced by \\ so you have to fix it manually, sorry.
 
 const loaders = {
+  en_nyan: () => import('./en_nyan.json'),
   ar: () => import('./ar.json'),
   ca: () => import('./ca.json'),
   cs: () => import('./cs.json'),
