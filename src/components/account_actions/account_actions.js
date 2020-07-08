@@ -1,3 +1,4 @@
+import { mapState } from 'vuex'
 import ProgressButton from '../progress_button/progress_button.vue'
 import Popover from '../popover/popover.vue'
 
@@ -34,6 +35,11 @@ const AccountActions = {
         params: { recipient_id: this.user.id }
       })
     }
+  },
+  computed: {
+    ...mapState({
+      pleromaChatMessagesAvailable: state => state.instance.pleromaChatMessagesAvailable
+    })
   }
 }
 

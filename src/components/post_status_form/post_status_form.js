@@ -3,11 +3,13 @@ import MediaUpload from '../media_upload/media_upload.vue'
 import ScopeSelector from '../scope_selector/scope_selector.vue'
 import EmojiInput from '../emoji_input/emoji_input.vue'
 import PollForm from '../poll/poll_form.vue'
+import Attachment from '../attachment/attachment.vue'
+import StatusContent from '../status_content/status_content.vue'
 import fileTypeService from '../../services/file_type/file_type.service.js'
 import { findOffset } from '../../services/offset_finder/offset_finder.service.js'
-import { reject, map, uniqBy } from 'lodash'
+import { reject, map, uniqBy, debounce } from 'lodash'
 import suggestor from '../emoji_input/suggestor.js'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import Checkbox from '../checkbox/checkbox.vue'
 
 const buildMentionsString = ({ user, attentions = [] }, currentUser) => {
@@ -35,26 +37,36 @@ const PostStatusForm = {
     'disableSubject',
     'disableScopeSelector',
     'disableNotice',
+    'disableLockWarning',
     'disablePolls',
+    'disableSensitivityCheckbox',
+    'disableSubmit',
+    'disablePreview',
     'placeholder',
     'maxHeight',
-    'poster',
+    'postHandler',
     'preserveFocus',
     'autoFocus',
     'fileLimit',
-    'submitOnEnter'
+    'submitOnEnter',
+    'emojiPickerPlacement'
   ],
   components: {
     MediaUpload,
     EmojiInput,
     PollForm,
     ScopeSelector,
-    Checkbox
+    Checkbox,
+    Attachment,
+    StatusContent
   },
   mounted () {
     this.resize(this.$refs.textarea)
-    const textLength = this.$refs.textarea.value.length
-    this.$refs.textarea.setSelectionRange(textLength, textLength)
+
+    if (this.replyTo) {
+      const textLength = this.$refs.textarea.value.length
+      this.$refs.textarea.setSelectionRange(textLength, textLength)
+    }
 
     if (this.replyTo || this.autoFocus) {
       this.$refs.textarea.focus()
@@ -79,7 +91,7 @@ const PostStatusForm = {
 
     return {
       dropFiles: [],
-      submitDisabled: false,
+      uploadingFiles: false,
       error: null,
       posting: false,
       highlighted: 0,
@@ -89,11 +101,16 @@ const PostStatusForm = {
         nsfw: false,
         files: [],
         poll: {},
+        mediaDescriptions: {},
         visibility: scope,
         contentType
       },
       caret: 0,
       pollFormVisible: false,
+      showDropIcon: 'hide',
+      dropStopTimeout: null,
+      preview: null,
+      previewLoading: false,
       emojiInputShown: false
     }
   },
@@ -174,10 +191,30 @@ const PostStatusForm = {
         this.newStatus.poll &&
         this.newStatus.poll.error
     },
-    ...mapGetters(['mergedConfig'])
+    showPreview () {
+      return !this.disablePreview && (!!this.preview || this.previewLoading)
+    },
+    emptyStatus () {
+      return this.newStatus.status.trim() === '' && this.newStatus.files.length === 0
+    },
+    uploadFileLimitReached () {
+      return this.newStatus.files.length >= this.fileLimit
+    },
+    ...mapGetters(['mergedConfig']),
+    ...mapState({
+      mobileLayout: state => state.interface.mobileLayout
+    })
+  },
+  watch: {
+    'newStatus.contentType': function () {
+      this.autoPreview()
+    },
+    'newStatus.spoilerText': function () {
+      this.autoPreview()
+    }
   },
   methods: {
-    postStatus (event, newStatus, opts = {}) {
+    async postStatus (event, newStatus, opts = {}) {
       if (this.posting) { return }
       if (this.submitDisabled) { return }
       if (this.emojiInputShown) { return }
@@ -185,16 +222,10 @@ const PostStatusForm = {
         event.stopPropagation()
         event.preventDefault()
       }
-      if (opts.control && this.submitOnEnter) {
-        newStatus.status = `${newStatus.status}\n`
-        return
-      }
 
-      if (this.newStatus.status === '') {
-        if (this.newStatus.files.length === 0) {
-          this.error = 'Cannot post an empty status with no files'
-          return
-        }
+      if (this.emptyStatus) {
+        this.error = this.$t('post_status.empty_status_error')
+        return
       }
 
       const poll = this.pollFormVisible ? this.newStatus.poll : {}
@@ -204,6 +235,14 @@ const PostStatusForm = {
       }
 
       this.posting = true
+
+      try {
+        await this.setAllMediaDescriptions()
+      } catch (e) {
+        this.error = this.$t('post_status.media_description_error')
+        this.posting = false
+        return
+      }
 
       const postingOptions = {
         status: newStatus.status,
@@ -217,9 +256,9 @@ const PostStatusForm = {
         poll
       }
 
-      const poster = this.poster ? this.poster : statusPoster.postStatus
+      const postHandler = this.postHandler ? this.postHandler : statusPoster.postStatus
 
-      poster(postingOptions).then((data) => {
+      postHandler(postingOptions).then((data) => {
         if (!data.error) {
           this.newStatus = {
             status: '',
@@ -227,7 +266,8 @@ const PostStatusForm = {
             files: [],
             visibility: newStatus.visibility,
             contentType: newStatus.contentType,
-            poll: {}
+            poll: {},
+            mediaDescriptions: {}
           }
           this.pollFormVisible = false
           this.$refs.mediaUpload && this.$refs.mediaUpload.clearFile()
@@ -242,20 +282,68 @@ const PostStatusForm = {
           el.style.height = 'auto'
           el.style.height = undefined
           this.error = null
+          if (this.preview) this.previewStatus()
         } else {
           this.error = data.error
         }
         this.posting = false
       })
     },
+    previewStatus () {
+      if (this.emptyStatus && this.newStatus.spoilerText.trim() === '') {
+        this.preview = { error: this.$t('post_status.preview_empty') }
+        this.previewLoading = false
+        return
+      }
+      const newStatus = this.newStatus
+      this.previewLoading = true
+      statusPoster.postStatus({
+        status: newStatus.status,
+        spoilerText: newStatus.spoilerText || null,
+        visibility: newStatus.visibility,
+        sensitive: newStatus.nsfw,
+        media: [],
+        store: this.$store,
+        inReplyToStatusId: this.replyTo,
+        contentType: newStatus.contentType,
+        poll: {},
+        preview: true
+      }).then((data) => {
+        // Don't apply preview if not loading, because it means
+        // user has closed the preview manually.
+        if (!this.previewLoading) return
+        if (!data.error) {
+          this.preview = data
+        } else {
+          this.preview = { error: data.error }
+        }
+      }).catch((error) => {
+        this.preview = { error }
+      }).finally(() => {
+        this.previewLoading = false
+      })
+    },
+    debouncePreviewStatus: debounce(function () { this.previewStatus() }, 500),
+    autoPreview () {
+      if (!this.preview) return
+      this.previewLoading = true
+      this.debouncePreviewStatus()
+    },
+    closePreview () {
+      this.preview = null
+      this.previewLoading = false
+    },
+    togglePreview () {
+      if (this.showPreview) {
+        this.closePreview()
+      } else {
+        this.previewStatus()
+      }
+    },
     addMediaFile (fileInfo) {
       this.$emit('resize')
       this.newStatus.files.push(fileInfo)
-      this.enableSubmit()
-      // TODO: use fixed dimensions instead so relying on timeout
-      setTimeout(() => {
-        this.$emit('resize')
-      }, 150)
+      this.$emit('resize', { delayed: true })
     },
     removeMediaFile (fileInfo) {
       this.$emit('resize')
@@ -266,18 +354,19 @@ const PostStatusForm = {
     uploadFailed (errString, templateArgs) {
       templateArgs = templateArgs || {}
       this.error = this.$t('upload.error.base') + ' ' + this.$t('upload.error.' + errString, templateArgs)
-      this.enableSubmit()
     },
-    disableSubmit () {
-      this.submitDisabled = true
+    startedUploadingFiles () {
+      this.uploadingFiles = true
     },
-    enableSubmit () {
-      this.submitDisabled = false
+    finishedUploadingFiles () {
+      this.$emit('resize')
+      this.uploadingFiles = false
     },
     type (fileInfo) {
       return fileTypeService.fileType(fileInfo.mimetype)
     },
     paste (e) {
+      this.autoPreview()
       this.resize(e)
       if (e.clipboardData.files.length > 0) {
         // prevent pasting of file as text
@@ -289,15 +378,30 @@ const PostStatusForm = {
       }
     },
     fileDrop (e) {
-      if (e.dataTransfer.files.length > 0) {
+      if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
         e.preventDefault() // allow dropping text like before
         this.dropFiles = e.dataTransfer.files
+        clearTimeout(this.dropStopTimeout)
+        this.showDropIcon = 'hide'
       }
     },
+    fileDragStop (e) {
+      // The false-setting is done with delay because just using leave-events
+      // directly caused unwanted flickering, this is not perfect either but
+      // much less noticable.
+      clearTimeout(this.dropStopTimeout)
+      this.showDropIcon = 'fade'
+      this.dropStopTimeout = setTimeout(() => (this.showDropIcon = 'hide'), 500)
+    },
     fileDrag (e) {
-      e.dataTransfer.dropEffect = 'copy'
+      e.dataTransfer.dropEffect = this.uploadFileLimitReached ? 'none' : 'copy'
+      if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
+        clearTimeout(this.dropStopTimeout)
+        this.showDropIcon = 'show'
+      }
     },
     onEmojiInputInput (e) {
+      this.autoPreview()
       this.$nextTick(() => {
         this.resize(this.$refs['textarea'])
       })
@@ -309,7 +413,7 @@ const PostStatusForm = {
       // Reset to default height for empty form, nothing else to do here.
       if (target.value === '') {
         target.style.height = null
-        this.$emit('resize', null)
+        this.$emit('resize')
         this.$refs['emoji-input'].resize()
         return
       }
@@ -416,6 +520,15 @@ const PostStatusForm = {
     },
     dismissScopeNotice () {
       this.$store.dispatch('setOption', { name: 'hideScopeNotice', value: true })
+    },
+    setMediaDescription (id) {
+      const description = this.newStatus.mediaDescriptions[id]
+      if (!description || description.trim() === '') return
+      return statusPoster.setMediaDescription({ store: this.$store, id, description })
+    },
+    setAllMediaDescriptions () {
+      const ids = this.newStatus.files.map(file => file.id)
+      return Promise.all(ids.map(id => this.setMediaDescription(id)))
     },
     handleEmojiInputShow (value) {
       this.emojiInputShown = value

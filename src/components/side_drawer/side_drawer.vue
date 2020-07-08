@@ -40,7 +40,7 @@
           </router-link>
         </li>
         <li
-          v-if="currentUser"
+          v-if="currentUser && pleromaChatMessagesAvailable"
           @click="toggleDrawer"
         >
           <router-link :to="{ name: 'dms', params: { username: currentUser.screen_name } }">
@@ -52,10 +52,10 @@
           >
             <i class="button-icon icon-chat" /> {{ $t("nav.chats") }}
             <span
-              v-if="unreadChatCount(currentChat)"
-              class="alert-dot-number"
+              v-if="unreadChatCount"
+              class="badge badge-notification unread-chat-count"
             >
-              {{ unreadChatCount(currentChat) }}
+              {{ unreadChatCount }}
             </span>
           </router-link>
         </li>
@@ -75,6 +75,14 @@
         >
           <router-link :to="{ name: 'friends' }">
             <i class="button-icon icon-home-2" /> {{ $t("nav.timeline") }}
+          </router-link>
+        </li>
+        <li
+          v-if="currentUser"
+          @click="toggleDrawer"
+        >
+          <router-link :to="{ name: 'bookmarks'}">
+            <i class="button-icon icon-bookmark" /> {{ $t("nav.bookmarks") }}
           </router-link>
         </li>
         <li
@@ -126,9 +134,12 @@
           </router-link>
         </li>
         <li @click="toggleDrawer">
-          <router-link :to="{ name: 'settings' }">
+          <a
+            href="#"
+            @click="openSettingsModal"
+          >
             <i class="button-icon icon-cog" /> {{ $t("settings.settings") }}
-          </router-link>
+          </a>
         </li>
         <li @click="toggleDrawer">
           <router-link :to="{ name: 'about'}">

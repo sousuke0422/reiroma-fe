@@ -3,6 +3,7 @@
     <Popover
       trigger="click"
       placement="bottom"
+      :bound-to="{ x: 'container' }"
     >
       <div
         slot="content"
@@ -50,6 +51,7 @@
             {{ $t('user_card.report') }}
           </button>
           <button
+            v-if="pleromaChatMessagesAvailable"
             class="btn btn-default btn-block dropdown-item"
             @click="openChat"
           >

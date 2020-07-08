@@ -2,9 +2,6 @@
   <div
     class="media-upload"
     :class="{ disabled: disabled }"
-    @drop.prevent
-    @dragover.prevent="fileDrag"
-    @drop="fileDrop"
   >
     <label
       class="label"

@@ -278,7 +278,8 @@
       "cOrange": "#808000",
       "highlight": "--accent",
       "selectedPost": "--bg,-10",
-      "chatMessageIncomingBorder": "#808080"
+      "selectedMenu": "--accent",
+      "selectedMenuPopover": "--accent"
     },
     "radii": {
       "btn": "0",

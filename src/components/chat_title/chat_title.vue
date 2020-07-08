@@ -1,25 +1,22 @@
 <template>
   <!-- eslint-disable vue/no-v-html -->
   <div
-    class="direct-conversation-title"
+    class="chat-title"
     :title="title"
   >
-    <ChatAvatar
-      v-if="withAvatar"
-      :users="otherUsers"
-      :fallback-user="currentUser"
-      width="23px"
-      height="23px"
-    />
+    <router-link
+      v-if="withAvatar && user"
+      :to="getUserProfileLink(user)"
+    >
+      <UserAvatar
+        :user="user"
+        width="23px"
+        height="23px"
+      />
+    </router-link>
     <span
-      v-if="withAvatar"
-      style="margin-right: 0.5em"
-    />
-    <span
-      v-for="(user, index) in otherUsersTruncated"
-      :key="user.id"
       class="username"
-      v-html="user.name_html + (index + 1 < otherUsersTruncated.length ? ', ' : '')"
+      v-html="htmlTitle"
     />
   </div>
   <!-- eslint-enable vue/no-v-html -->
@@ -30,9 +27,12 @@
 <style lang="scss">
 @import '../../_variables.scss';
 
-.direct-conversation-title {
+.chat-title {
+  display: flex;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  align-items: center;
 
   .username {
     max-width: 100%;
@@ -40,12 +40,27 @@
     white-space: nowrap;
     display: inline;
     word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
-    img {
+    .emoji {
       width: 14px;
       height: 14px;
       vertical-align: middle;
       object-fit: contain
+    }
+  }
+
+  .still-image.avatar {
+    width: 23px;
+    height: 23px;
+    margin-right: 0.5em;
+
+    border-radius: $fallback--avatarAltRadius;
+    border-radius: var(--avatarAltRadius, $fallback--avatarAltRadius);
+
+    &.animated::before {
+      display: none;
     }
   }
 }

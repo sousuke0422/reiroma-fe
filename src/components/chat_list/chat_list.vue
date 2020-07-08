@@ -4,21 +4,22 @@
   </div>
   <div
     v-else
-    class="panel panel-default"
-    style="min-height: calc(100vh - 67px); margin-bottom: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0;"
+    class="chat-list panel panel-default"
   >
-    <div class="panel-heading truncated-text-wrapper">
-      <span class="title truncated-text">
+    <div class="panel-heading">
+      <span class="title">
         {{ $t("chats.chats") }}
       </span>
-      <span style="width: 0.75rem;">{{ ' ' }}</span>
       <button @click="newChat">
         {{ $t("chats.new") }}
       </button>
     </div>
     <div class="panel-body">
-      <div class="timeline">
-        <Chats>
+      <div
+        v-if="sortedChatList.length > 0"
+        class="timeline"
+      >
+        <List :items="sortedChatList">
           <template
             slot="item"
             slot-scope="{item}"
@@ -29,7 +30,13 @@
               :chat="item"
             />
           </template>
-        </Chats>
+        </List>
+      </div>
+      <div
+        v-else
+        class="emtpy-chat-list-alert"
+      >
+        <span>{{ $t('chats.empty_chat_list_placeholder') }}</span>
       </div>
     </div>
   </div>
@@ -40,17 +47,18 @@
 <style lang="scss">
 @import '../../_variables.scss';
 
-.truncated-text-wrapper {
-  overflow-x: hidden;
-  display: flex;
+.chat-list {
+  min-height: 25em;
+  margin-bottom: 0;
+}
 
-  .truncated-text {
-    flex: 1;
-    overflow-x: hidden;
-    word-wrap: break-word;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
+.emtpy-chat-list-alert {
+  padding: 3em;
+  font-size: 1.2em;
+  display: flex;
+  justify-content: center;
+  color: $fallback--text;
+  color: var(--faint, $fallback--text);
 }
 
 </style>

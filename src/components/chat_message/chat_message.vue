@@ -1,13 +1,13 @@
 <template>
   <div
     v-if="isMessage"
-    class="direct-conversation-status-wrapper"
-    :class="{ 'sequence-hovered': sequenceHovered }"
+    class="chat-message-wrapper"
+    :class="{ 'hovered-message-chain': hoveredMessageChain }"
     @mouseover="onHover(true)"
     @mouseleave="onHover(false)"
   >
     <div
-      class="direct-conversation"
+      class="chat-message"
       :class="[{ 'outgoing': isCurrentUser, 'incoming': !isCurrentUser }]"
     >
       <div
@@ -25,34 +25,32 @@
           />
         </router-link>
       </div>
-      <div class="direct-conversation-inner">
+      <div class="chat-message-inner">
         <div
           class="status-body"
           :style="{ 'min-width': message.attachment ? '80%' : '' }"
         >
           <div
             class="media status"
+            :class="{ 'without-attachment': !hasAttachment }"
             style="position: relative"
             @mouseenter="hovered = true"
             @mouseleave="hovered = false"
           >
             <div
-              v-if="isCurrentUser"
               class="chat-message-menu"
-              style="position: absolute; right: 5px; top: -10px"
-              :style="wrapperStyle"
+              :class="{ 'visible': hovered || menuOpened }"
             >
               <Popover
                 trigger="click"
                 placement="top"
+                :bound-to-selector="isCurrentUser ? '' : '.scrollable-message-list'"
                 :bound-to="{ x: 'container' }"
+                :margin="popoverMarginStyle"
                 @show="menuOpened = true"
                 @close="menuOpened = false"
               >
-                <div
-                  slot="content"
-                  slot-scope=""
-                >
+                <div slot="content">
                   <div class="dropdown-menu">
                     <button
                       class="dropdown-item dropdown-item-icon"
@@ -66,7 +64,7 @@
                   slot="trigger"
                   :title="$t('chats.more')"
                 >
-                  <i class="icon-dot-3" />
+                  <i class="icon-ellipsis" />
                 </button>
               </Popover>
             </div>
@@ -88,7 +86,7 @@
   </div>
   <div
     v-else
-    class="date-separator"
+    class="chat-message-date-separator"
   >
     <ChatMessageDate :date="chatViewItem.date" />
   </div>

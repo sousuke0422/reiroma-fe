@@ -23,7 +23,9 @@ export const LAYERS = {
   inputTopBar: 'topBar',
   alert: 'bg',
   alertPanel: 'panel',
-  poll: 'bg'
+  poll: 'bg',
+  chatBg: 'underlay',
+  chatMessage: 'chatBg'
 }
 
 /* By default opacity slots have 1 as default opacity
@@ -34,7 +36,8 @@ export const DEFAULT_OPACITY = {
   alert: 0.5,
   input: 0.5,
   faint: 0.5,
-  underlay: 0.15
+  underlay: 0.15,
+  alertPopup: 0.95
 }
 
 /**  SUBJECT TO CHANGE IN THE FUTURE, this is all beta
@@ -356,6 +359,12 @@ export const SLOT_INHERITANCE = {
     textColor: 'preserve'
   },
 
+  postGreentext: {
+    depends: ['cGreen'],
+    layer: 'bg',
+    textColor: 'preserve'
+  },
+
   border: {
     depends: ['fg'],
     opacity: 'border',
@@ -621,6 +630,39 @@ export const SLOT_INHERITANCE = {
     textColor: true
   },
 
+  alertPopupError: {
+    depends: ['alertError'],
+    opacity: 'alertPopup'
+  },
+  alertPopupErrorText: {
+    depends: ['alertErrorText'],
+    layer: 'popover',
+    variant: 'alertPopupError',
+    textColor: true
+  },
+
+  alertPopupWarning: {
+    depends: ['alertWarning'],
+    opacity: 'alertPopup'
+  },
+  alertPopupWarningText: {
+    depends: ['alertWarningText'],
+    layer: 'popover',
+    variant: 'alertPopupWarning',
+    textColor: true
+  },
+
+  alertPopupNeutral: {
+    depends: ['alertNeutral'],
+    opacity: 'alertPopup'
+  },
+  alertPopupNeutralText: {
+    depends: ['alertNeutralText'],
+    layer: 'popover',
+    variant: 'alertPopupNeutral',
+    textColor: true
+  },
+
   badgeNotification: '--cRed',
   badgeNotificationText: {
     depends: ['text', 'badgeNotification'],
@@ -630,13 +672,16 @@ export const SLOT_INHERITANCE = {
   },
 
   chatBg: {
-    depends: ['bg'],
-    layer: 'bg'
+    depends: ['bg']
+  },
+
+  chatMessage: {
+    depends: ['chatBg']
   },
 
   chatMessageIncomingBg: {
-    depends: ['bg'],
-    layer: 'bg'
+    depends: ['chatMessage'],
+    layer: 'chatMessage'
   },
 
   chatMessageIncomingText: {
@@ -650,14 +695,14 @@ export const SLOT_INHERITANCE = {
   },
 
   chatMessageIncomingBorder: {
-    depends: ['fg'],
+    depends: ['border'],
     opacity: 'border',
-    color: (mod, fg) => brightness(2 * mod, fg).rgb
+    color: (mod, border) => brightness(2 * mod, border).rgb
   },
 
   chatMessageOutgoingBg: {
-    depends: ['bg'],
-    color: (mod, fg) => brightness(5 * mod, fg).rgb
+    depends: ['chatMessage'],
+    color: (mod, chatMessage) => brightness(5 * mod, chatMessage).rgb
   },
 
   chatMessageOutgoingText: {
@@ -671,7 +716,7 @@ export const SLOT_INHERITANCE = {
   },
 
   chatMessageOutgoingBorder: {
-    depends: ['bg'],
-    opacity: 'bg'
+    depends: ['chatMessage'],
+    opacity: 'chatMessage'
   }
 }

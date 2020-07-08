@@ -11,6 +11,8 @@
     <img
       ref="src"
       :key="src"
+      :alt="alt"
+      :title="alt"
       :src="src"
       :referrerpolicy="referrerpolicy"
       @load="onLoad"
@@ -23,12 +25,15 @@
 
 <style lang="scss">
 @import '../../_variables.scss';
+
 .still-image {
   position: relative;
   line-height: 0;
   overflow: hidden;
   width: 100%;
   height: 100%;
+  display: flex;
+  align-items: center;
 
   &:hover canvas {
     display: none;
@@ -36,7 +41,7 @@
 
   img {
     width: 100%;
-    height: 100%;
+    min-height: 100%;
     object-fit: contain;
   }
 

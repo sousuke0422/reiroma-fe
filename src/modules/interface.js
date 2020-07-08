@@ -1,6 +1,8 @@
 import { set, delete as del } from 'vue'
 
 const defaultState = {
+  settingsModalState: 'hidden',
+  settingsModalLoaded: false,
   settings: {
     currentSaveStateNotice: null,
     noticeClearTimeout: null,
@@ -13,6 +15,7 @@ const defaultState = {
     )
   },
   mobileLayout: false,
+  globalNotices: [],
   layoutHeight: 0
 }
 
@@ -37,6 +40,33 @@ const interfaceMod = {
     setMobileLayout (state, value) {
       state.mobileLayout = value
     },
+    closeSettingsModal (state) {
+      state.settingsModalState = 'hidden'
+    },
+    togglePeekSettingsModal (state) {
+      switch (state.settingsModalState) {
+        case 'minimized':
+          state.settingsModalState = 'visible'
+          return
+        case 'visible':
+          state.settingsModalState = 'minimized'
+          return
+        default:
+          throw new Error('Illegal minimization state of settings modal')
+      }
+    },
+    openSettingsModal (state) {
+      state.settingsModalState = 'visible'
+      if (!state.settingsModalLoaded) {
+        state.settingsModalLoaded = true
+      }
+    },
+    pushGlobalNotice (state, notice) {
+      state.globalNotices.push(notice)
+    },
+    removeGlobalNotice (state, notice) {
+      state.globalNotices = state.globalNotices.filter(n => n !== notice)
+    },
     setLayoutHeight (state, value) {
       state.layoutHeight = value
     }
@@ -53,6 +83,37 @@ const interfaceMod = {
     },
     setMobileLayout ({ commit }, value) {
       commit('setMobileLayout', value)
+    },
+    closeSettingsModal ({ commit }) {
+      commit('closeSettingsModal')
+    },
+    openSettingsModal ({ commit }) {
+      commit('openSettingsModal')
+    },
+    togglePeekSettingsModal ({ commit }) {
+      commit('togglePeekSettingsModal')
+    },
+    pushGlobalNotice (
+      { commit, dispatch },
+      {
+        messageKey,
+        messageArgs = {},
+        level = 'error',
+        timeout = 0
+      }) {
+      const notice = {
+        messageKey,
+        messageArgs,
+        level
+      }
+      if (timeout) {
+        setTimeout(() => dispatch('removeGlobalNotice', notice), timeout)
+      }
+      commit('pushGlobalNotice', notice)
+      return notice
+    },
+    removeGlobalNotice ({ commit }, notice) {
+      commit('removeGlobalNotice', notice)
     },
     setLayoutHeight ({ commit }, value) {
       commit('setLayoutHeight', value)

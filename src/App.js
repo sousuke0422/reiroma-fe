@@ -6,12 +6,14 @@ import InstanceSpecificPanel from './components/instance_specific_panel/instance
 import FeaturesPanel from './components/features_panel/features_panel.vue'
 import WhoToFollowPanel from './components/who_to_follow_panel/who_to_follow_panel.vue'
 import ChatPanel from './components/chat_panel/chat_panel.vue'
+import SettingsModal from './components/settings_modal/settings_modal.vue'
 import MediaModal from './components/media_modal/media_modal.vue'
 import SideDrawer from './components/side_drawer/side_drawer.vue'
 import MobilePostStatusButton from './components/mobile_post_status_button/mobile_post_status_button.vue'
 import MobileNav from './components/mobile_nav/mobile_nav.vue'
 import UserReportingModal from './components/user_reporting_modal/user_reporting_modal.vue'
 import PostStatusModal from './components/post_status_modal/post_status_modal.vue'
+import GlobalNoticeList from './components/global_notice_list/global_notice_list.vue'
 import { windowWidth, windowHeight } from './services/window_utils/window_utils'
 
 export default {
@@ -29,8 +31,10 @@ export default {
     SideDrawer,
     MobilePostStatusButton,
     MobileNav,
+    SettingsModal,
     UserReportingModal,
-    PostStatusModal
+    PostStatusModal,
+    GlobalNoticeList
   },
   data: () => ({
     mobileActivePanel: 'timeline',
@@ -46,7 +50,8 @@ export default {
   }),
   created () {
     // Load the locale from the storage
-    this.$i18n.locale = this.$store.getters.mergedConfig.interfaceLanguage
+    const val = this.$store.getters.mergedConfig.interfaceLanguage
+    this.$store.dispatch('setOption', { name: 'interfaceLanguage', value: val })
     window.addEventListener('resize', this.updateMobileState)
   },
   destroyed () {
@@ -118,6 +123,9 @@ export default {
     onSearchBarToggled (hidden) {
       this.searchBarHidden = hidden
     },
+    openSettingsModal () {
+      this.$store.dispatch('openSettingsModal')
+    },
     updateMobileState () {
       const mobileLayout = windowWidth() <= 800
       const layoutHeight = windowHeight()
@@ -126,15 +134,6 @@ export default {
         this.$store.dispatch('setMobileLayout', mobileLayout)
       }
       this.$store.dispatch('setLayoutHeight', layoutHeight)
-    }
-  },
-  watch: {
-    '$route' (to, from) {
-      if ((to.name === 'chat' && from.name === 'chats') || (to.name === 'chats' && from.name === 'chat')) {
-        this.transitionName = 'none'
-      } else {
-        this.transitionName = 'fade'
-      }
     }
   }
 }

@@ -11,10 +11,11 @@ import generateProfileLink from 'src/services/user_profile_link_generator/user_p
 const ChatMessage = {
   name: 'ChatMessage',
   props: [
+    'author',
     'edited',
     'noHeading',
     'chatViewItem',
-    'sequenceHovered'
+    'hoveredMessageChain'
   ],
   components: {
     Popover,
@@ -29,14 +30,10 @@ const ChatMessage = {
     // Returns HH:MM (hours and minutes) in local time.
     createdAt () {
       const time = this.chatViewItem.data.created_at
-      const lang = this.mergedConfig.interfaceLanguage
-      return time.toLocaleTimeString(lang, { hour: '2-digit', minute: '2-digit', hour12: false })
+      return time.toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit', hour12: false })
     },
     isCurrentUser () {
       return this.message.account_id === this.currentUser.id
-    },
-    author () {
-      return this.findUser(this.message.account_id)
     },
     message () {
       return this.chatViewItem.data
@@ -55,14 +52,19 @@ const ChatMessage = {
         attachments: this.message.attachments
       }
     },
+    hasAttachment () {
+      return this.message.attachments.length > 0
+    },
     ...mapState({
       betterShadow: state => state.interface.browserSupport.cssFilter,
       currentUser: state => state.users.currentUser,
       restrictedNicknames: state => state.instance.restrictedNicknames
     }),
-    wrapperStyle () {
-      return {
-        'opacity': this.hovered || this.menuOpened ? '1' : '0'
+    popoverMarginStyle () {
+      if (this.isCurrentUser) {
+        return {}
+      } else {
+        return { left: 50 }
       }
     },
     ...mapGetters(['mergedConfig', 'findUser'])
@@ -75,7 +77,7 @@ const ChatMessage = {
   },
   methods: {
     onHover (bool) {
-      this.$emit('hover', { state: bool, sequenceId: this.chatViewItem.sequenceId })
+      this.$emit('hover', { isHovered: bool, messageChainId: this.chatViewItem.messageChainId })
     },
     async deleteMessage () {
       const confirmed = window.confirm(this.$t('chats.delete_confirm'))

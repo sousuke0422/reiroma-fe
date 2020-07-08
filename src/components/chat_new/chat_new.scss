@@ -1,87 +1,29 @@
-.direct-conversation-new {
-  .panel-heading {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .btn {
-    padding-left: 1em;
-    padding-right: 1em;
-  }
-
-  .selected-user-list {
-    padding-left: 0.7em;
-    padding-top: 0.5em;
-
-    .selected-user {
-      cursor: pointer;
-      display: inline-block;
-      border: 1px solid;
-      border-color: $fallback--link;
-      border-color: var(--link, $fallback--link);
-      color: $fallback--link;
-      color: var(--link, $fallback--link);
-      padding: 0.5em;
-      border-radius: $fallback--attachmentRadius;
-      border-radius: var(--attachmentRadius, $fallback--attachmentRadius);
-      margin-right: 0.5em;
-      margin-top: 0.5em;
-      margin-bottom: 0.5em;
-
-      &:hover {
-        background-color: var(--selectedPost, $fallback--lightBg);
-      }
-    }
-
-    .notice-dismissible {
-      padding-right: 2.3rem;
-      position: relative;
-
-      .dismiss {
-        position: absolute;
-        top: 0;
-        right: 0;
-        padding: .35em;
-        color: inherit;
-
-        i {
-          color: $fallback--link;
-          color: var(--link, $fallback--link);
-        }
-      }
-    }
-  }
-
-  .member-list {
-    padding-bottom: 0.67rem;
-
-    .user-card-wrap {
-      .basic-user-card {
-        &:hover {
-          cursor: pointer;
-          background-color: var(--selectedPost, $fallback--lightBg);
-        }
-      }
-    }
-  }
-
+.chat-new {
   .input-wrap {
     display: flex;
     margin: 0.7em 0.5em 0.7em 0.5em;
 
-    .button-icon {
-      font-size: 1.5em;
-      float: right;
-      margin-right: 0.3em;
-    }
-
-    .btn {
-      margin: 0 0.7em;
-      width: 6em;
-    }
-
     input {
       width: 100%;
     }
+  }
+
+  .icon-search {
+    font-size: 1.5em;
+    float: right;
+    margin-right: 0.3em;
+  }
+
+  .member-list {
+    padding-bottom: 0.7rem;
+  }
+
+  .basic-user-card:hover {
+    cursor: pointer;
+    background-color: var(--selectedPost, $fallback--lightBg);
+  }
+
+  .go-back-button {
+    cursor: pointer;
   }
 }

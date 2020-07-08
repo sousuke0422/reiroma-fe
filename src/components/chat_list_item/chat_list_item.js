@@ -1,6 +1,7 @@
 import { mapState } from 'vuex'
+import StatusContent from '../status_content/status_content.vue'
 import fileType from 'src/services/file_type/file_type.service'
-import ChatAvatar from '../chat_avatar/chat_avatar.vue'
+import UserAvatar from '../user_avatar/user_avatar.vue'
 import AvatarList from '../avatar_list/avatar_list.vue'
 import Timeago from '../timeago/timeago.vue'
 import ChatTitle from '../chat_title/chat_title.vue'
@@ -11,10 +12,11 @@ const ChatListItem = {
     'chat'
   ],
   components: {
-    ChatAvatar,
+    UserAvatar,
     AvatarList,
     Timeago,
-    ChatTitle
+    ChatTitle,
+    StatusContent
   },
   computed: {
     ...mapState({
@@ -23,7 +25,7 @@ const ChatListItem = {
     attachmentInfo () {
       if (this.chat.lastMessage.attachments.length === 0) { return }
 
-      let types = this.chat.lastMessage.attachments.map(file => fileType.fileType(file.mimetype))
+      const types = this.chat.lastMessage.attachments.map(file => fileType.fileType(file.mimetype))
       if (types.includes('video')) {
         return this.$t('file_type.video')
       } else if (types.includes('audio')) {
@@ -32,6 +34,16 @@ const ChatListItem = {
         return this.$t('file_type.image')
       } else {
         return this.$t('file_type.file')
+      }
+    },
+    messageForStatusContent () {
+      const content = this.chat.lastMessage ? (this.attachmentInfo || this.chat.lastMessage.content) : ''
+
+      return {
+        summary: '',
+        statusnet_html: content,
+        text: content,
+        attachments: []
       }
     }
   },

@@ -17,12 +17,33 @@
     </div>
     <template v-if="muted && !isPreview">
       <div class="media status container muted">
-        <small>
+        <small class="username">
+          <i
+            v-if="muted && retweet"
+            class="button-icon icon-retweet"
+          />
           <router-link :to="userProfileLink">
             {{ status.user.screen_name }}
           </router-link>
         </small>
-        <small class="muteWords">{{ muteWordHits.join(', ') }}</small>
+        <small
+          v-if="showReasonMutedThread"
+          class="mute-thread"
+        >
+          {{ $t('status.thread_muted') }}
+        </small>
+        <small
+          v-if="showReasonMutedThread && muteWordHits.length > 0"
+          class="mute-thread"
+        >
+          {{ $t('status.thread_muted_and_words') }}
+        </small>
+        <small
+          class="mute-words"
+          :title="muteWordHits.join(', ')"
+        >
+          {{ muteWordHits.join(', ') }}
+        </small>
         <a
           href="#"
           class="unmute"
@@ -176,7 +197,7 @@
               >
                 <StatusPopover
                   v-if="!isPreview"
-                  :status-id="status.in_reply_to_status_id"
+                  :status-id="status.parent_visible && status.in_reply_to_status_id"
                   class="reply-to-popover"
                   style="min-width: 0"
                 >
@@ -187,7 +208,12 @@
                     @click.prevent="gotoOriginal(status.in_reply_to_status_id)"
                   >
                     <i class="button-icon icon-reply" />
-                    <span class="faint-link reply-to-text">{{ $t('status.reply_to') }}</span>
+                    <span
+                      class="faint-link reply-to-text"
+                      :class="{ 'strikethrough': !status.parent_visible }"
+                    >
+                      {{ $t('status.reply_to') }}
+                    </span>
                   </a>
                 </StatusPopover>
                 <span
@@ -351,9 +377,6 @@ $status-margin: 0.75em;
 }
 
 .status-el {
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-word;
   border-left-width: 0px;
   min-width: 0;
   border-color: $fallback--border;
@@ -397,7 +420,7 @@ $status-margin: 0.75em;
     max-width: 85%;
     font-weight: bold;
 
-    img {
+    img.emoji {
       width: 14px;
       height: 14px;
       vertical-align: middle;
@@ -503,6 +526,10 @@ $status-margin: 0.75em;
       text-overflow: ellipsis;
       white-space: nowrap;
       margin: 0 0.4em 0 0.2em;
+    }
+
+    .strikethrough {
+      text-decoration: line-through;
     }
 
     .replies-separator {
@@ -637,19 +664,48 @@ $status-margin: 0.75em;
 }
 
 .muted {
-  padding: 0.25em 0.5em;
-  button {
+  padding: .25em .6em;
+  height: 1.2em;
+  line-height: 1.2em;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: nowrap;
+
+  .username, .mute-thread, .mute-words {
+    word-wrap: normal;
+    word-break: normal;
+    white-space: nowrap;
+  }
+
+  .username, .mute-words {
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .username {
+    flex: 0 1 auto;
+    margin-right: .2em;
+  }
+
+  .mute-thread {
+    flex: 0 0 auto;
+  }
+
+  .mute-words {
+    flex: 1 0 5em;
+    margin-left: .2em;
+    &::before {
+      content: ' '
+    }
+  }
+
+  .unmute {
+    flex: 0 0 auto;
+    margin-left: auto;
+    display: block;
     margin-left: auto;
   }
-
-  .muteWords {
-    margin-left: 10px;
-  }
-}
-
-a.unmute {
-  display: block;
-  margin-left: auto;
 }
 
 .reply-body {

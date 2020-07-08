@@ -1,6 +1,7 @@
 import { set } from 'vue'
 import { getPreset, applyTheme } from '../services/style_setter/style_setter.js'
 import { CURRENT_VERSION } from '../services/theme_data/theme_data.service.js'
+import apiService from '../services/api/api.service.js'
 import { instanceDefaultProperties } from './config.js'
 
 const defaultState = {
@@ -14,6 +15,8 @@ const defaultState = {
 
   // Stuff from static/config.json
   alwaysShowSubjectInput: true,
+  defaultAvatar: '/images/avi.png',
+  defaultBanner: '/images/banner.png',
   background: '/static/aurora_borealis.jpg',
   collapseMessageWithSubject: false,
   disableChat: false,
@@ -48,9 +51,11 @@ const defaultState = {
   postFormats: [],
   restrictedNicknames: [],
   safeDM: true,
+  knownDomains: [],
 
   // Feature-set, apparently, not everything here is reported...
   chatAvailable: false,
+  pleromaChatMessagesAvailable: false,
   gopherAvailable: false,
   mediaProxyAvailable: false,
   suggestionsEnabled: false,
@@ -80,6 +85,9 @@ const instance = {
       if (typeof value !== 'undefined') {
         set(state, name, value)
       }
+    },
+    setKnownDomains (state, domains) {
+      state.knownDomains = domains
     }
   },
   getters: {
@@ -181,6 +189,18 @@ const instance = {
       if (!state.emojiFetched) {
         state.emojiFetched = true
         dispatch('getStaticEmoji')
+      }
+    },
+
+    async getKnownDomains ({ commit, rootState }) {
+      try {
+        const result = await apiService.fetchKnownDomains({
+          credentials: rootState.users.currentUser.credentials
+        })
+        commit('setKnownDomains', result)
+      } catch (e) {
+        console.warn("Can't load known domains")
+        console.warn(e)
       }
     }
   }

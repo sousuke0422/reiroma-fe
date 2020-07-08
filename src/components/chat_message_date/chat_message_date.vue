@@ -10,13 +10,13 @@ export default {
   props: ['date'],
   computed: {
     displayDate () {
-      let today = new Date()
+      const today = new Date()
       today.setHours(0, 0, 0, 0)
+
       if (this.date.getTime() === today.getTime()) {
         return this.$t('display_date.today')
       } else {
-        const lang = this.$store.getters.mergedConfig.interfaceLanguage
-        return this.date.toLocaleDateString(lang, { day: 'numeric', month: 'long' })
+        return this.date.toLocaleDateString('en', { day: 'numeric', month: 'long' })
       }
     }
   }

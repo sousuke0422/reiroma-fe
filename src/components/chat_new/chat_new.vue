@@ -1,7 +1,7 @@
 <template>
   <div
     id="nav"
-    class="panel-default panel direct-conversation-new"
+    class="panel-default panel chat-new"
   >
     <div
       ref="header"
@@ -9,7 +9,6 @@
     >
       <a
         class="go-back-button"
-        style="cursor: pointer; margin-right: 0.7em"
         @click="goBack"
       >
         <i class="button-icon icon-left-open" />
@@ -32,10 +31,7 @@
         :key="user.id"
         class="member"
       >
-        <div
-          class="user-card-wrap"
-          @click.capture.prevent="goToNewChat(user)"
-        >
+        <div @click.capture.prevent="goToChat(user)">
           <BasicUserCard :user="user" />
         </div>
       </div>

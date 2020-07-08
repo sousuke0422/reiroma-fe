@@ -34,9 +34,9 @@
   },
   "domain_mute_card": {
     "mute": "Mute",
-    "mute_progress": "Muting...",
+    "mute_progress": "Muting…",
     "unmute": "Unmute",
-    "unmute_progress": "Unmuting..."
+    "unmute_progress": "Unmuting…"
   },
   "exporter": {
     "export": "Export",
@@ -44,6 +44,7 @@
   },
   "features_panel": {
     "chat": "Chat",
+    "pleroma_chat_messages": "Pleroma Chat",
     "gopher": "Gopher",
     "media_proxy": "Media proxy",
     "scope_options": "Scope options",
@@ -59,7 +60,10 @@
     "apply": "Apply",
     "submit": "Submit",
     "more": "More",
+    "loading": "Loading…",
     "generic_error": "An error occured",
+    "error_retry": "Please try again",
+    "retry": "Try again",
     "optional": "optional",
     "show_more": "Show more",
     "show_less": "Show less",
@@ -68,7 +72,9 @@
     "disable": "Disable",
     "enable": "Enable",
     "confirm": "Confirm",
-    "verify": "Verify"
+    "verify": "Verify",
+    "close": "Close",
+    "peek": "Peek"
   },
   "image_cropper": {
     "crop_picture": "Crop picture",
@@ -94,9 +100,9 @@
     "enter_recovery_code": "Enter a recovery code",
     "enter_two_factor_code": "Enter a two-factor code",
     "recovery_code": "Recovery code",
-    "heading" : {
-      "totp" : "Two-factor authentication",
-      "recovery" : "Two-factor recovery"
+    "heading": {
+      "totp": "Two-factor authentication",
+      "recovery": "Two-factor recovery"
     }
   },
   "media_modal": {
@@ -115,6 +121,7 @@
     "public_tl": "Public Timeline",
     "timeline": "Timeline",
     "twkn": "The Whole Known Network",
+    "bookmarks": "Bookmarks",
     "user_search": "User Search",
     "search": "Search",
     "who_to_follow": "Who to follow",
@@ -122,7 +129,7 @@
     "chats": "Chats"
   },
   "notifications": {
-    "broken_favorite": "Unknown status, searching for it...",
+    "broken_favorite": "Unknown status, searching for it…",
     "favorited_you": "favorited your status",
     "followed_you": "followed you",
     "follow_request": "wants to follow you",
@@ -159,6 +166,9 @@
     "load_all_hint": "Loaded first {saneAmount} emoji, loading all emoji may cause performance issues.",
     "load_all": "Loading all {emojiAmount} emoji"
   },
+  "errors": {
+    "storage_unavailable": "Pleroma could not access browser storage. Your login or your local settings won't be saved and you might encounter unexpected issues. Try enabling cookies."
+  },
   "interactions": {
     "favs_repeats": "Repeats and Favorites",
     "follows": "New follows",
@@ -170,6 +180,7 @@
     "account_not_locked_warning": "Your account is not {0}. Anyone can follow you to view your follower-only posts.",
     "account_not_locked_warning_link": "locked",
     "attachments_sensitive": "Mark attachments as sensitive",
+    "media_description": "Media description",
     "content_type": {
       "text/plain": "Plain text",
       "text/html": "HTML",
@@ -181,6 +192,10 @@
     "direct_warning_to_all": "This post will be visible to all the mentioned users.",
     "direct_warning_to_first_only": "This post will only be visible to the mentioned users at the beginning of the message.",
     "posting": "Posting",
+    "preview": "Preview",
+    "preview_empty": "Empty",
+    "empty_status_error": "Can't post an empty status with no files",
+    "media_description_error": "Failed to update media, try again",
     "scope_notice": {
       "public": "This post will be visible to everyone",
       "private": "This post will be visible to your followers only",
@@ -227,17 +242,17 @@
     "security": "Security",
     "enter_current_password_to_confirm": "Enter your current password to confirm your identity",
     "mfa": {
-      "otp" : "OTP",
-      "setup_otp" : "Setup OTP",
-      "wait_pre_setup_otp" : "presetting OTP",
-      "confirm_and_enable" : "Confirm & enable OTP",
+      "otp": "OTP",
+      "setup_otp": "Setup OTP",
+      "wait_pre_setup_otp": "presetting OTP",
+      "confirm_and_enable": "Confirm & enable OTP",
       "title": "Two-factor Authentication",
-      "generate_new_recovery_codes" : "Generate new recovery codes",
-      "warning_of_generate_new_codes" : "When you generate new recovery codes, your old codes won’t work anymore.",
-      "recovery_codes" : "Recovery codes.",
-      "waiting_a_recovery_codes": "Receiving backup codes...",
-      "recovery_codes_warning" : "Write the codes down or save them somewhere secure - otherwise you won't see them again. If you lose access to your 2FA app and recovery codes you'll be locked out of your account.",
-      "authentication_methods" : "Authentication methods",
+      "generate_new_recovery_codes": "Generate new recovery codes",
+      "warning_of_generate_new_codes": "When you generate new recovery codes, your old codes won’t work anymore.",
+      "recovery_codes": "Recovery codes.",
+      "waiting_a_recovery_codes": "Receiving backup codes…",
+      "recovery_codes_warning": "Write the codes down or save them somewhere secure - otherwise you won't see them again. If you lose access to your 2FA app and recovery codes you'll be locked out of your account.",
+      "authentication_methods": "Authentication methods",
       "scan": {
         "title": "Scan",
         "desc": "Using your two-factor app, scan this QR code or enter text key:",
@@ -262,6 +277,7 @@
     "block_import_error": "Error importing blocks",
     "blocks_imported": "Blocks imported! Processing them will take a while.",
     "blocks_tab": "Blocks",
+    "bot": "This is a bot account",
     "btnRadius": "Buttons",
     "cBlue": "Blue (Reply, follow)",
     "cGreen": "Green (Retweet)",
@@ -277,9 +293,8 @@
     "collapse_subject": "Collapse posts with subjects",
     "composing": "Composing",
     "confirm_new_password": "Confirm new password",
-    "current_avatar": "Your current avatar",
     "current_password": "Current password",
-    "current_profile_banner": "Your current profile banner",
+    "mutes_and_blocks": "Mutes and Blocks",
     "data_import_export_tab": "Data Import / Export",
     "default_vis": "Default visibility scope",
     "delete_account": "Delete Account",
@@ -329,6 +344,12 @@
     "loop_video_silent_only": "Loop only videos without sound (i.e. Mastodon's \"gifs\")",
     "mutes_tab": "Mutes",
     "play_videos_in_modal": "Play videos in a popup frame",
+    "profile_fields": {
+      "label": "Profile metadata",
+      "add_field": "Add Field",
+      "name": "Label",
+      "value": "Content"
+    },
     "use_contain_fit": "Don't crop the attachment in thumbnails",
     "name": "Name",
     "name_bio": "Name & Bio",
@@ -379,6 +400,12 @@
     "set_new_avatar": "Set new avatar",
     "set_new_profile_background": "Set new profile background",
     "set_new_profile_banner": "Set new profile banner",
+    "reset_avatar": "Reset avatar",
+    "reset_profile_background": "Reset profile background",
+    "reset_profile_banner": "Reset profile banner",
+    "reset_avatar_confirm": "Do you really want to reset the avatar?",
+    "reset_banner_confirm": "Do you really want to reset the banner?",
+    "reset_background_confirm": "Do you really want to reset the background?",
     "settings": "Settings",
     "subject_input_always_show": "Always show subject field",
     "subject_line_behavior": "Copy subject when replying",
@@ -397,7 +424,7 @@
     "theme_help_v2_1": "You can also override certain component's colors and opacity by toggling the checkbox, use \"Clear all\" button to clear all overrides.",
     "theme_help_v2_2": "Icons underneath some entries are background/text contrast indicators, hover over for detailed info. Please keep in mind that when using transparency contrast indicators show the worst possible case.",
     "tooltipRadius": "Tooltips/alerts",
-    "type_domains_to_mute": "Type in domains to mute",
+    "type_domains_to_mute": "Search domains to mute",
     "upload_a_photo": "Upload a photo",
     "user_settings": "User Settings",
     "values": {
@@ -496,14 +523,9 @@
         "toggled": "Toggled",
         "tabs": "Tabs",
         "chat": {
-          "incoming_background": "Incoming background",
-          "incoming_text": "Incoming text",
-          "incoming_link": "Incoming link",
-          "incoming_border": "Incoming border",
-          "outgoing_background": "Outgoing background",
-          "outgoing_text": "Outgoing text",
-          "outgoing_link": "Outgoing link",
-          "outgoing_border": "Outgoing border"
+          "incoming": "Incoming",
+          "outgoing": "Outgoing",
+          "border": "Border"
         }
       },
       "radii": {
@@ -616,6 +638,7 @@
     "no_retweet_hint": "Post is marked as followers-only or direct and cannot be repeated",
     "repeated": "repeated",
     "show_new": "Show new",
+    "reload": "Reload",
     "up_to_date": "Up-to-date",
     "no_more_statuses": "No more statuses",
     "no_statuses": "No statuses"
@@ -627,13 +650,21 @@
     "pin": "Pin on profile",
     "unpin": "Unpin from profile",
     "pinned": "Pinned",
+    "bookmark": "Bookmark",
+    "unbookmark": "Unbookmark",
     "delete_confirm": "Do you really want to delete this status?",
     "reply_to": "Reply to",
     "replies_list": "Replies:",
     "mute_conversation": "Mute conversation",
     "unmute_conversation": "Unmute conversation",
     "status_unavailable": "Status unavailable",
-    "copy_link": "Copy link to status"
+    "copy_link": "Copy link to status",
+    "thread_muted": "Thread muted",
+    "thread_muted_and_words": ", has words:",
+    "show_full_subject": "Show full subject",
+    "hide_full_subject": "Hide full subject",
+    "show_content": "Show content",
+    "hide_content": "Hide content"
   },
   "user_card": {
     "approve": "Approve",
@@ -664,11 +695,11 @@
     "subscribe": "Subscribe",
     "unsubscribe": "Unsubscribe",
     "unblock": "Unblock",
-    "unblock_progress": "Unblocking...",
-    "block_progress": "Blocking...",
+    "unblock_progress": "Unblocking…",
+    "block_progress": "Blocking…",
     "unmute": "Unmute",
-    "unmute_progress": "Unmuting...",
-    "mute_progress": "Muting...",
+    "unmute_progress": "Unmuting…",
+    "mute_progress": "Muting…",
     "hide_repeats": "Hide repeats",
     "show_repeats": "Show repeats",
     "admin_menu": {
@@ -717,9 +748,10 @@
     "add_reaction": "Add Reaction",
     "user_settings": "User Settings",
     "accept_follow_request": "Accept follow request",
-    "reject_follow_request": "Reject follow request"
+    "reject_follow_request": "Reject follow request",
+    "bookmark": "Bookmark"
   },
-  "upload":{
+  "upload": {
     "error": {
       "base": "Upload failed.",
       "file_too_big": "File too big [{filesize}{filesizeunit} / {allowedsize}{allowedsizeunit}]",
@@ -755,13 +787,15 @@
   },
   "chats": {
     "message_user": "Message {nickname}",
-    "write_message": "Write a message",
     "delete": "Delete",
     "chats": "Chats",
     "new": "New Chat",
     "empty_message_error": "Cannot post empty message",
     "more": "More",
-    "delete_confirm": "Do you really want to delete this message?"
+    "delete_confirm": "Do you really want to delete this message?",
+    "error_loading_chat": "Something went wrong when loading the chat.",
+    "error_sending_message": "Something went wrong when sending the message.",
+    "empty_chat_list_placeholder": "You don't have any chats yet. Start a new chat!"
   },
   "file_type": {
     "audio": "Audio",

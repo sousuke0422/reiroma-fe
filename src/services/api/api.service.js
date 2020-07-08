@@ -1,6 +1,5 @@
 import { each, map, concat, last, get } from 'lodash'
-import { parseStatus, parseUser, parseNotification, parseAttachment, parseChat } from '../entity_normalizer/entity_normalizer.service.js'
-import 'whatwg-fetch'
+import { parseStatus, parseUser, parseNotification, parseAttachment, parseChat, parseLinkHeaderPagination } from '../entity_normalizer/entity_normalizer.service.js'
 import { RegistrationError, StatusCodeError } from '../errors/errors'
 
 /* eslint-env browser */
@@ -51,6 +50,7 @@ const MASTODON_USER_URL = '/api/v1/accounts'
 const MASTODON_USER_RELATIONSHIPS_URL = '/api/v1/accounts/relationships'
 const MASTODON_USER_TIMELINE_URL = id => `/api/v1/accounts/${id}/statuses`
 const MASTODON_TAG_TIMELINE_URL = tag => `/api/v1/timelines/tag/${tag}`
+const MASTODON_BOOKMARK_TIMELINE_URL = '/api/v1/bookmarks'
 const MASTODON_USER_BLOCKS_URL = '/api/v1/blocks/'
 const MASTODON_USER_MUTES_URL = '/api/v1/mutes/'
 const MASTODON_BLOCK_USER_URL = id => `/api/v1/accounts/${id}/block`
@@ -59,6 +59,8 @@ const MASTODON_MUTE_USER_URL = id => `/api/v1/accounts/${id}/mute`
 const MASTODON_UNMUTE_USER_URL = id => `/api/v1/accounts/${id}/unmute`
 const MASTODON_SUBSCRIBE_USER = id => `/api/v1/pleroma/accounts/${id}/subscribe`
 const MASTODON_UNSUBSCRIBE_USER = id => `/api/v1/pleroma/accounts/${id}/unsubscribe`
+const MASTODON_BOOKMARK_STATUS_URL = id => `/api/v1/statuses/${id}/bookmark`
+const MASTODON_UNBOOKMARK_STATUS_URL = id => `/api/v1/statuses/${id}/unbookmark`
 const MASTODON_POST_STATUS_URL = '/api/v1/statuses'
 const MASTODON_MEDIA_UPLOAD_URL = '/api/v1/media'
 const MASTODON_VOTE_URL = id => `/api/v1/polls/${id}/votes`
@@ -75,6 +77,7 @@ const MASTODON_SEARCH_2 = `/api/v2/search`
 const MASTODON_USER_SEARCH_URL = '/api/v1/accounts/search'
 const MASTODON_DOMAIN_BLOCKS_URL = '/api/v1/domain_blocks'
 const MASTODON_STREAMING = '/api/v1/streaming'
+const MASTODON_KNOWN_DOMAIN_LIST_URL = '/api/v1/instance/peers'
 const PLEROMA_EMOJI_REACTIONS_URL = id => `/api/v1/pleroma/statuses/${id}/reactions`
 const PLEROMA_EMOJI_REACT_URL = (id, emoji) => `/api/v1/pleroma/statuses/${id}/reactions/${emoji}`
 const PLEROMA_EMOJI_UNREACT_URL = (id, emoji) => `/api/v1/pleroma/statuses/${id}/reactions/${emoji}`
@@ -143,37 +146,17 @@ const updateNotificationSettings = ({ credentials, settings }) => {
   }).then((data) => data.json())
 }
 
-const updateAvatar = ({ credentials, avatar }) => {
+const updateProfileImages = ({ credentials, avatar = null, banner = null, background = null }) => {
   const form = new FormData()
-  form.append('avatar', avatar)
-  return fetch(MASTODON_PROFILE_UPDATE_URL, {
-    headers: authHeaders(credentials),
-    method: 'PATCH',
-    body: form
-  }).then((data) => data.json())
-    .then((data) => parseUser(data))
-}
-
-const updateBg = ({ credentials, background }) => {
-  const form = new FormData()
-  form.append('pleroma_background_image', background)
+  if (avatar !== null) form.append('avatar', avatar)
+  if (banner !== null) form.append('header', banner)
+  if (background !== null) form.append('pleroma_background_image', background)
   return fetch(MASTODON_PROFILE_UPDATE_URL, {
     headers: authHeaders(credentials),
     method: 'PATCH',
     body: form
   })
     .then((data) => data.json())
-    .then((data) => parseUser(data))
-}
-
-const updateBanner = ({ credentials, banner }) => {
-  const form = new FormData()
-  form.append('header', banner)
-  return fetch(MASTODON_PROFILE_UPDATE_URL, {
-    headers: authHeaders(credentials),
-    method: 'PATCH',
-    body: form
-  }).then((data) => data.json())
     .then((data) => parseUser(data))
 }
 
@@ -503,7 +486,8 @@ const fetchTimeline = ({
   until = false,
   userId = false,
   tag = false,
-  withMuted = false
+  withMuted = false,
+  replyVisibility = 'all'
 }) => {
   const timelineUrls = {
     public: MASTODON_PUBLIC_TIMELINE,
@@ -514,7 +498,8 @@ const fetchTimeline = ({
     user: MASTODON_USER_TIMELINE_URL,
     media: MASTODON_USER_TIMELINE_URL,
     favorites: MASTODON_USER_FAVORITES_TIMELINE_URL,
-    tag: MASTODON_TAG_TIMELINE_URL
+    tag: MASTODON_TAG_TIMELINE_URL,
+    bookmarks: MASTODON_BOOKMARK_TIMELINE_URL
   }
   const isNotifications = timeline === 'notifications'
   const params = []
@@ -543,8 +528,11 @@ const fetchTimeline = ({
   if (timeline === 'public' || timeline === 'publicAndExternal') {
     params.push(['only_media', false])
   }
-  if (timeline !== 'favorites') {
+  if (timeline !== 'favorites' && timeline !== 'bookmarks') {
     params.push(['with_muted', withMuted])
+  }
+  if (replyVisibility !== 'all') {
+    params.push(['reply_visibility', replyVisibility])
   }
 
   params.push(['limit', 20])
@@ -553,16 +541,20 @@ const fetchTimeline = ({
   url += `?${queryString}`
   let status = ''
   let statusText = ''
+  let pagination = {}
   return fetch(url, { headers: authHeaders(credentials) })
     .then((data) => {
       status = data.status
       statusText = data.statusText
+      pagination = parseLinkHeaderPagination(data.headers.get('Link'), {
+        flakeId: timeline !== 'bookmarks' && timeline !== 'notifications'
+      })
       return data
     })
     .then((data) => data.json())
     .then((data) => {
       if (!data.error) {
-        return data.map(isNotifications ? parseNotification : parseStatus)
+        return { data: data.map(isNotifications ? parseNotification : parseStatus), pagination }
       } else {
         data.status = status
         data.statusText = statusText
@@ -613,6 +605,22 @@ const unretweet = ({ id, credentials }) => {
     .then((data) => parseStatus(data))
 }
 
+const bookmarkStatus = ({ id, credentials }) => {
+  return promisedRequest({
+    url: MASTODON_BOOKMARK_STATUS_URL(id),
+    headers: authHeaders(credentials),
+    method: 'POST'
+  })
+}
+
+const unbookmarkStatus = ({ id, credentials }) => {
+  return promisedRequest({
+    url: MASTODON_UNBOOKMARK_STATUS_URL(id),
+    headers: authHeaders(credentials),
+    method: 'POST'
+  })
+}
+
 const postStatus = ({
   credentials,
   status,
@@ -622,7 +630,8 @@ const postStatus = ({
   poll,
   mediaIds = [],
   inReplyToStatusId,
-  contentType
+  contentType,
+  preview
 }) => {
   const form = new FormData()
   const pollOptions = poll.options || []
@@ -652,6 +661,9 @@ const postStatus = ({
   if (inReplyToStatusId) {
     form.append('in_reply_to_id', inReplyToStatusId)
   }
+  if (preview) {
+    form.append('preview', 'true')
+  }
 
   return fetch(MASTODON_POST_STATUS_URL, {
     body: form,
@@ -659,13 +671,7 @@ const postStatus = ({
     headers: authHeaders(credentials)
   })
     .then((response) => {
-      if (response.ok) {
-        return response.json()
-      } else {
-        return {
-          error: response
-        }
-      }
+      return response.json()
     })
     .then((data) => data.error ? data : parseStatus(data))
 }
@@ -685,6 +691,17 @@ const uploadMedia = ({ formData, credentials }) => {
   })
     .then((data) => data.json())
     .then((data) => parseAttachment(data))
+}
+
+const setMediaDescription = ({ id, description, credentials }) => {
+  return promisedRequest({
+    url: `${MASTODON_MEDIA_UPLOAD_URL}/${id}`,
+    method: 'PUT',
+    headers: authHeaders(credentials),
+    payload: {
+      description
+    }
+  }).then((data) => parseAttachment(data))
 }
 
 const importBlocks = ({ file, credentials }) => {
@@ -1000,6 +1017,10 @@ const search2 = ({ credentials, q, resolve, limit, offset, following }) => {
     })
 }
 
+const fetchKnownDomains = ({ credentials }) => {
+  return promisedRequest({ url: MASTODON_KNOWN_DOMAIN_LIST_URL, credentials })
+}
+
 const fetchDomainMutes = ({ credentials }) => {
   return promisedRequest({ url: MASTODON_DOMAIN_BLOCKS_URL, credentials })
 }
@@ -1130,16 +1151,14 @@ export const handleMastoWS = (wsEvent) => {
   }
 }
 
-const chats = ({ maxId, sinceId, limit = 20, credentials }) => {
-  let url = PLEROMA_CHATS_URL
-  const args = [
-    maxId && `max_id=${maxId}`,
-    sinceId && `since_id=${sinceId}`,
-    limit && `limit=${limit}`
-  ].filter(_ => _).join('&')
+export const WSConnectionStatus = Object.freeze({
+  'JOINED': 1,
+  'CLOSED': 2,
+  'ERROR': 3
+})
 
-  url = url + (args ? '?' + args : '')
-  return fetch(url, { headers: authHeaders(credentials) })
+const chats = ({ credentials }) => {
+  return fetch(PLEROMA_CHATS_URL, { headers: authHeaders(credentials) })
     .then((data) => data.json())
     .then((data) => {
       return { chats: data.map(parseChat).filter(c => c) }
@@ -1171,8 +1190,8 @@ const chatMessages = ({ id, credentials, maxId, sinceId, limit = 20 }) => {
   })
 }
 
-const postChatMessage = ({ id, content, mediaId = null, credentials }) => {
-  let payload = {
+const sendChatMessage = ({ id, content, mediaId = null, credentials }) => {
+  const payload = {
     'content': content
   }
 
@@ -1188,10 +1207,13 @@ const postChatMessage = ({ id, content, mediaId = null, credentials }) => {
   })
 }
 
-const readChat = ({ id, credentials }) => {
+const readChat = ({ id, lastReadId, credentials }) => {
   return promisedRequest({
     url: PLEROMA_CHAT_READ_URL(id),
     method: 'POST',
+    payload: {
+      'last_read_id': lastReadId
+    },
     credentials
   })
 }
@@ -1227,9 +1249,12 @@ const apiService = {
   unfavorite,
   retweet,
   unretweet,
+  bookmarkStatus,
+  unbookmarkStatus,
   postStatus,
   deleteStatus,
   uploadMedia,
+  setMediaDescription,
   fetchMutes,
   muteUser,
   unmuteUser,
@@ -1247,10 +1272,8 @@ const apiService = {
   deactivateUser,
   register,
   getCaptcha,
-  updateAvatar,
-  updateBg,
+  updateProfileImages,
   updateProfile,
-  updateBanner,
   importBlocks,
   importFollows,
   deleteAccount,
@@ -1278,13 +1301,14 @@ const apiService = {
   updateNotificationSettings,
   search2,
   searchUsers,
+  fetchKnownDomains,
   fetchDomainMutes,
   muteDomain,
   unmuteDomain,
   chats,
   getOrCreateChat,
   chatMessages,
-  postChatMessage,
+  sendChatMessage,
   readChat,
   deleteChatMessage
 }

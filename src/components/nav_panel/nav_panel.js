@@ -12,9 +12,10 @@ const NavPanel = {
       chat: state => state.chat.channel,
       followRequestCount: state => state.api.followRequests.length,
       privateMode: state => state.instance.private,
-      federating: state => state.instance.federating
+      federating: state => state.instance.federating,
+      pleromaChatMessagesAvailable: state => state.instance.pleromaChatMessagesAvailable
     }),
-    ...mapGetters(['unreadChatCount', 'currentChat'])
+    ...mapGetters(['unreadChatCount'])
   }
 }
 

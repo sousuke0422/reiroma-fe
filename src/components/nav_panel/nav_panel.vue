@@ -18,12 +18,17 @@
           </router-link>
         </li>
         <li v-if="currentUser">
+          <router-link :to="{ name: 'bookmarks'}">
+            <i class="button-icon icon-bookmark" /> {{ $t("nav.bookmarks") }}
+          </router-link>
+        </li>
+        <li v-if="currentUser && pleromaChatMessagesAvailable">
           <router-link :to="{ name: 'chats', params: { username: currentUser.screen_name } }">
             <div
-              v-if="unreadChatCount(currentChat)"
-              class="alert-dot-number"
+              v-if="unreadChatCount"
+              class="badge badge-notification unread-chat-count"
             >
-              {{ unreadChatCount(currentChat) }}
+              {{ unreadChatCount }}
             </div>
             <i class="button-icon icon-chat" /> {{ $t("nav.chats") }}
           </router-link>

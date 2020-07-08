@@ -4,9 +4,8 @@
     @click.capture.prevent="openChat"
   >
     <div class="chat-list-item-left">
-      <ChatAvatar
-        :users="[]"
-        :fallback-user="chat.account"
+      <UserAvatar
+        :user="chat.account"
         height="48px"
         width="48px"
       />
@@ -18,29 +17,25 @@
           class="name-and-account-name"
         >
           <ChatTitle
-            :users="[]"
-            :fallback-user="chat.account"
-            :with-links="false"
+            :user="chat.account"
           />
         </span>
         <span class="heading-right" />
       </div>
-      <!-- eslint-disable vue/no-v-html -->
       <div class="chat-preview">
-        <span
-          class="content"
-          v-html="chat.lastMessage && (attachmentInfo || chat.lastMessage.content)"
+        <StatusContent
+          :status="messageForStatusContent"
+          :single-line="true"
         />
         <div
           v-if="chat.unread > 0"
-          class="alert-dot-number"
+          class="badge badge-notification unread-chat-count"
         >
           {{ chat.unread }}
         </div>
       </div>
-      <!-- eslint-enable vue/no-v-html -->
     </div>
-    <div style="float: right; text-align: right;">
+    <div class="time-wrapper">
       <Timeago
         :time="chat.updated_at"
         :auto-update="60"

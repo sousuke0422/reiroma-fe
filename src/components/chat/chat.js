@@ -1,32 +1,29 @@
 import _ from 'lodash'
+import { WSConnectionStatus } from '../../services/api/api.service.js'
 import { mapGetters, mapState } from 'vuex'
 import ChatMessage from '../chat_message/chat_message.vue'
-import ChatAvatar from '../chat_avatar/chat_avatar.vue'
 import PostStatusForm from '../post_status_form/post_status_form.vue'
 import ChatTitle from '../chat_title/chat_title.vue'
 import chatService from '../../services/chat_service/chat_service.js'
-import ChatLayout from './chat_layout.js'
+import { getScrollPosition, getNewTopPosition, isBottomedOut, scrollableContainerHeight } from './chat_layout_utils.js'
+
+const BOTTOMED_OUT_OFFSET = 10
+const JUMP_TO_BOTTOM_BUTTON_VISIBILITY_OFFSET = 150
+const SAFE_RESIZE_TIME_OFFSET = 100
 
 const Chat = {
   components: {
     ChatMessage,
     ChatTitle,
-    ChatAvatar,
     PostStatusForm
   },
-  mixins: [ChatLayout],
   data () {
     return {
-      loadingOlderMessages: false,
-      loadingMessages: true,
-      loadingChat: false,
-      editedStatusId: undefined,
-      fetcher: undefined,
       jumpToBottomButtonVisible: false,
-      mobileLayout: this.$store.state.interface.mobileLayout,
-      recipientId: this.$route.params.recipient_id,
-      hoveredSequenceId: undefined,
-      lastPosition: undefined
+      hoveredMessageChainId: undefined,
+      lastScrollPosition: {},
+      scrollableContainerHeight: '100%',
+      errorLoadingChat: false
     }
   },
   created () {
@@ -34,20 +31,16 @@ const Chat = {
     window.addEventListener('resize', this.handleLayoutChange)
   },
   mounted () {
+    window.addEventListener('scroll', this.handleScroll)
+    if (typeof document.hidden !== 'undefined') {
+      document.addEventListener('visibilitychange', this.handleVisibilityChange, false)
+    }
+
     this.$nextTick(() => {
-      let scrollable = this.$refs.scrollable
-      if (scrollable) {
-        window.addEventListener('scroll', this.handleScroll)
-      }
-      this.updateSize()
+      this.updateScrollableContainerHeight()
       this.handleResize()
     })
     this.setChatLayout()
-
-    if (typeof document.hidden !== 'undefined') {
-      document.addEventListener('visibilitychange', this.handleVisibilityChange, false)
-      this.$store.commit('setChatFocused', !document.hidden)
-    }
   },
   destroyed () {
     window.removeEventListener('scroll', this.handleScroll)
@@ -57,26 +50,17 @@ const Chat = {
     this.$store.dispatch('clearCurrentChat')
   },
   computed: {
-    chatParticipants () {
-      if (this.currentChat) {
-        return [this.currentChat.account]
-      } else {
-        const user = this.findUser(this.recipientId)
-        if (user) {
-          return [user]
-        } else {
-          return []
-        }
-      }
-    },
     recipient () {
       return this.currentChat && this.currentChat.account
+    },
+    recipientId () {
+      return this.$route.params.recipient_id
     },
     formPlaceholder () {
       if (this.recipient) {
         return this.$t('chats.message_user', { nickname: this.recipient.screen_name })
       } else {
-        return this.$t('chats.write_message')
+        return ''
       }
     },
     chatViewItems () {
@@ -85,155 +69,148 @@ const Chat = {
     newMessageCount () {
       return this.currentChatMessageService && this.currentChatMessageService.newMessageCount
     },
+    streamingEnabled () {
+      return this.mergedConfig.useStreamingApi && this.mastoUserSocketStatus === WSConnectionStatus.JOINED
+    },
     ...mapGetters([
       'currentChat',
       'currentChatMessageService',
-      'findUser',
       'findOpenedChatByRecipientId',
       'mergedConfig'
     ]),
     ...mapState({
       backendInteractor: state => state.api.backendInteractor,
-      currentUser: state => state.users.currentUser,
-      isMobileLayout: state => state.interface.mobileLayout,
-      openedChats: state => state.chats.openedChats,
-      openedChatMessageServices: state => state.chats.openedChatMessageServices,
-      windowHeight: state => state.interface.layoutHeight
+      mastoUserSocketStatus: state => state.api.mastoUserSocketStatus,
+      mobileLayout: state => state.interface.mobileLayout,
+      layoutHeight: state => state.interface.layoutHeight,
+      currentUser: state => state.users.currentUser
     })
   },
   watch: {
-    chatViewItems (prev, next) {
-      let bottomedOut = this.bottomedOut(10)
+    chatViewItems () {
+      // We don't want to scroll to the bottom on a new message when the user is viewing older messages.
+      // Therefore we need to know whether the scroll position was at the bottom before the DOM update.
+      const bottomedOutBeforeUpdate = this.bottomedOut(BOTTOMED_OUT_OFFSET)
       this.$nextTick(() => {
-        if (bottomedOut && prev.length !== next.length) {
-          this.scrollDown({ forceRead: true })
+        if (bottomedOutBeforeUpdate) {
+          this.scrollDown({ forceRead: !document.hidden })
         }
       })
     },
-    '$route': function (prev, next) {
-      this.recipientId = this.$route.params.recipient_id
+    '$route': function () {
       this.startFetching()
     },
-    windowHeight () {
+    layoutHeight () {
       this.handleResize({ expand: true })
+    },
+    mastoUserSocketStatus (newValue) {
+      if (newValue === WSConnectionStatus.JOINED) {
+        this.fetchChat({ isFirstFetch: true })
+      }
     }
   },
   methods: {
-    onStatusHover ({ state, sequenceId }) {
-      this.hoveredSequenceId = state ? sequenceId : undefined
-    },
-    onPosted (data) {
-      this.$store.dispatch('addChatMessages', { chatId: this.currentChat.id, messages: [data] }).then(() => {
-        this.$nextTick(() => {
-          this.updateSize()
-          this.scrollDown({ forceRead: true })
-        })
-      })
+    // Used to animate the avatar near the first message of the message chain when any message belonging to the chain is hovered
+    onMessageHover ({ isHovered, messageChainId }) {
+      this.hoveredMessageChainId = isHovered ? messageChainId : undefined
     },
     onFilesDropped () {
       this.$nextTick(() => {
-        this.updateSize()
+        this.handleResize()
+        this.updateScrollableContainerHeight()
       })
     },
     handleVisibilityChange () {
-      this.$store.commit('setChatFocused', !document.hidden)
-    },
-    handleLayoutChange () {
-      this.updateSize()
-      let mobileLayout = this.isMobileLayout
-      if (this.mobileLayout !== mobileLayout) {
-        if (this.mobileLayout === false && mobileLayout === true) {
-          this.setMobileChatLayout()
-        }
-        if (this.mobileLayout === true && mobileLayout === false) {
-          this.unsetMobileChatLayout()
-        }
-        this.mobileLayout = this.isMobileLayout
-        this.$nextTick(() => {
-          this.updateSize()
-          this.scrollDown()
-        })
-      }
-    },
-    handleResize (opts) {
       this.$nextTick(() => {
-        this.updateSize()
-
-        let prevOffsetHeight
-        if (this.lastPosition) {
-          prevOffsetHeight = this.lastPosition.offsetHeight
-        }
-
-        this.lastPosition = {
-          scrollTop: this.$refs.scrollable.scrollTop,
-          totalHeight: this.$refs.scrollable.scrollHeight,
-          offsetHeight: this.$refs.scrollable.offsetHeight
-        }
-
-        if (this.lastPosition) {
-          const diff = this.lastPosition.offsetHeight - prevOffsetHeight
-          const bottomedOut = this.bottomedOut()
-          if (diff < 0 || (!bottomedOut && opts && opts.expand)) {
-            this.$nextTick(() => {
-              this.updateSize()
-              this.$nextTick(() => {
-                this.$refs.scrollable.scrollTo({
-                  top: this.$refs.scrollable.scrollTop - diff,
-                  left: 0
-                })
-              })
-            })
-          }
+        if (!document.hidden && this.bottomedOut(BOTTOMED_OUT_OFFSET)) {
+          this.scrollDown({ forceRead: true })
         }
       })
     },
-    updateSize (newHeight, _diff) {
-      let h = this.$refs.header
-      let s = this.$refs.scrollable
-      let f = this.$refs.footer
-      if (h && s && f) {
-        let height = 0
-        if (this.isMobileLayout) {
-          height = parseFloat(getComputedStyle(window.document.body, null).height.replace('px', ''))
-          let newHeight = (height - h.clientHeight - f.clientHeight)
-          s.style.height = newHeight + 'px'
-        } else {
-          height = parseFloat(getComputedStyle(this.$refs.inner, null).height.replace('px', ''))
-          let newHeight = (height - h.clientHeight - f.clientHeight)
-          s.style.height = newHeight + 'px'
-        }
+    setChatLayout () {
+      //   This is a hacky way to adjust the global layout to the mobile chat (without modifying the rest of the app).
+      //   This layout prevents empty spaces from being visible at the bottom
+      //   of the chat on iOS Safari (`safe-area-inset`) when
+      //   - the on-screen keyboard appears and the user starts typing
+      //   - the user selects the text inside the input area
+      //   - the user selects and deletes the text that is multiple lines long
+      //   TODO: unify the chat layout with the global layout.
+      let html = document.querySelector('html')
+      if (html) {
+        html.classList.add('chat-layout')
+      }
+
+      this.$nextTick(() => {
+        this.updateScrollableContainerHeight()
+      })
+    },
+    unsetChatLayout () {
+      let html = document.querySelector('html')
+      if (html) {
+        html.classList.remove('chat-layout')
       }
     },
+    handleLayoutChange () {
+      this.$nextTick(() => {
+        this.updateScrollableContainerHeight()
+        this.scrollDown()
+      })
+    },
+    // Ensures the proper position of the posting form in the mobile layout (the mobile browser panel does not overlap or hide it)
+    updateScrollableContainerHeight () {
+      const header = this.$refs.header
+      const footer = this.$refs.footer
+      const inner = this.mobileLayout ? window.document.body : this.$refs.inner
+      this.scrollableContainerHeight = scrollableContainerHeight(inner, header, footer) + 'px'
+    },
+    // Preserves the scroll position when OSK appears or the posting form changes its height.
+    handleResize (opts = {}) {
+      const { expand = false, delayed = false } = opts
+
+      if (delayed) {
+        setTimeout(() => {
+          this.handleResize({ ...opts, delayed: false })
+        }, SAFE_RESIZE_TIME_OFFSET)
+        return
+      }
+
+      this.$nextTick(() => {
+        this.updateScrollableContainerHeight()
+
+        const { offsetHeight = undefined } = this.lastScrollPosition
+        this.lastScrollPosition = getScrollPosition(this.$refs.scrollable)
+
+        const diff = this.lastScrollPosition.offsetHeight - offsetHeight
+        if (diff < 0 || (!this.bottomedOut() && expand)) {
+          this.$nextTick(() => {
+            this.updateScrollableContainerHeight()
+            this.$refs.scrollable.scrollTo({
+              top: this.$refs.scrollable.scrollTop - diff,
+              left: 0
+            })
+          })
+        }
+      })
+    },
     scrollDown (options = {}) {
-      let { behavior = 'auto', forceRead = false } = options
-      let container = this.$refs.scrollable
-      let scrollable = this.$refs.scrollable
-      this.doScrollDown(scrollable, container, behavior)
+      const { behavior = 'auto', forceRead = false } = options
+      const scrollable = this.$refs.scrollable
+      if (!scrollable) { return }
+      this.$nextTick(() => {
+        scrollable.scrollTo({ top: scrollable.scrollHeight, left: 0, behavior })
+      })
       if (forceRead || this.newMessageCount > 0) {
         this.readChat()
       }
     },
-    doScrollDown (scrollable, container, behavior) {
-      if (!container) { return }
-      this.$nextTick(() => {
-        scrollable.scrollTo({ top: container.scrollHeight, left: 0, behavior })
-      })
+    readChat () {
+      if (!(this.currentChatMessageService && this.currentChatMessageService.lastMessage)) { return }
+      if (document.hidden) { return }
+      const lastReadId = this.currentChatMessageService.lastMessage.id
+      this.$store.dispatch('readChat', { id: this.currentChat.id, lastReadId })
     },
     bottomedOut (offset) {
-      let bottomedOut = false
-
-      if (this.$refs.scrollable) {
-        let scrollHeight = this.$refs.scrollable.scrollTop + (offset || 0)
-        let totalHeight = this.$refs.scrollable.scrollHeight - this.$refs.scrollable.offsetHeight
-        bottomedOut = totalHeight <= scrollHeight
-      }
-
-      return bottomedOut
-    },
-    getPosition () {
-      let scrollHeight = this.$refs.scrollable.scrollTop
-      let totalHeight = this.$refs.scrollable.scrollHeight - this.$refs.scrollable.offsetHeight
-      return { scrollHeight, totalHeight }
+      return isBottomedOut(this.$refs.scrollable, offset)
     },
     reachedTop () {
       const scrollable = this.$refs.scrollable
@@ -243,10 +220,8 @@ const Chat = {
       if (!this.currentChat) { return }
 
       if (this.reachedTop()) {
-        this.fetchChat(false, this.currentChat.id, {
-          maxId: this.currentChatMessageService.minId
-        })
-      } else if (this.bottomedOut(150)) {
+        this.fetchChat({ maxId: this.currentChatMessageService.minId })
+      } else if (this.bottomedOut(JUMP_TO_BOTTOM_BUTTON_VISIBILITY_OFFSET)) {
         this.jumpToBottomButtonVisible = false
         if (this.newMessageCount > 0) {
           this.readChat()
@@ -255,95 +230,102 @@ const Chat = {
         this.jumpToBottomButtonVisible = true
       }
     }, 100),
-    goBack () {
-      this.$router.push({ name: 'chats', params: { username: this.currentUser.screen_name } })
+    handleScrollUp (positionBeforeLoading) {
+      const positionAfterLoading = getScrollPosition(this.$refs.scrollable)
+      this.$refs.scrollable.scrollTo({
+        top: getNewTopPosition(positionBeforeLoading, positionAfterLoading),
+        left: 0
+      })
     },
-    fetchChat (isFirstFetch, chatId, opts = {}) {
-      const chatMessageService = this.openedChatMessageServices[chatId]
-      let maxId = opts.maxId
-      let sinceId
-      if (opts.sinceId && this.mergedConfig.useStreamingApi) {
-        return
-      }
-      if (opts.sinceId) {
-        sinceId = chatMessageService.lastMessage && chatMessageService.lastMessage.id
-      }
-      if (isFirstFetch) {
-        this.scrollDown({ forceRead: true })
-      }
-      let positionBeforeLoading = null
-      let previousScrollTop
-      if (maxId) {
-        this.loadingOlderMessages = true
-        positionBeforeLoading = this.getPosition()
-        previousScrollTop = this.$refs.scrollable.scrollTop
-      }
+    fetchChat ({ isFirstFetch = false, fetchLatest = false, maxId }) {
+      const chatMessageService = this.currentChatMessageService
+      if (!chatMessageService) { return }
+      if (fetchLatest && this.streamingEnabled) { return }
+
+      const chatId = chatMessageService.chatId
+      const fetchOlderMessages = !!maxId
+      const sinceId = fetchLatest && chatMessageService.lastMessage && chatMessageService.lastMessage.id
 
       this.backendInteractor.chatMessages({ id: chatId, maxId, sinceId })
         .then((messages) => {
-          let bottomedOut = this.bottomedOut()
-          this.loadingOlderMessages = false
-          this.$store.dispatch('addChatMessages', { chatId, messages }).then(() => {
-            if (positionBeforeLoading) {
-              this.$nextTick(() => {
-                let positionAfterLoading = this.getPosition()
-                let scrollable = this.$refs.scrollable
-                scrollable.scrollTo({
-                  top: previousScrollTop + (positionAfterLoading.totalHeight - positionBeforeLoading.totalHeight),
-                  left: 0
-                })
-              })
-            }
+          // Clear the current chat in case we're recovering from a ws connection loss.
+          if (isFirstFetch) {
+            chatService.clear(chatMessageService)
+          }
 
-            if (isFirstFetch) {
-              this.$nextTick(() => {
-                this.updateSize()
-              })
-            } else if (bottomedOut) {
-              this.scrollDown()
-            }
-            setTimeout(() => {
-              this.loadingMessages = false
-            }, 1000)
+          const positionBeforeUpdate = getScrollPosition(this.$refs.scrollable)
+          this.$store.dispatch('addChatMessages', { chatId, messages }).then(() => {
+            this.$nextTick(() => {
+              if (fetchOlderMessages) {
+                this.handleScrollUp(positionBeforeUpdate)
+              }
+
+              if (isFirstFetch) {
+                this.updateScrollableContainerHeight()
+              }
+            })
           })
         })
-    },
-    readChat () {
-      if (!(this.currentChat && this.currentChat.id)) { return }
-      this.$store.dispatch('readChat', { id: this.currentChat.id })
     },
     async startFetching () {
       let chat = this.findOpenedChatByRecipientId(this.recipientId)
       if (!chat) {
-        chat = await this.backendInteractor.getOrCreateChat({ accountId: this.recipientId })
+        try {
+          chat = await this.backendInteractor.getOrCreateChat({ accountId: this.recipientId })
+        } catch (e) {
+          console.error('Error creating or getting a chat', e)
+          this.errorLoadingChat = true
+        }
       }
-      this.$nextTick(() => {
-        this.scrollDown({ forceRead: true })
-      })
-
-      this.$store.dispatch('addOpenedChat', { chat })
-      this.doStartFetching()
+      if (chat) {
+        this.$nextTick(() => {
+          this.scrollDown({ forceRead: true })
+        })
+        this.$store.dispatch('addOpenedChat', { chat })
+        this.doStartFetching()
+      }
     },
     doStartFetching () {
-      let chatId = this.currentChat.id
       this.$store.dispatch('startFetchingCurrentChat', {
-        fetcher: () => setInterval(() => this.fetchChat(false, chatId, { sinceId: true }), 5000)
+        fetcher: () => setInterval(() => this.fetchChat({ fetchLatest: true }), 5000)
       })
-      this.fetchChat(true, chatId)
+      this.fetchChat({ isFirstFetch: true })
     },
-    poster (opts) {
-      const status = opts.status
-
-      let params = {
+    sendMessage ({ status, media }) {
+      const params = {
         id: this.currentChat.id,
         content: status
       }
 
-      if (opts.media && opts.media[0]) {
-        params.mediaId = opts.media[0].id
+      if (media[0]) {
+        params.mediaId = media[0].id
       }
 
-      return this.backendInteractor.postChatMessage(params)
+      return this.backendInteractor.sendChatMessage(params)
+        .then(data => {
+          this.$store.dispatch('addChatMessages', { chatId: this.currentChat.id, messages: [data] }).then(() => {
+            this.$nextTick(() => {
+              this.handleResize()
+              // When the posting form size changes because of a media attachment, we need an extra resize
+              // to account for the potential delay in the DOM update.
+              setTimeout(() => {
+                this.updateScrollableContainerHeight()
+              }, SAFE_RESIZE_TIME_OFFSET)
+              this.scrollDown({ forceRead: true })
+            })
+          })
+
+          return data
+        })
+        .catch(error => {
+          console.error('Error sending message', error)
+          return {
+            error: this.$t('chats.error_sending_message')
+          }
+        })
+    },
+    goBack () {
+      this.$router.push({ name: 'chats', params: { username: this.currentUser.screen_name } })
     }
   }
 }
