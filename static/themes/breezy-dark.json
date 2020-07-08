@@ -115,7 +115,8 @@
       "cOrange": "#f67400",
       "btnPressed": "--accent",
       "selectedMenu": "--accent",
-      "selectedMenuPopover": "--accent"
+      "selectedMenuPopover": "--accent",
+      "chatMessageIncomingBorder": "#3d4349"
     },
     "radii": {
       "btn": "2",

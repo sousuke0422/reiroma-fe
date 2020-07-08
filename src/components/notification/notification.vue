@@ -89,6 +89,9 @@
                 </i18n>
               </small>
             </span>
+            <span v-if="notification.type === 'pleroma:chat_mention'">
+              <i class="fa icon-chat lit" />
+            </span>
           </div>
           <div
             v-if="isStatusNotification"

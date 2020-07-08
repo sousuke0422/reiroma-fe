@@ -1,8 +1,10 @@
 import StatusContent from '../status_content/status_content.vue'
+import { mapState } from 'vuex'
 import Status from '../status/status.vue'
 import UserAvatar from '../user_avatar/user_avatar.vue'
 import UserCard from '../user_card/user_card.vue'
 import Timeago from '../timeago/timeago.vue'
+import StatusContent from '../status_content/status_content.vue'
 import { isStatusNotification } from '../../services/notification_utils/notification_utils.js'
 import { highlightClass, highlightStyle } from '../../services/user_highlighter/user_highlighter.js'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
@@ -81,7 +83,10 @@ const Notification = {
     },
     isStatusNotification () {
       return isStatusNotification(this.notification.type)
-    }
+    },
+    ...mapState({
+      currentUser: state => state.users.currentUser
+    })
   }
 }
 

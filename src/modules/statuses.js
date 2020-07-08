@@ -84,7 +84,8 @@ const visibleNotificationTypes = (rootState) => {
     rootState.config.notificationVisibility.repeats && 'repeat',
     rootState.config.notificationVisibility.follows && 'follow',
     rootState.config.notificationVisibility.moves && 'move',
-    rootState.config.notificationVisibility.emojiReactions && 'pleroma:emoji_reactions'
+    rootState.config.notificationVisibility.emojiReactions && 'pleroma:emoji_reactions',
+    rootState.config.notificationVisibility.chatMention && 'pleroma:chat_mention'
   ].filter(_ => _)
 }
 
@@ -478,7 +479,7 @@ export const mutations = {
   },
   setDeleted (state, { status }) {
     const newStatus = state.allStatusesObject[status.id]
-    newStatus.deleted = true
+    if (newStatus) newStatus.deleted = true
   },
   setManyDeleted (state, condition) {
     Object.values(state.allStatusesObject).forEach(status => {
@@ -520,6 +521,9 @@ export const mutations = {
   },
   dismissNotification (state, { id }) {
     state.notifications.data = state.notifications.data.filter(n => n.id !== id)
+  },
+  dismissNotifications (state, { finder }) {
+    state.notifications.data = state.notifications.data.filter(n => finder)
   },
   updateNotification (state, { id, updater }) {
     const notification = find(state.notifications.data, n => n.id === id)
@@ -602,6 +606,22 @@ export const mutations = {
 
 const statuses = {
   state: defaultState(),
+  getters: {
+    unreadChatCount: state => currentChat => {
+      let res = 0
+      state.notifications.data.forEach(n => {
+        let isMsg = !n.seen && n.chatMessage
+        if (!isMsg) { return }
+
+        if (currentChat) {
+          if (currentChat.id !== n.chatMessage.chat_id) { res++ }
+        } else {
+          res++
+        }
+      })
+      return res
+    }
+  },
   actions: {
     addNewStatuses ({ rootState, commit }, { statuses, showImmediately = false, timeline = false, noIdUpdate = false, userId, pagination }) {
       commit('addNewStatuses', { statuses, showImmediately, timeline, noIdUpdate, user: rootState.users.currentUser, userId, pagination })
@@ -720,6 +740,14 @@ const statuses = {
     dismissNotification ({ rootState, commit }, { id }) {
       commit('dismissNotification', { id })
       rootState.api.backendInteractor.dismissNotification({ id })
+    },
+    markMultipleNotificationsAsSeen ({ rootState, commit }, { finder }) {
+      const notifications = rootState.statuses.notifications.data.filter(finder)
+
+      notifications.forEach(n => {
+        commit('markSingleNotificationAsSeen', { id: n.id })
+        rootState.api.backendInteractor.markNotificationsAsSeen({ id: n.id, single: true })
+      })
     },
     updateNotification ({ rootState, commit }, { id, updater }) {
       commit('updateNotification', { id, updater })
