@@ -19,11 +19,14 @@ const Popover = {
     // anchor point on either axis
     offset: Object,
     // Additional styles you may want for the popover container
-    popoverClass: String
+    popoverClass: String,
+    // Time in milliseconds until the popup appears, default is 100ms
+    delay: Number
   },
   data () {
     return {
       hidden: true,
+      hovered: false, 
       styles: { opacity: 0 },
       oldSize: { width: 0, height: 0 }
     }
@@ -110,6 +113,7 @@ const Popover = {
       }
     },
     showPopover () {
+      if (this.trigger === 'hover' && !this.hovered) return
       if (this.hidden) this.$emit('show')
       this.hidden = false
       this.$nextTick(this.updateStyles)
@@ -120,10 +124,16 @@ const Popover = {
       this.styles = { opacity: 0 }
     },
     onMouseenter (e) {
-      if (this.trigger === 'hover') this.showPopover()
+      if (this.trigger === 'hover') {
+        this.hovered = true
+        setTimeout(this.showPopover, this.delay || 100)
+      }
     },
     onMouseleave (e) {
-      if (this.trigger === 'hover') this.hidePopover()
+      if (this.trigger === 'hover') {
+        this.hovered = false
+        this.hidePopover()
+      }
     },
     onClick (e) {
       if (this.trigger === 'click') {

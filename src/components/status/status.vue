@@ -22,9 +22,11 @@
             v-if="muted && retweet"
             class="button-icon icon-retweet"
           />
-          <router-link :to="userProfileLink">
-            {{ status.user.screen_name }}
-          </router-link>
+          <UserPopover :user-id="status.user.id">
+            <router-link :to="userProfileLink">
+              {{ status.user.screen_name }}
+            </router-link>
+          </UserPopover>
         </small>
         <small
           v-if="showReasonMutedThread"
@@ -73,15 +75,17 @@
         />
         <div class="media-body faint">
           <span class="user-name">
-            <router-link
-              v-if="retweeterHtml"
-              :to="retweeterProfileLink"
-              v-html="retweeterHtml"
-            />
-            <router-link
-              v-else
-              :to="retweeterProfileLink"
-            >{{ retweeter }}</router-link>
+            <UserPopover :user-id="statusoid.user.id">
+              <router-link
+                v-if="retweeterHtml"
+                :to="retweeterProfileLink"
+                v-html="retweeterHtml"
+              />
+              <router-link
+                v-else
+                :to="retweeterProfileLink"
+              >{{ retweeter }}</router-link>
+            </UserPopover>
           </span>
           <i
             class="fa icon-retweet retweeted"
@@ -101,10 +105,7 @@
           v-if="!noHeading"
           class="media-left"
         >
-          <router-link
-            :to="userProfileLink"
-            @click.stop.prevent.capture.native="toggleUserExpanded"
-          >
+          <router-link :to="userProfileLink">
             <UserAvatar
               :compact="compact"
               :better-shadow="betterShadow"
@@ -113,13 +114,6 @@
           </router-link>
         </div>
         <div class="status-body">
-          <UserCard
-            v-if="userExpanded"
-            :user-id="status.user.id"
-            :rounded="true"
-            :bordered="true"
-            class="status-usercard"
-          />
           <div
             v-if="!noHeading"
             class="media-heading"
@@ -137,12 +131,14 @@
                 >
                   {{ status.user.name }}
                 </h4>
-                <router-link
-                  class="account-name"
-                  :to="userProfileLink"
-                >
-                  {{ status.user.screen_name }}
-                </router-link>
+                <UserPopover :user-id="status.user.id">
+                  <router-link
+                    class="account-name"
+                    :to="userProfileLink"
+                  >
+                    {{ status.user.screen_name }}
+                  </router-link>
+                </UserPopover>
               </div>
 
               <span class="heading-right">
@@ -222,9 +218,11 @@
                 >
                   <span class="reply-to-text">{{ $t('status.reply_to') }}</span>
                 </span>
-                <router-link :to="replyProfileLink">
-                  {{ replyToName }}
-                </router-link>
+                <UserPopover :user-id="status.in_reply_to_user_id">
+                  <router-link :to="replyProfileLink">
+                    {{ replyToName }}
+                  </router-link>
+                </UserPopover>
                 <span
                   v-if="replies && replies.length"
                   class="faint replies-separator"

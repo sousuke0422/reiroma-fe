@@ -1,5 +1,6 @@
 <template>
   <StillImage
+    v-if="noPopover"
     class="avatar"
     :alt="user.screen_name"
     :title="user.screen_name"
@@ -7,6 +8,19 @@
     :class="{ 'avatar-compact': compact, 'better-shadow': betterShadow }"
     :image-load-error="imageLoadError"
   />
+  <UserPopover
+    v-else
+    :user-id="user.id"
+  >
+    <StillImage
+      class="avatar"
+      :alt="user.screen_name"
+      :title="user.screen_name"
+      :src="imgSrc(user.profile_image_url_original)"
+      :class="{ 'avatar-compact': compact, 'better-shadow': betterShadow }"
+      :image-load-error="imageLoadError"
+    />
+  </UserPopover>
 </template>
 
 <script src="./user_avatar.js"></script>

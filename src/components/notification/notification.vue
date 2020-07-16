@@ -29,7 +29,6 @@
       <a
         class="avatar-container"
         :href="notification.from_profile.statusnet_profile_url"
-        @click.stop.prevent.capture="toggleUserExpanded"
       >
         <UserAvatar
           :compact="true"
@@ -38,12 +37,6 @@
         />
       </a>
       <div class="notification-right">
-        <UserCard
-          v-if="userExpanded"
-          :user-id="getUser(notification).id"
-          :rounded="true"
-          :bordered="true"
-        />
         <span class="notification-details">
           <div class="name-and-action">
             <!-- eslint-disable vue/no-v-html -->

@@ -1,10 +1,12 @@
 import StillImage from '../still-image/still-image.vue'
+import UserPopover from '../user_popover/user_popover.vue'
 
 const UserAvatar = {
   props: [
     'user',
     'betterShadow',
-    'compact'
+    'compact',
+    'noPopover'
   ],
   data () {
     return {
@@ -13,7 +15,8 @@ const UserAvatar = {
     }
   },
   components: {
-    StillImage
+    StillImage,
+    UserPopover
   },
   methods: {
     imgSrc (src) {

@@ -25,9 +25,6 @@ const Notification = {
     Status
   },
   methods: {
-    toggleUserExpanded () {
-      this.userExpanded = !this.userExpanded
-    },
     generateUserProfileLink (user) {
       return generateProfileLink(user.id, user.screen_name, this.$store.state.instance.restrictedNicknames)
     },

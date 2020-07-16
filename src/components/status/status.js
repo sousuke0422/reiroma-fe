@@ -9,6 +9,7 @@ import AvatarList from '../avatar_list/avatar_list.vue'
 import Timeago from '../timeago/timeago.vue'
 import StatusContent from '../status_content/status_content.vue'
 import StatusPopover from '../status_popover/status_popover.vue'
+import UserPopover from '../user_popover/user_popover.vue'
 import EmojiReactions from '../emoji_reactions/emoji_reactions.vue'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 import { highlightClass, highlightStyle } from '../../services/user_highlighter/user_highlighter.js'
@@ -37,7 +38,6 @@ const Status = {
     return {
       replying: false,
       unmuted: false,
-      userExpanded: false,
       error: null
     }
   },
@@ -203,13 +203,13 @@ const Status = {
     RetweetButton,
     ExtraButtons,
     PostStatusForm,
-    UserCard,
     UserAvatar,
     AvatarList,
     Timeago,
     StatusPopover,
     EmojiReactions,
-    StatusContent
+    StatusContent,
+    UserPopover
   },
   methods: {
     visibilityIcon (visibility) {
@@ -243,9 +243,6 @@ const Status = {
     },
     toggleMute () {
       this.unmuted = !this.unmuted
-    },
-    toggleUserExpanded () {
-      this.userExpanded = !this.userExpanded
     },
     generateUserProfileLink (id, name) {
       return generateProfileLink(id, name, this.$store.state.instance.restrictedNicknames)

@@ -9,7 +9,13 @@ import { mapGetters } from 'vuex'
 
 export default {
   props: [
-    'userId', 'switcher', 'selected', 'hideBio', 'rounded', 'bordered', 'allowZoomingAvatar'
+    'userId',
+    'switcher',
+    'selected',
+    'hideBio',
+    'rounded',
+    'bordered',
+    'allowZoomingAvatar'
   ],
   data () {
     return {

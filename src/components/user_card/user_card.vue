@@ -19,6 +19,7 @@
             <UserAvatar
               :better-shadow="betterShadow"
               :user="user"
+              no-popover="true"
             />
             <div class="user-info-avatar-link-overlay">
               <i class="button-icon icon-zoom-in" />
@@ -31,6 +32,7 @@
             <UserAvatar
               :better-shadow="betterShadow"
               :user="user"
+              no-popover="true"
             />
           </router-link>
           <div class="user-summary">
