@@ -101,7 +101,6 @@
                   autocorrect="off"
                   autocapitalize="off"
                   id="totp"
-                  maxlength="6"
                   name="totp"
                   pattern="[0-9]*"
                   spellcheck="false"
