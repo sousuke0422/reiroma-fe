@@ -31,6 +31,20 @@
             />
           </template>
           <button
+            v-if="relationship.muting"
+            class="btn btn-default btn-block dropdown-item"
+            @click="unmuteUser"
+          >
+            {{ $t('user_card.muted') }}
+          </button>
+          <button
+            v-else
+            class="btn btn-default btn-block dropdown-item"
+            @click="muteUser"
+          >
+            {{ $t('user_card.mute') }}
+          </button>
+          <button
             v-if="relationship.blocking"
             class="btn btn-default btn-block dropdown-item"
             @click="unblockUser"
@@ -50,6 +64,10 @@
           >
             {{ $t('user_card.report') }}
           </button>
+          <div
+            role="separator"
+            class="dropdown-divider"
+          />
           <button
             v-if="pleromaChatMessagesAvailable"
             class="btn btn-default btn-block dropdown-item"
@@ -57,14 +75,25 @@
           >
             {{ $t('user_card.message') }}
           </button>
+          <button
+            class="btn btn-default btn-block dropdown-item"
+            @click="mentionUser"
+          >
+            {{ $t('user_card.mention') }}
+          </button>
+          <ModerationTools
+            v-if="loggedIn.role === &quot;admin&quot; || loggedIn"
+            button-class="btn btn-default btn-block dropdown-item"
+            :user="user"
+          />
         </div>
       </div>
-      <div
+      <button
         slot="trigger"
         class="btn btn-default ellipsis-button"
       >
         <i class="icon-ellipsis trigger-button" />
-      </div>
+      </button>
     </Popover>
   </div>
 </template>
@@ -74,7 +103,7 @@
 <style lang="scss">
 @import '../../_variables.scss';
 .account-actions {
-  margin: 0 .8em;
+  margin: 0 .5em;
 }
 
 .account-actions button.dropdown-item {

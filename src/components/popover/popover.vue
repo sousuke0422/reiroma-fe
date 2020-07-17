@@ -31,7 +31,7 @@
 @import '../../_variables.scss';
 
 .popover {
-  z-index: 8;
+  z-index: 1000;
   position: absolute;
   min-width: 0;
   transition: opacity 0.3s;
@@ -60,7 +60,6 @@
   text-align: left;
   list-style: none;
   max-width: 100vw;
-  z-index: 10;
   white-space: nowrap;
 
   .dropdown-divider {
@@ -111,6 +110,17 @@
       i {
         color: var(--selectedMenuPopoverIcon, $fallback--icon);
       }
+    }
+
+    &.toggled {
+      background-color: $fallback--lightBg;
+      background-color: var(--selectedMenuPopover, $fallback--lightBg);
+      color: $fallback--link;
+      color: var(--selectedMenuPopoverText, $fallback--link);
+      --faint: var(--selectedMenuPopoverFaintText, $fallback--faint);
+      --faintLink: var(--selectedMenuPopoverFaintLink, $fallback--faint);
+      --lightText: var(--selectedMenuPopoverLightText, $fallback--lightText);
+      --icon: var(--selectedMenuPopoverIcon, $fallback--icon);
     }
 
   }

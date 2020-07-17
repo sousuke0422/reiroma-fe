@@ -59,11 +59,6 @@
               >
                 <i class="icon-link-ext usersettings" />
               </a>
-              <AccountActions
-                v-if="isOtherUser && loggedIn"
-                :user="user"
-                :relationship="relationship"
-              />
             </div>
             <div class="bottom-line">
               <router-link
@@ -95,12 +90,6 @@
           </div>
         </div>
         <div class="user-meta">
-          <div
-            v-if="relationship.followed_by && loggedIn && isOtherUser"
-            class="following"
-          >
-            {{ $t('user_card.follows_you') }}
-          </div>
           <div
             v-if="isOtherUser && (loggedIn || !switcher)"
             class="highlighter"
@@ -161,36 +150,19 @@
               >
                 <i class="icon-bell-ringing-o" />
               </ProgressButton>
+              <AccountActions
+                v-if="isOtherUser && loggedIn"
+                :user="user"
+                :relationship="relationship"
+              />
             </template>
           </div>
-          <div>
-            <button
-              v-if="relationship.muting"
-              class="btn btn-default btn-block toggled"
-              @click="unmuteUser"
-            >
-              {{ $t('user_card.muted') }}
-            </button>
-            <button
-              v-else
-              class="btn btn-default btn-block"
-              @click="muteUser"
-            >
-              {{ $t('user_card.mute') }}
-            </button>
+          <div
+            v-if="relationship.followed_by && loggedIn && isOtherUser"
+            class="following"
+          >
+            {{ $t('user_card.follows_you') }}
           </div>
-          <div>
-            <button
-              class="btn btn-default btn-block"
-              @click="mentionUser"
-            >
-              {{ $t('user_card.mention') }}
-            </button>
-          </div>
-          <ModerationTools
-            v-if="loggedIn.role === &quot;admin&quot;"
-            :user="user"
-          />
         </div>
         <div
           v-if="!loggedIn && user.is_local"

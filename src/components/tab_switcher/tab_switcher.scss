@@ -175,16 +175,16 @@
     }
 
     &:not(.active) {
-      z-index: 4;
+      z-index: 2;
 
       &:hover {
-        z-index: 6;
+        z-index: 4;
       }
     }
 
     &.active {
       background: transparent;
-      z-index: 5;
+      z-index: 3;
       color: $fallback--text;
       color: var(--tabActiveText, $fallback--text);
     }
@@ -216,7 +216,7 @@
       &::after {
         content: '';
         position: absolute;
-        z-index: 7;
+        z-index: 5;
       }
     }
   }

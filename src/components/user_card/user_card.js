@@ -111,12 +111,6 @@ export default {
     FollowButton
   },
   methods: {
-    muteUser () {
-      this.$store.dispatch('muteUser', this.user.id)
-    },
-    unmuteUser () {
-      this.$store.dispatch('unmuteUser', this.user.id)
-    },
     subscribeUser () {
       return this.$store.dispatch('subscribeUser', this.user.id)
     },
@@ -150,9 +144,6 @@ export default {
       }
       this.$store.dispatch('setMedia', [attachment])
       this.$store.dispatch('setCurrent', attachment)
-    },
-    mentionUser () {
-      this.$store.dispatch('openPostStatusModal', { replyTo: true, repliedUser: this.user })
     }
   }
 }

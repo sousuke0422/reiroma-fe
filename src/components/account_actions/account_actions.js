@@ -1,6 +1,7 @@
 import { mapState } from 'vuex'
 import ProgressButton from '../progress_button/progress_button.vue'
 import Popover from '../popover/popover.vue'
+import ModerationTools from '../moderation_tools/moderation_tools.vue'
 
 const AccountActions = {
   props: [
@@ -11,7 +12,8 @@ const AccountActions = {
   },
   components: {
     ProgressButton,
-    Popover
+    Popover,
+    ModerationTools
   },
   methods: {
     showRepeats () {
@@ -19,6 +21,12 @@ const AccountActions = {
     },
     hideRepeats () {
       this.$store.dispatch('hideReblogs', this.user.id)
+    },
+    muteUser () {
+      this.$store.dispatch('muteUser', this.user.id)
+    },
+    unmuteUser () {
+      this.$store.dispatch('unmuteUser', this.user.id)
     },
     blockUser () {
       this.$store.dispatch('blockUser', this.user.id)
@@ -34,9 +42,15 @@ const AccountActions = {
         name: 'chat',
         params: { recipient_id: this.user.id }
       })
+    },
+    mentionUser () {
+      this.$store.dispatch('openPostStatusModal', { replyTo: true, repliedUser: this.user })
     }
   },
   computed: {
+    loggedIn () {
+      return this.$store.state.users.currentUser
+    },
     ...mapState({
       pleromaChatMessagesAvailable: state => state.instance.pleromaChatMessagesAvailable
     })

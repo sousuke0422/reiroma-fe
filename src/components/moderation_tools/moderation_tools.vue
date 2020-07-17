@@ -124,8 +124,7 @@
       </div>
       <button
         slot="trigger"
-        class="btn btn-default btn-block"
-        :class="{ toggled }"
+        :class="`${buttonClass} ${toggled && 'toggled'}`"
       >
         {{ $t('user_card.admin_menu.moderation') }}
       </button>

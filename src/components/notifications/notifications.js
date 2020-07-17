@@ -24,7 +24,7 @@ const Notifications = {
       bottomedOut: false,
       // How many seen notifications to display in the list. The more there are,
       // the heavier the page becomes. This count is increased when loading
-      // older notifications, and cut back to default whenever hitting "Read!".
+      // older notifications, and cut back to default whenever hitting "Read!"1.
       seenToDisplayCount: DEFAULT_SEEN_TO_DISPLAY_COUNT
     }
   },

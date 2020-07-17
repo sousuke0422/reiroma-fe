@@ -11,7 +11,8 @@ const QUARANTINE = 'mrf_tag:quarantine'
 
 const ModerationTools = {
   props: [
-    'user'
+    'user',
+    'buttonClass'
   ],
   data () {
     return {
