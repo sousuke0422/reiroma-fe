@@ -236,17 +236,6 @@
     </div>
 
     <div class="setting-item">
-      <h2>{{ $t('settings.notifications') }}</h2>
-      <ul class="setting-list">
-        <li>
-          <Checkbox v-model="webPushNotifications">
-            {{ $t('settings.enable_web_push_notifications') }}
-          </Checkbox>
-        </li>
-      </ul>
-    </div>
-
-    <div class="setting-item">
       <h2>{{ $t('settings.fun') }}</h2>
       <ul class="setting-list">
         <li>

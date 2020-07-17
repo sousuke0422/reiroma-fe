@@ -1,5 +1,7 @@
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 
+import SharedComputedObject from '../helpers/shared_computed_object.js'
+
 const NotificationsTab = {
   data () {
     return {
@@ -12,6 +14,7 @@ const NotificationsTab = {
     Checkbox
   },
   computed: {
+    ...SharedComputedObject(),
     user () {
       return this.$store.state.users.currentUser
     }
@@ -20,6 +23,17 @@ const NotificationsTab = {
     updateNotificationSettings () {
       this.$store.state.api.backendInteractor
         .updateNotificationSettings({ settings: this.notificationSettings })
+    }
+  },
+  watch: {
+    notificationVisibility: {
+      handler (value) {
+        this.$store.dispatch('setOption', {
+          name: 'notificationVisibility',
+          value: this.$store.getters.mergedConfig.notificationVisibility
+        })
+      },
+      deep: true
     }
   }
 }

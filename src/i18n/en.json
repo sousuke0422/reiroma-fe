@@ -432,6 +432,7 @@
     "fun": "Fun",
     "greentext": "Meme arrows",
     "notifications": "Notifications",
+    "notifications_advanced": "Advanced",
     "notification_setting_filters": "Filters",
     "notification_setting_block_from_strangers": "Block notifications from users who you do not follow",
     "notification_setting_privacy": "Privacy",
@@ -439,6 +440,7 @@
     "notification_mutes": "To stop receiving notifications from a specific user, use a mute.",
     "notification_blocks": "Blocking a user stops all notifications as well as unsubscribes them.",
     "enable_web_push_notifications": "Enable web push notifications",
+    "notification_browser": "Allows background push notifications with supported browsers",
     "style": {
       "switcher": {
         "keep_color": "Keep colors",

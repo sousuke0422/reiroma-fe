@@ -29,15 +29,6 @@ const FilteringTab = {
   },
   // Updating nested properties
   watch: {
-    notificationVisibility: {
-      handler (value) {
-        this.$store.dispatch('setOption', {
-          name: 'notificationVisibility',
-          value: this.$store.getters.mergedConfig.notificationVisibility
-        })
-      },
-      deep: true
-    },
     replyVisibility () {
       this.$store.dispatch('queueFlushAll')
     }
