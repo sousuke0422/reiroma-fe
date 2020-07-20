@@ -26,7 +26,7 @@ const Popover = {
   data () {
     return {
       hidden: true,
-      hovered: false, 
+      hovered: false,
       styles: { opacity: 0 },
       oldSize: { width: 0, height: 0 }
     }

@@ -131,7 +131,10 @@
                 >
                   {{ status.user.name }}
                 </h4>
-                <UserPopover :user-id="status.user.id">
+                <UserPopover
+                  :user-id="status.user.id"
+                  class="account-name"
+                >
                   <router-link
                     class="account-name"
                     :to="userProfileLink"
@@ -218,8 +221,13 @@
                 >
                   <span class="reply-to-text">{{ $t('status.reply_to') }}</span>
                 </span>
-                <UserPopover :user-id="status.in_reply_to_user_id">
-                  <router-link :to="replyProfileLink">
+                <UserPopover
+                  :user-id="status.in_reply_to_user_id"
+                >
+                  <router-link
+                    :to="replyProfileLink"
+                    class="reply-to-accountname"
+                  >
                     {{ replyToName }}
                   </router-link>
                 </UserPopover>
@@ -466,6 +474,7 @@ $status-margin: 0.75em;
         overflow: hidden;
         text-overflow: ellipsis;
         flex: 1 1 0;
+        display: block;
       }
     }
 
@@ -488,12 +497,13 @@ $status-margin: 0.75em;
       flex-wrap: wrap;
       align-items: stretch;
 
-      > .reply-to-and-accountname > a {
+      .reply-to-accountname {
         overflow: hidden;
         max-width: 100%;
         text-overflow: ellipsis;
         white-space: nowrap;
         word-break: break-all;
+        display: block;
       }
     }
 

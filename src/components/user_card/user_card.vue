@@ -91,40 +91,10 @@
         </div>
         <div class="user-meta">
           <div
-            v-if="isOtherUser && (loggedIn || !switcher)"
-            class="highlighter"
+            v-if="relationship.followed_by && loggedIn && isOtherUser"
+            class="following"
           >
-            <!-- id's need to be unique, otherwise vue confuses which user-card checkbox belongs to -->
-            <input
-              v-if="userHighlightType !== 'disabled'"
-              :id="'userHighlightColorTx'+user.id"
-              v-model="userHighlightColor"
-              class="userHighlightText"
-              type="text"
-            >
-            <input
-              v-if="userHighlightType !== 'disabled'"
-              :id="'userHighlightColor'+user.id"
-              v-model="userHighlightColor"
-              class="userHighlightCl"
-              type="color"
-            >
-            <label
-              for="theme_tab"
-              class="userHighlightSel select"
-            >
-              <select
-                :id="'userHighlightSel'+user.id"
-                v-model="userHighlightType"
-                class="userHighlightSel"
-              >
-                <option value="disabled">No highlight</option>
-                <option value="solid">Solid bg</option>
-                <option value="striped">Striped bg</option>
-                <option value="side">Side stripe</option>
-              </select>
-              <i class="icon-down-open" />
-            </label>
+            {{ $t('user_card.follows_you') }}
           </div>
         </div>
         <div
@@ -155,13 +125,43 @@
                 :user="user"
                 :relationship="relationship"
               />
+              <div
+                v-if="isOtherUser && (loggedIn || !switcher)"
+                class="highlighter"
+              >
+                <!-- id's need to be unique, otherwise vue confuses which user-card checkbox belongs to -->
+                <input
+                  v-if="userHighlightType !== 'disabled'"
+                  :id="'userHighlightColorTx'+user.id"
+                  v-model="userHighlightColor"
+                  class="userHighlightText"
+                  type="text"
+                >
+                <input
+                  v-if="userHighlightType !== 'disabled'"
+                  :id="'userHighlightColor'+user.id"
+                  v-model="userHighlightColor"
+                  class="userHighlightCl"
+                  type="color"
+                >
+                <label
+                  for="theme_tab"
+                  class="userHighlightSel select"
+                >
+                  <select
+                    :id="'userHighlightSel'+user.id"
+                    v-model="userHighlightType"
+                    class="userHighlightSel"
+                  >
+                    <option value="disabled">No highlight</option>
+                    <option value="solid">Solid bg</option>
+                    <option value="striped">Striped bg</option>
+                    <option value="side">Side stripe</option>
+                  </select>
+                  <i class="icon-down-open" />
+                </label>
+              </div>
             </template>
-          </div>
-          <div
-            v-if="relationship.followed_by && loggedIn && isOtherUser"
-            class="following"
-          >
-            {{ $t('user_card.follows_you') }}
           </div>
         </div>
         <div
@@ -327,7 +327,7 @@
     align-items: flex-start;
     max-height: 56px;
 
-    .avatar {
+    .avatar.still-image {
       flex: 1 0 100%;
       width: 56px;
       height: 56px;
