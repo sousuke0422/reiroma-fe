@@ -8,6 +8,7 @@
     >
       <UserAvatar
         :user="user"
+        no-popover="true"
         class="avatar-small"
       />
     </router-link>

@@ -28,63 +28,68 @@
         {{ $t("status.show_full_subject") }}
       </a>
     </div>
-    <div
-      :class="{'tall-status': hideTallStatus}"
-      class="status-content-wrapper"
+    <UserPopover
+      :user-id="focusedUserId"
     >
-      <a
-        v-if="hideTallStatus"
-        class="tall-status-hider"
-        :class="{ 'tall-status-hider_focused': focused }"
-        href="#"
-        @click.prevent="toggleShowMore"
-      >
-        {{ $t("general.show_more") }}
-      </a>
       <div
-        v-if="!hideSubjectStatus"
-        :class="{ 'single-line': singleLine }"
-        class="status-content media-body"
-        @click.prevent="linkClicked"
-        v-html="postBodyHtml"
-      />
-      <a
-        v-if="hideSubjectStatus"
-        href="#"
-        class="cw-status-hider"
-        @click.prevent="toggleShowMore"
+        :class="{'tall-status': hideTallStatus}"
+        class="status-content-wrapper"
       >
-        {{ $t("status.show_content") }}
-        <span
-          v-if="attachmentTypes.includes('image')"
-          class="icon-picture"
+        <a
+          v-if="hideTallStatus"
+          class="tall-status-hider"
+          :class="{ 'tall-status-hider_focused': focused }"
+          href="#"
+          @click.prevent="toggleShowMore"
+        >
+          {{ $t("general.show_more") }}
+        </a>
+        <div
+          v-if="!hideSubjectStatus"
+          :class="{ 'single-line': singleLine }"
+          class="status-content media-body"
+          @click.prevent="linkClicked"
+          @mouseover="linkHover"
+          v-html="postBodyHtml"
         />
-        <span
-          v-if="attachmentTypes.includes('video')"
-          class="icon-video"
-        />
-        <span
-          v-if="attachmentTypes.includes('audio')"
-          class="icon-music"
-        />
-        <span
-          v-if="attachmentTypes.includes('unknown')"
-          class="icon-doc"
-        />
-        <span
-          v-if="status.card"
-          class="icon-link"
-        />
-      </a>
-      <a
-        v-if="showingMore && !fullContent"
-        href="#"
-        class="status-unhider"
-        @click.prevent="toggleShowMore"
-      >
-        {{ tallStatus ? $t("general.show_less") : $t("status.hide_content") }}
-      </a>
-    </div>
+        <a
+          v-if="hideSubjectStatus"
+          href="#"
+          class="cw-status-hider"
+          @click.prevent="toggleShowMore"
+        >
+          {{ $t("status.show_content") }}
+          <span
+            v-if="attachmentTypes.includes('image')"
+            class="icon-picture"
+          />
+          <span
+            v-if="attachmentTypes.includes('video')"
+            class="icon-video"
+          />
+          <span
+            v-if="attachmentTypes.includes('audio')"
+            class="icon-music"
+          />
+          <span
+            v-if="attachmentTypes.includes('unknown')"
+            class="icon-doc"
+          />
+          <span
+            v-if="status.card"
+            class="icon-link"
+          />
+        </a>
+        <a
+          v-if="showingMore && !fullContent"
+          href="#"
+          class="status-unhider"
+          @click.prevent="toggleShowMore"
+        >
+          {{ tallStatus ? $t("general.show_less") : $t("status.hide_content") }}
+        </a>
+      </div>
+    </UserPopover>
 
     <div v-if="status.poll && status.poll.options">
       <poll :base-poll="status.poll" />

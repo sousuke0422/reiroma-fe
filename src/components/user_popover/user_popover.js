@@ -2,7 +2,8 @@
 const UserPopover = {
   name: 'UserPopover',
   props: [
-    'userId'
+    'userId',
+    'focusedElement'
   ],
   data () {
     return {

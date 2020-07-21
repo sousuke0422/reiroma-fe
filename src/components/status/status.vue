@@ -74,7 +74,10 @@
           :user="statusoid.user"
         />
         <div class="media-body faint">
-          <span class="user-name">
+          <span
+            class="user-name"
+            :title="retweeter"
+          >
             <UserPopover :user-id="statusoid.user.id">
               <router-link
                 v-if="retweeterHtml"
@@ -86,6 +89,7 @@
                 :to="retweeterProfileLink"
               >{{ retweeter }}</router-link>
             </UserPopover>
+
           </span>
           <i
             class="fa icon-retweet retweeted"
@@ -123,11 +127,13 @@
                 <h4
                   v-if="status.user.name_html"
                   class="user-name"
+                  :title="status.user.name"
                   v-html="status.user.name_html"
                 />
                 <h4
                   v-else
                   class="user-name"
+                  :title="status.user.name"
                 >
                   {{ status.user.name }}
                 </h4>
@@ -137,11 +143,17 @@
                 >
                   <router-link
                     class="account-name"
+                    :title="status.user.screen_name"
                     :to="userProfileLink"
                   >
                     {{ status.user.screen_name }}
                   </router-link>
                 </UserPopover>
+                <img
+                  v-if="!!(status.user && status.user.favicon)"
+                  class="status-favicon"
+                  :src="status.user.favicon"
+                >
               </div>
 
               <span class="heading-right">
@@ -225,8 +237,9 @@
                   :user-id="status.in_reply_to_user_id"
                 >
                   <router-link
-                    :to="replyProfileLink"
                     class="reply-to-accountname"
+                    :title="replyToName"
+                    :to="replyProfileLink"
                   >
                     {{ replyToName }}
                   </router-link>
@@ -432,6 +445,12 @@ $status-margin: 0.75em;
       vertical-align: middle;
       object-fit: contain
     }
+  }
+
+  .status-favicon {
+    height: 18px;
+    width: 18px;
+    margin-right: 0.4em;
   }
 
   .media-heading {

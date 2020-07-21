@@ -18,6 +18,8 @@ const Popover = {
     // Takes a x/y object and tells how many pixels to offset from
     // anchor point on either axis
     offset: Object,
+    // Takes an element to use for positioning over this.$el
+    offsetElement: null,
     // Additional styles you may want for the popover container
     popoverClass: String,
     // Time in milliseconds until the popup appears, default is 100ms
@@ -47,7 +49,9 @@ const Popover = {
       // Popover will be anchored around this element, trigger ref is the container, so
       // its children are what are inside the slot. Expect only one slot="trigger".
       const anchorEl = (this.$refs.trigger && this.$refs.trigger.children[0]) || this.$el
-      const screenBox = anchorEl.getBoundingClientRect()
+      const positionElement = this.offsetElement ? this.offsetElement : anchorEl
+      const screenBox = positionElement.getBoundingClientRect()
+      console.log(positionElement, screenBox)
       // Screen position of the origin point for popover
       const origin = { x: screenBox.left + screenBox.width * 0.5, y: screenBox.top }
       const content = this.$refs.content
@@ -99,11 +103,11 @@ const Popover = {
 
       const yOffset = (this.offset && this.offset.y) || 0
       const translateY = usingTop
-        ? -anchorEl.offsetHeight - yOffset - content.offsetHeight
+        ? -positionElement.offsetHeight - yOffset - content.offsetHeight
         : yOffset
 
       const xOffset = (this.offset && this.offset.x) || 0
-      const translateX = (anchorEl.offsetWidth * 0.5) - content.offsetWidth * 0.5 + horizOffset + xOffset
+      const translateX = (positionElement.offsetWidth * 0.5) - content.offsetWidth * 0.5 + horizOffset + xOffset
 
       // Note, separate translateX and translateY avoids blurry text on chromium,
       // single translate or translate3d resulted in blurry text.

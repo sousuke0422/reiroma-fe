@@ -2,6 +2,7 @@ import Attachment from '../attachment/attachment.vue'
 import Poll from '../poll/poll.vue'
 import Gallery from '../gallery/gallery.vue'
 import LinkPreview from '../link-preview/link-preview.vue'
+import UserPopover from '../user_popover/user_popover.vue'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 import fileType from 'src/services/file_type/file_type.service'
 import { processHtml } from 'src/services/tiny_post_html_processor/tiny_post_html_processor.service.js'
@@ -10,6 +11,13 @@ import { mapGetters, mapState } from 'vuex'
 
 const StatusContent = {
   name: 'StatusContent',
+  components: {
+    Attachment,
+    Poll,
+    Gallery,
+    LinkPreview,
+    UserPopover
+  },
   props: [
     'status',
     'focused',
@@ -22,7 +30,9 @@ const StatusContent = {
       showingTall: this.fullContent || (this.inConversation && this.focused),
       showingLongSubject: false,
       // not as computed because it sets the initial state which will be changed later
-      expandingSubject: !this.$store.getters.mergedConfig.collapseMessageWithSubject
+      expandingSubject: !this.$store.getters.mergedConfig.collapseMessageWithSubject,
+      focusedUserId: null,
+      focusedUserElement: null
     }
   },
   computed: {
@@ -142,12 +152,6 @@ const StatusContent = {
       currentUser: state => state.users.currentUser
     })
   },
-  components: {
-    Attachment,
-    Poll,
-    Gallery,
-    LinkPreview
-  },
   methods: {
     linkClicked (event) {
       const target = event.target.closest('.status-content a')
@@ -173,6 +177,22 @@ const StatusContent = {
           }
         }
         window.open(target.href, '_blank')
+      }
+    },
+    linkHover (event) {
+      const target = event.target.closest('.status-content a')
+      this.focusedUserId = null
+      if (target) {
+        if (target.className.match(/mention/)) {
+          const href = target.href
+          const attn = this.status.attentions.find(attn => mentionMatchesUrl(attn, href))
+          if (attn) {
+            event.stopPropagation()
+            event.preventDefault()
+            this.focusedUserId = attn.id
+            this.focusedUserElement = target
+          }
+        }
       }
     },
     toggleShowMore () {
