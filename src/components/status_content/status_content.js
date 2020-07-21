@@ -32,7 +32,7 @@ const StatusContent = {
       // not as computed because it sets the initial state which will be changed later
       expandingSubject: !this.$store.getters.mergedConfig.collapseMessageWithSubject,
       focusedUserId: null,
-      focusedUserElement: null
+      userPopoverOffset: { x: 0, y: 0 }
     }
   },
   computed: {
@@ -190,7 +190,12 @@ const StatusContent = {
             event.stopPropagation()
             event.preventDefault()
             this.focusedUserId = attn.id
-            this.focusedUserElement = target
+            // Give the popover an offset to place it over the hovered element
+            const containerWidth = this.$refs.userPopover.$el.offsetWidth
+            const elementWidth = target.offsetWidth
+            const x = -containerWidth / 2 + target.offsetLeft + elementWidth / 2
+            const y = target.offsetTop
+            this.userPopoverOffset = { x, y, h: target.offsetHeight }
           }
         }
       }

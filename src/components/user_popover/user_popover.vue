@@ -6,7 +6,7 @@
     popover-class="user-popover"
     :bound-to="{ x: 'container' }"
     :delay="200"
-    :offset-element="focusedElement"
+    :anchor-offset="anchorOffset"
     @show="enter"
   >
     <template slot="trigger">

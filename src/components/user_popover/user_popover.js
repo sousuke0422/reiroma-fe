@@ -3,7 +3,7 @@ const UserPopover = {
   name: 'UserPopover',
   props: [
     'userId',
-    'focusedElement'
+    'anchorOffset'
   ],
   data () {
     return {

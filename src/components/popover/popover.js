@@ -18,8 +18,8 @@ const Popover = {
     // Takes a x/y object and tells how many pixels to offset from
     // anchor point on either axis
     offset: Object,
-    // Takes an element to use for positioning over this.$el
-    offsetElement: null,
+    // Takes a x/y/h object and tells how much to offset the anchor point
+    anchorOffset: Object,
     // Additional styles you may want for the popover container
     popoverClass: String,
     // Time in milliseconds until the popup appears, default is 100ms
@@ -49,11 +49,17 @@ const Popover = {
       // Popover will be anchored around this element, trigger ref is the container, so
       // its children are what are inside the slot. Expect only one slot="trigger".
       const anchorEl = (this.$refs.trigger && this.$refs.trigger.children[0]) || this.$el
-      const positionElement = this.offsetElement ? this.offsetElement : anchorEl
-      const screenBox = positionElement.getBoundingClientRect()
-      console.log(positionElement, screenBox)
+      const screenBox = anchorEl.getBoundingClientRect()
       // Screen position of the origin point for popover
-      const origin = { x: screenBox.left + screenBox.width * 0.5, y: screenBox.top }
+      const anchorOffset = {
+        x: (this.anchorOffset && this.anchorOffset.x) || 0,
+        y: (this.anchorOffset && this.anchorOffset.y) || 0,
+        h: (this.anchorOffset && this.anchorOffset.h) || 0
+      }
+      const origin = {
+        x: screenBox.left + screenBox.width * 0.5 + anchorOffset.x,
+        y: screenBox.top + anchorOffset.y
+      }
       const content = this.$refs.content
       // Minor optimization, don't call a slow reflow call if we don't have to
       const parentBounds = this.boundTo &&
@@ -102,21 +108,23 @@ const Popover = {
       if (origin.y - content.offsetHeight < yBounds.min) usingTop = false
 
       const yOffset = (this.offset && this.offset.y) || 0
+      const anchorHeight = anchorOffset.h || anchorEl.offsetHeight
       const translateY = usingTop
-        ? -positionElement.offsetHeight - yOffset - content.offsetHeight
-        : yOffset
+        ? -anchorEl.offsetHeight - yOffset - content.offsetHeight + anchorOffset.y
+        : -anchorEl.offsetHeight + anchorHeight + yOffset + anchorOffset.y
 
       const xOffset = (this.offset && this.offset.x) || 0
-      const translateX = (positionElement.offsetWidth * 0.5) - content.offsetWidth * 0.5 + horizOffset + xOffset
+      const translateX = (anchorEl.offsetWidth * 0.5) - content.offsetWidth * 0.5 + horizOffset + xOffset + anchorOffset.x
 
       // Note, separate translateX and translateY avoids blurry text on chromium,
       // single translate or translate3d resulted in blurry text.
       this.styles = {
         opacity: 1,
-        transform: `translateX(${Math.floor(translateX)}px) translateY(${Math.floor(translateY)}px)`
+        transform: `translateX(${Math.round(translateX)}px) translateY(${Math.round(translateY)}px)`
       }
     },
     showPopover () {
+      if (!this.$el) return
       if (this.trigger === 'hover' && !this.hovered) return
       if (this.hidden) this.$emit('show')
       this.hidden = false

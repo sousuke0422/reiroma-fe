@@ -29,7 +29,10 @@
       </a>
     </div>
     <UserPopover
+      ref="userPopover"
+      class="status-user-popover"
       :user-id="focusedUserId"
+      :anchor-offset="userPopoverOffset"
     >
       <div
         :class="{'tall-status': hideTallStatus}"
@@ -141,6 +144,10 @@ $status-margin: 0.75em;
 .status-body {
   flex: 1;
   min-width: 0;
+
+  .status-user-popover {
+    position: relative;
+  }
 
   .status-content-wrapper {
     display: flex;
