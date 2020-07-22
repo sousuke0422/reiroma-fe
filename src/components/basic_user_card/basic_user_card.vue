@@ -4,22 +4,10 @@
       <UserAvatar
         class="avatar"
         :user="user"
-        @click.prevent.native="toggleUserExpanded"
       />
     </router-link>
     <div
-      v-if="userExpanded"
-      class="basic-user-card-expanded-content"
-    >
-      <UserCard
-        :user-id="user.id"
-        :rounded="true"
-        :bordered="true"
-      />
-    </div>
-    <div
-      v-else
-      class="basic-user-card-collapsed-content"
+      class="basic-user-card-content"
     >
       <div
         :title="user.name"
@@ -59,7 +47,7 @@
   margin: 0;
   padding: 0.6em 1em;
 
-  &-collapsed-content {
+  &-content {
     margin-left: 0.7em;
     text-align: left;
     flex: 1;
@@ -82,12 +70,6 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-  }
-
-  &-expanded-content {
-    flex: 1;
-    margin-left: 0.7em;
-    min-width: 0;
   }
 }
 </style>

@@ -28,9 +28,14 @@ const Popover = {
   data () {
     return {
       hidden: true,
-      hovered: false,
       styles: { opacity: 0 },
-      oldSize: { width: 0, height: 0 }
+      oldSize: { width: 0, height: 0 },
+      timeout: null
+    }
+  },
+  computed: {
+    isMobileLayout () {
+      return this.$store.state.interface.mobileLayout
     }
   },
   methods: {
@@ -39,10 +44,8 @@ const Popover = {
       return container.getBoundingClientRect()
     },
     updateStyles () {
-      if (this.hidden) {
-        this.styles = {
-          opacity: 0
-        }
+      if (this.hidden || !(this.$el && this.$el.offsetParent)) {
+        this.hidePopover()
         return
       }
 
@@ -124,26 +127,27 @@ const Popover = {
       }
     },
     showPopover () {
-      if (!this.$el) return
-      if (this.trigger === 'hover' && !this.hovered) return
       if (this.hidden) this.$emit('show')
       this.hidden = false
       this.$nextTick(this.updateStyles)
     },
     hidePopover () {
       if (!this.hidden) this.$emit('close')
+      if (this.timeout) {
+        clearTimeout(this.timeout)
+        this.timeout = null
+      }
       this.hidden = true
       this.styles = { opacity: 0 }
     },
     onMouseenter (e) {
       if (this.trigger === 'hover') {
-        this.hovered = true
-        setTimeout(this.showPopover, this.delay || 100)
+        this.$emit('enter')
+        this.timeout = setTimeout(this.showPopover, this.delay || 100)
       }
     },
     onMouseleave (e) {
       if (this.trigger === 'hover') {
-        this.hovered = false
         this.hidePopover()
       }
     },
@@ -153,6 +157,18 @@ const Popover = {
           this.showPopover()
         } else {
           this.hidePopover()
+        }
+      } else if (this.trigger === 'hover' && this.isMobileLayout) {
+        // This is to enable using hover stuff with mobile:
+        // on first touch it opens the popover, when touching the trigger
+        // again it will do the click action. Can't use touch events as
+        // we can't stop/prevent the actual click which will be handled
+        // first.
+        if (this.hidden) {
+          this.$emit('enter')
+          this.showPopover()
+          e.preventDefault()
+          e.stopPropagation()
         }
       }
     },

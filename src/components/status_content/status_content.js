@@ -177,6 +177,7 @@ const StatusContent = {
           }
         }
         window.open(target.href, '_blank')
+        event.preventDefault()
       }
     },
     linkHover (event) {

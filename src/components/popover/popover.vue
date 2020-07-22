@@ -5,7 +5,7 @@
   >
     <div
       ref="trigger"
-      @click="onClick"
+      @click.capture="onClick"
     >
       <slot name="trigger" />
     </div>

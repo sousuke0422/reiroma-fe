@@ -51,7 +51,7 @@
           v-if="!hideSubjectStatus"
           :class="{ 'single-line': singleLine }"
           class="status-content media-body"
-          @click.prevent="linkClicked"
+          @click="linkClicked"
           @mouseover="linkHover"
           v-html="postBodyHtml"
         />

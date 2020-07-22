@@ -6,19 +6,11 @@ const BasicUserCard = {
   props: [
     'user'
   ],
-  data () {
-    return {
-      userExpanded: false
-    }
-  },
   components: {
     UserCard,
     UserAvatar
   },
   methods: {
-    toggleUserExpanded () {
-      this.userExpanded = !this.userExpanded
-    },
     userProfileLink (user) {
       return generateProfileLink(user.id, user.screen_name, this.$store.state.instance.restrictedNicknames)
     }

@@ -5,18 +5,19 @@
     trigger="hover"
     popover-class="user-popover"
     :bound-to="{ x: 'container' }"
+    :margin="{ left: 5, right: 5 }"
     :delay="200"
     :anchor-offset="anchorOffset"
-    @show="enter"
+    @enter="enter"
   >
     <template slot="trigger">
       <slot />
     </template>
     <div
       slot="content"
-      @click.stop.prevent=""
+      @click.prevent=""
     >
-      <span v-if="user">
+      <span v-if="user && relationshipAvailable">
         <UserCard
           :user-id="userId"
           hide-bio="true"
@@ -30,7 +31,7 @@
       </div>
       <div
         v-else
-        class="status-preview-no-content"
+        class="user-preview-no-content"
       >
         <i class="icon-spin4 animate-spin" />
       </div>

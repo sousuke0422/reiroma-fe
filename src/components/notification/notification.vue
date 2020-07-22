@@ -26,16 +26,16 @@
       :class="[userClass, { highlighted: userStyle }]"
       :style="[ userStyle ]"
     >
-      <a
+      <router-link
         class="avatar-container"
-        :href="notification.from_profile.statusnet_profile_url"
+        :to="userProfileLink"
       >
         <UserAvatar
           :compact="true"
           :better-shadow="betterShadow"
           :user="notification.from_profile"
         />
-      </a>
+      </router-link>
       <div class="notification-right">
         <span class="notification-details">
           <div class="name-and-action">
