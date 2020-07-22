@@ -159,6 +159,7 @@ const Popover = {
           this.hidePopover()
         }
       } else if (this.trigger === 'hover' && this.isMobileLayout) {
+        console.log(this.isMobileLayout)
         // This is to enable using hover stuff with mobile:
         // on first touch it opens the popover, when touching the trigger
         // again it will do the click action. Can't use touch events as
@@ -176,6 +177,8 @@ const Popover = {
       if (this.hidden) return
       if (this.$el.contains(e.target)) return
       this.hidePopover()
+      e.preventDefault()
+      e.stopPropagation()
     }
   },
   updated () {
