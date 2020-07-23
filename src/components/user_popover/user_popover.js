@@ -8,7 +8,8 @@ const UserPopover = {
   data () {
     return {
       error: false,
-      fetching: false
+      fetching: false,
+      entered: false
     }
   },
   computed: {
@@ -24,8 +25,15 @@ const UserPopover = {
     Popover: () => import('../popover/popover.vue'),
     UserCard: () => import('../user_card/user_card.vue')
   },
+  watch: {
+    userId (newValue, oldValue) {
+      if (this.entered) {
+        this.fetchUser()
+      }
+    }
+  },
   methods: {
-    enter () {
+    fetchUser () {
       if (!this.userId) return
       if (this.fetching) return
       const promises = []
@@ -42,6 +50,10 @@ const UserPopover = {
           .catch(e => (this.error = true))
           .finally(() => (this.fetching = false))
       }
+    },
+    enter () {
+      this.entered = true
+      this.fetchUser()
     }
   }
 }
