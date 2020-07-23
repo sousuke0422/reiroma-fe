@@ -195,7 +195,6 @@ const StatusContent = {
     linkHover (event) {
       const target = event.target.closest('.status-content a')
       this.focusedUserId = null
-      console.log('hover first')
       if (target) {
         if (target.className.match(/mention/)) {
           const href = target.href
@@ -205,8 +204,6 @@ const StatusContent = {
           }
         }
       }
-      event.preventDefault()
-      event.stopPropagation()
     },
     toggleShowMore () {
       if (this.mightHideBecauseTall) {
