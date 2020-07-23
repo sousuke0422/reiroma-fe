@@ -24,7 +24,10 @@ export default {
     }
   },
   created () {
-    this.$store.dispatch('fetchUserRelationship', this.user.id)
+    const relationship = this.$store.getters.relationship(this.userId)
+    if (!(relationship && !relationship.loading)) {
+      this.$store.dispatch('fetchUserRelationship', this.user.id)
+    }
   },
   computed: {
     user () {

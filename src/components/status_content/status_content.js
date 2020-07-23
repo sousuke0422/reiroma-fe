@@ -153,6 +153,17 @@ const StatusContent = {
     })
   },
   methods: {
+    setUserPopoverTarget (event, target, attn) {
+      // event.stopPropagation()
+      // event.preventDefault()
+      this.focusedUserId = attn.id
+      // Give the popover an offset to place it over the hovered element
+      const containerWidth = this.$refs.userPopover.$el.offsetWidth
+      const elementWidth = target.offsetWidth
+      const x = -containerWidth / 2 + target.offsetLeft + elementWidth / 2
+      const y = target.offsetTop
+      this.userPopoverOffset = { x, y, h: target.offsetHeight }
+    },
     linkClicked (event) {
       const target = event.target.closest('.status-content a')
       if (target) {
@@ -160,8 +171,10 @@ const StatusContent = {
           const href = target.href
           const attn = this.status.attentions.find(attn => mentionMatchesUrl(attn, href))
           if (attn) {
-            event.stopPropagation()
-            event.preventDefault()
+            if (this.$store.state.interface.mobileLayout) {
+              this.setUserPopoverTarget(event, target, attn)
+              return
+            }
             const link = this.generateUserProfileLink(attn.id, attn.screen_name)
             this.$router.push(link)
             return
@@ -177,29 +190,23 @@ const StatusContent = {
           }
         }
         window.open(target.href, '_blank')
-        event.preventDefault()
       }
     },
     linkHover (event) {
       const target = event.target.closest('.status-content a')
       this.focusedUserId = null
+      console.log('hover first')
       if (target) {
         if (target.className.match(/mention/)) {
           const href = target.href
           const attn = this.status.attentions.find(attn => mentionMatchesUrl(attn, href))
           if (attn) {
-            event.stopPropagation()
-            event.preventDefault()
-            this.focusedUserId = attn.id
-            // Give the popover an offset to place it over the hovered element
-            const containerWidth = this.$refs.userPopover.$el.offsetWidth
-            const elementWidth = target.offsetWidth
-            const x = -containerWidth / 2 + target.offsetLeft + elementWidth / 2
-            const y = target.offsetTop
-            this.userPopoverOffset = { x, y, h: target.offsetHeight }
+            this.setUserPopoverTarget(event, target, attn)
           }
         }
       }
+      event.preventDefault()
+      event.stopPropagation()
     },
     toggleShowMore () {
       if (this.mightHideBecauseTall) {

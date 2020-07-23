@@ -23,7 +23,9 @@ const Popover = {
     // Additional styles you may want for the popover container
     popoverClass: String,
     // Time in milliseconds until the popup appears, default is 100ms
-    delay: Number
+    delay: Number,
+    // If disabled, don't show popover even when trigger conditions met
+    disabled: Boolean
   },
   data () {
     return {
@@ -36,6 +38,13 @@ const Popover = {
   computed: {
     isMobileLayout () {
       return this.$store.state.interface.mobileLayout
+    }
+  },
+  watch: {
+    disabled (newValue, oldValue) {
+      if (newValue === true) {
+        this.hidePopover()
+      }
     }
   },
   methods: {
@@ -127,12 +136,19 @@ const Popover = {
       }
     },
     showPopover () {
-      if (this.hidden) this.$emit('show')
+      if (this.disabled) return
+      if (this.hidden) {
+        this.$emit('show')
+        document.addEventListener('click', this.onClickOutside, true)
+      }
       this.hidden = false
       this.$nextTick(this.updateStyles)
     },
     hidePopover () {
-      if (!this.hidden) this.$emit('close')
+      if (!this.hidden) {
+        this.$emit('close')
+        document.removeEventListener('click', this.onClickOutside, true)
+      }
       if (this.timeout) {
         clearTimeout(this.timeout)
         this.timeout = null
@@ -158,8 +174,7 @@ const Popover = {
         } else {
           this.hidePopover()
         }
-      } else if (this.trigger === 'hover' && this.isMobileLayout) {
-        console.log(this.isMobileLayout)
+      } else if ((this.trigger === 'hover') && this.isMobileLayout) {
         // This is to enable using hover stuff with mobile:
         // on first touch it opens the popover, when touching the trigger
         // again it will do the click action. Can't use touch events as
@@ -169,11 +184,11 @@ const Popover = {
           this.$emit('enter')
           this.showPopover()
           e.preventDefault()
-          e.stopPropagation()
         }
       }
     },
     onClickOutside (e) {
+      console.log('onClickOutside')
       if (this.hidden) return
       if (this.$el.contains(e.target)) return
       this.hidePopover()
@@ -192,11 +207,7 @@ const Popover = {
       this.oldSize = { width: content.offsetWidth, height: content.offsetHeight }
     }
   },
-  created () {
-    document.addEventListener('click', this.onClickOutside)
-  },
   destroyed () {
-    document.removeEventListener('click', this.onClickOutside)
     this.hidePopover()
   }
 }

@@ -1,6 +1,5 @@
 <template>
   <Popover
-    v-if="userId"
     class="user-popover-container"
     trigger="hover"
     popover-class="user-popover"
@@ -8,6 +7,7 @@
     :margin="{ left: 5, right: 5 }"
     :delay="200"
     :anchor-offset="anchorOffset"
+    :disabled="!userId"
     @enter="enter"
   >
     <template slot="trigger">
@@ -37,12 +37,6 @@
       </div>
     </div>
   </Popover>
-  <div
-    v-else
-    class="user-popover-container"
-  >
-    <slot />
-  </div>
 </template>
 
 <script src="./user_popover.js" ></script>

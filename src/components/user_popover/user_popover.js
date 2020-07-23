@@ -7,7 +7,8 @@ const UserPopover = {
   ],
   data () {
     return {
-      error: false
+      error: false,
+      fetching: false
     }
   },
   computed: {
@@ -26,15 +27,20 @@ const UserPopover = {
   methods: {
     enter () {
       if (!this.userId) return
+      if (this.fetching) return
+      const promises = []
       if (!this.user) {
-        this.$store.dispatch('fetchUser', this.userId)
-          .then(data => (this.error = false))
-          .catch(e => (this.error = true))
+        promises.push(this.$store.dispatch('fetchUser', this.userId))
       }
-      if (!this.relationship) {
-        this.$store.dispatch('fetchUserRelationship', this.userId)
+      if (!this.relationshipAvailable) {
+        promises.push(this.$store.dispatch('fetchUserRelationship', this.userId))
+      }
+      if (promises.length > 0) {
+        this.fetching = true
+        Promise.all(promises)
           .then(data => (this.error = false))
           .catch(e => (this.error = true))
+          .finally(() => (this.fetching = false))
       }
     }
   }
