@@ -11,6 +11,11 @@
             {{ $t('settings.hide_isp') }}
           </Checkbox>
         </li>
+        <li>
+          <Checkbox v-model="showThirdColumn">
+            {{ $t('settings.show_third_column') }}
+          </Checkbox>
+        </li>
       </ul>
     </div>
     <div class="setting-item">

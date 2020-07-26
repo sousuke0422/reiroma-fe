@@ -5,6 +5,7 @@ import SearchBar from './components/search_bar/search_bar.vue'
 import InstanceSpecificPanel from './components/instance_specific_panel/instance_specific_panel.vue'
 import FeaturesPanel from './components/features_panel/features_panel.vue'
 import WhoToFollowPanel from './components/who_to_follow_panel/who_to_follow_panel.vue'
+import ChatList from './components/chat_list/chat_list.vue'
 import ChatPanel from './components/chat_panel/chat_panel.vue'
 import SettingsModal from './components/settings_modal/settings_modal.vue'
 import MediaModal from './components/media_modal/media_modal.vue'
@@ -27,6 +28,7 @@ export default {
     FeaturesPanel,
     WhoToFollowPanel,
     ChatPanel,
+    ChatList,
     MediaModal,
     SideDrawer,
     MobilePostStatusButton,
@@ -103,12 +105,20 @@ export default {
         !this.$store.getters.mergedConfig.hideISP &&
         this.$store.state.instance.instanceSpecificPanelContent
     },
+    thirdColumnEnabled () {
+      return this.$store.getters.mergedConfig.showThirdColumn || false
+    },
     showFeaturesPanel () { return this.$store.state.instance.showFeaturesPanel },
     isMobileLayout () { return this.$store.state.interface.mobileLayout },
     privateMode () { return this.$store.state.instance.private },
     sidebarAlign () {
       return {
         'order': this.$store.state.instance.sidebarRight ? 99 : 0
+      }
+    },
+    thirdColumnLayout () {
+      return {
+        'max-width': this.$store.getters.mergedConfig.showThirdColumn ? '1400px' : '980px'
       }
     }
   },

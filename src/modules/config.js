@@ -18,6 +18,7 @@ export const defaultState = {
   colors: {},
   theme: undefined,
   customTheme: undefined,
+  showThirdColumn: false,
   customThemeSource: undefined,
   hideISP: false,
   // bad name: actually hides posts of muted USERS

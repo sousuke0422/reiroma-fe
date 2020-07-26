@@ -80,6 +80,7 @@
     <div class="app-bg-wrapper app-container-wrapper" />
     <div
       id="content"
+      :style="thirdColumnLayout"
       class="container underlay"
     >
       <div
@@ -94,6 +95,8 @@
                 <nav-panel />
                 <instance-specific-panel v-if="showInstanceSpecificPanel" />
                 <who-to-follow-panel v-if="currentUser && suggestionsEnabled" />
+                <notifications v-if="currentUser && !thirdColumnEnabled" />
+                <features-panel v-if="!currentUser && !thirdColumnEnabled" />
               </div>
             </div>
           </div>
@@ -114,6 +117,7 @@
         <router-view />
       </div>
       <div
+        v-if="thirdColumnEnabled"
         class="sidebar-flexer mobile-hidden"
         :style="sidebarAlign"
       >
