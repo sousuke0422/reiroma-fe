@@ -95,7 +95,6 @@
                 <instance-specific-panel v-if="showInstanceSpecificPanel" />
                 <features-panel v-if="!currentUser && showFeaturesPanel" />
                 <who-to-follow-panel v-if="currentUser && suggestionsEnabled" />
-                <notifications v-if="currentUser" />
               </div>
             </div>
           </div>
@@ -114,6 +113,20 @@
           </router-link>
         </div>
         <router-view />
+      </div>
+      <div
+        class="sidebar-flexer mobile-hidden"
+        :style="sidebarAlign"
+      >
+        <div class="sidebar-bounds">
+          <div class="sidebar-scroller">
+            <div class="sidebar">
+              <div v-if="!isMobileLayout">
+                <notifications v-if="currentUser" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <media-modal />
     </div>
