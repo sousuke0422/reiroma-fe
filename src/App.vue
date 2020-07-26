@@ -93,7 +93,6 @@
               <div v-if="!isMobileLayout">
                 <nav-panel />
                 <instance-specific-panel v-if="showInstanceSpecificPanel" />
-                <features-panel v-if="!currentUser && showFeaturesPanel" />
                 <who-to-follow-panel v-if="currentUser && suggestionsEnabled" />
               </div>
             </div>
@@ -123,6 +122,7 @@
             <div class="sidebar">
               <div v-if="!isMobileLayout">
                 <notifications v-if="currentUser" />
+                <features-panel v-if="!currentUser && showFeaturesPanel" />
               </div>
             </div>
           </div>
