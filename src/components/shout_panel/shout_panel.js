@@ -1,6 +1,6 @@
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
-const chatPanel = {
+const shoutPanel = {
   props: [ 'floating' ],
   data () {
     return {
@@ -11,12 +11,12 @@ const chatPanel = {
   },
   computed: {
     messages () {
-      return this.$store.state.chat.messages
+      return this.$store.state.shout.messages
     }
   },
   methods: {
     submit (message) {
-      this.$store.state.chat.channel.push('new_msg', { text: message }, 10000)
+      this.$store.state.shout.channel.push('new_msg', { text: message }, 10000)
       this.currentMessage = ''
     },
     togglePanel () {
@@ -28,4 +28,4 @@ const chatPanel = {
   }
 }
 
-export default chatPanel
+export default shoutPanel
