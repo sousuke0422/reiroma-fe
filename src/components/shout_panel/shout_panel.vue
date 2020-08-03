@@ -18,7 +18,7 @@
         </div>
       </div>
       <div
-        v-shout-scroll
+        v-chat-scroll
         class="shout-window"
       >
         <div
