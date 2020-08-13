@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Descriptions can be set on uploaded files before posting
 - Added status preview option to preview your statuses before posting
 - When a post is a reply to an unavailable post, the 'Reply to'-text has a strike-through style
+- Added ability to see all favoriting or repeating users when hovering the number on highlighted statuses
 
 ### Changed
 - Registration page no longer requires email if the server is configured not to require it
@@ -50,6 +51,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Videos are not cropped awkwardly in the uploads section anymore
 - Reply filtering options in Settings -> Filtering now work again using filtering on server
 - Don't show just blank-screen when cookies are disabled
+- Add status idempotency to prevent accidental double posting when posting returns an error
 
 ## [2.0.3] - 2020-05-02
 ### Fixed

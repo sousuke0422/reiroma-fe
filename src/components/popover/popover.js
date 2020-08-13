@@ -20,7 +20,9 @@ const Popover = {
     offset: Object,
     // Takes a x/y/h object and tells how much to offset the anchor point
     anchorOffset: Object,
-    // Additional styles you may want for the popover container
+    // Replaces the classes you may want for the popover container.
+    // Use 'popover-default' in addition to get the default popover
+    // styles with your custom class.
     popoverClass: String,
     // Time in milliseconds until the popup appears, default is 100ms
     delay: Number,
@@ -42,8 +44,10 @@ const Popover = {
   },
   watch: {
     disabled (newValue, oldValue) {
-      if (newValue === true) {
-        this.hidePopover()
+      if (newValue) {
+        this.styles = { opacity: 0 }
+      } else {
+        if (this.trigger === 'hover') this.onMouseenter()
       }
     }
   },
@@ -188,7 +192,6 @@ const Popover = {
       }
     },
     onClickOutside (e) {
-      console.log('onClickOutside')
       if (this.hidden) return
       if (this.$el.contains(e.target)) return
       this.hidePopover()

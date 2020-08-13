@@ -2,7 +2,7 @@
   <Popover
     class="user-popover-container"
     trigger="hover"
-    popover-class="user-popover"
+    popover-class="popover-default user-popover"
     :bound-to="{ x: 'container' }"
     :margin="{ left: 5, right: 5 }"
     :delay="200"
