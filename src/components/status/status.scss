@@ -129,7 +129,7 @@ $status-margin: 0.75em;
   }
 
   .reply-to-accountname {
-    overflow: hidden;
+    overflow-x: hidden;
     max-width: 100%;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -142,13 +142,6 @@ $status-margin: 0.75em;
     height: 18px;
     margin-right: 0.5em;
     max-width: 100%;
-
-    .reply-to-link {
-      white-space: nowrap;
-      word-break: break-word;
-      text-overflow: ellipsis;
-      overflow-x: hidden;
-    }
 
     .icon-reply {
       // mirror the icon
