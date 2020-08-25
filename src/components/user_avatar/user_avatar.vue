@@ -1,7 +1,7 @@
 <template>
   <StillImage
     v-if="noPopover"
-    class="avatar"
+    class="Avatar"
     :alt="user.screen_name"
     :title="user.screen_name"
     :src="imgSrc(user.profile_image_url_original)"
@@ -13,7 +13,7 @@
     :user-id="user.id"
   >
     <StillImage
-      class="avatar"
+      class="Avatar"
       :alt="user.screen_name"
       :title="user.screen_name"
       :src="imgSrc(user.profile_image_url_original)"
@@ -27,7 +27,9 @@
 <style lang="scss">
 @import '../../_variables.scss';
 
-.avatar.still-image {
+.Avatar {
+  --still-image-label-visibility: hidden;
+
   width: 48px;
   height: 48px;
   box-shadow: var(--avatarStatusShadow);
