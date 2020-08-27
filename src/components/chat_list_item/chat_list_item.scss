@@ -72,12 +72,12 @@
     }
   }
 
-  .avatar.still-image {
+  .Avatar {
     border-radius: $fallback--avatarAltRadius;
     border-radius: var(--avatarAltRadius, $fallback--avatarAltRadius);
   }
 
-  .status-body {
+  .StatusContent {
     img.emoji {
       width: 1.4em;
       height: 1.4em;
