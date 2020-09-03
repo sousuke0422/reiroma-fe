@@ -6,6 +6,7 @@
     :controls="controls"
     :alt="attachment.description"
     :title="attachment.description"
+    :poster="attachment.large_thumb_url"
     playsinline
     @loadeddata="onVideoDataLoad"
   />
