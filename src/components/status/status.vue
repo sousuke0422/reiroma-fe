@@ -117,7 +117,7 @@
             />
           </router-link>
         </div>
-        <div class="status-body">
+        <div class="right-side">
           <div
             v-if="!noHeading"
             class="status-heading"

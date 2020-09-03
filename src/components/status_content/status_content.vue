@@ -28,6 +28,7 @@
         {{ $t("status.show_full_subject") }}
       </a>
     </div>
+
     <UserPopover
       ref="userPopover"
       class="status-user-popover"
@@ -79,6 +80,10 @@
             class="icon-doc"
           />
           <span
+            v-if="status.poll && status.poll.options"
+            class="icon-chart-bar"
+          />
+          <span
             v-if="status.card"
             class="icon-link"
           />
@@ -94,7 +99,7 @@
       </div>
     </UserPopover>
 
-    <div v-if="status.poll && status.poll.options">
+    <div v-if="status.poll && status.poll.options && !hideSubjectStatus">
       <poll :base-poll="status.poll" />
     </div>
 
