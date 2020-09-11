@@ -557,6 +557,9 @@ const PostStatusForm = {
     },
     updateIdempotencyKey () {
       this.idempotencyKey = Date.now().toString()
+    },
+    openProfileTab () {
+      this.$store.dispatch('openSettingsModalTab', 'profile')
     }
   }
 }
