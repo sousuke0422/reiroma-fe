@@ -631,6 +631,9 @@
     "year_short": "{0}y",
     "years_short": "{0}y"
   },
+  "tos_panel": {
+    "title": "Terms of Service"
+  },
   "timeline": {
     "collapse": "Collapse",
     "conversation": "Conversation",
