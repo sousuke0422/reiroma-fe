@@ -63,6 +63,11 @@
             {{ $t('settings.emoji_reactions_on_timeline') }}
           </Checkbox>
         </li>
+        <li>
+          <Checkbox v-model="virtualScrolling">
+            {{ $t('settings.virtual_scrolling') }}
+          </Checkbox>
+        </li>
       </ul>
     </div>
 
