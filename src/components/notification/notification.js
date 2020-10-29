@@ -7,6 +7,28 @@ import StatusContent from '../status_content/status_content.vue'
 import { isStatusNotification } from '../../services/notification_utils/notification_utils.js'
 import { highlightClass, highlightStyle } from '../../services/user_highlighter/user_highlighter.js'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import {
+  faCheck,
+  faTimes,
+  faStar,
+  faRetweet,
+  faUserPlus,
+  faEyeSlash,
+  faUser,
+  faSuitcaseRolling
+} from '@fortawesome/free-solid-svg-icons'
+
+library.add(
+  faCheck,
+  faTimes,
+  faStar,
+  faRetweet,
+  faUserPlus,
+  faUser,
+  faEyeSlash,
+  faSuitcaseRolling
+)
 
 const Notification = {
   data () {
