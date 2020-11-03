@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
 
@@ -21,7 +21,7 @@ import pollsModule from './modules/polls.js'
 import postStatusModule from './modules/postStatus.js'
 import chatsModule from './modules/chats.js'
 
-import VueI18n from 'vue-i18n'
+import { createI18n } from 'vue-i18n'
 
 import createPersistedState from './lib/persisted_state.js'
 import pushNotifications from './lib/push_notifications_plugin.js'
@@ -38,10 +38,18 @@ import { FontAwesomeIcon, FontAwesomeLayers } from '@fortawesome/vue-fontawesome
 import afterStoreSetup from './boot/after_store.js'
 
 const currentLocale = (window.navigator.language || 'en').split('-')[0]
+const Vue = createApp()
+
+const i18n = createI18n({
+  // By default, use the browser locale, we will update it if neccessary
+  locale: 'en',
+  fallbackLocale: 'en',
+  messages: messages.default
+})
 
 Vue.use(Vuex)
 Vue.use(VueRouter)
-Vue.use(VueI18n)
+Vue.use(i18n)
 Vue.use(VueChatScroll)
 Vue.use(VueClickOutside)
 Vue.use(PortalVue)
@@ -49,13 +57,6 @@ Vue.use(VBodyScrollLock)
 
 Vue.component('FAIcon', FontAwesomeIcon)
 Vue.component('FALayers', FontAwesomeLayers)
-
-const i18n = new VueI18n({
-  // By default, use the browser locale, we will update it if neccessary
-  locale: 'en',
-  fallbackLocale: 'en',
-  messages: messages.default
-})
 
 messages.setLanguage(i18n, currentLocale)
 
