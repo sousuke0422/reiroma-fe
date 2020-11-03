@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import routes from './routes'
 import App from '../App.vue'
-import { windowWidth } from '../services/window_utils/window_utils'
+import { windowWidth, getLayout } from '../services/window_utils/window_utils'
 import { getOrCreateApp, getClientToken } from '../services/new_api/oauth.js'
 import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
 import { CURRENT_VERSION } from '../services/theme_data/theme_data.service.js'
@@ -324,7 +324,7 @@ const checkOAuthToken = async ({ store }) => {
 
 const afterStoreSetup = async ({ store, i18n }) => {
   const width = windowWidth()
-  store.dispatch('setMobileLayout', width <= 800)
+  store.dispatch('setLayout', getLayout(width))
 
   const overrides = window.___pleromafe_dev_overrides || {}
   const server = (typeof overrides.target !== 'undefined') ? overrides.target : window.location.origin

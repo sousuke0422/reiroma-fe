@@ -25,14 +25,46 @@ h4 {
   margin: 0;
 }
 
-#content {
+.main-layout {
+  display: grid;
   box-sizing: border-box;
   padding-top: 60px;
   margin: auto;
   min-height: 100vh;
   max-width: 980px;
-  align-content: flex-start;
+  grid-template-columns: 365px 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "post notice"
+    "post content";
+
+  .column-3 {
+    display: none;
+  }
+
+  .content {
+    grid-area: content;
+  }
+
+  .sidebar {
+    max-height: 100vh;
+    grid-area: post;
+  }
+
+  @media all and (min-width: 1200px) {
+    grid-template-columns: 365px 1fr 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "post notice notifications"
+      "post content notifications";
+
+    .column-3 {
+      display: block;
+      grid-area: notifications;
+    }
+  }
 }
+
 .underlay {
   background-color: rgba(0,0,0,0.15);
   background-color: var(--underlay, rgba(0,0,0,0.15));

@@ -14,7 +14,7 @@ import DesktopNav from './components/desktop_nav/desktop_nav.vue'
 import UserReportingModal from './components/user_reporting_modal/user_reporting_modal.vue'
 import PostStatusModal from './components/post_status_modal/post_status_modal.vue'
 import GlobalNoticeList from './components/global_notice_list/global_notice_list.vue'
-import { windowWidth, windowHeight } from './services/window_utils/window_utils'
+import { windowWidth, windowHeight, getLayout } from './services/window_utils/window_utils'
 
 export default {
   name: 'app',
@@ -43,10 +43,10 @@ export default {
     // Load the locale from the storage
     const val = this.$store.getters.mergedConfig.interfaceLanguage
     this.$store.dispatch('setOption', { name: 'interfaceLanguage', value: val })
-    window.addEventListener('resize', this.updateMobileState)
+    window.addEventListener('resize', this.updateLayoutState)
   },
   destroyed () {
-    window.removeEventListener('resize', this.updateMobileState)
+    window.removeEventListener('resize', this.updateLayoutState)
   },
   computed: {
     currentUser () { return this.$store.state.users.currentUser },
@@ -71,7 +71,9 @@ export default {
         this.$store.state.instance.instanceSpecificPanelContent
     },
     showFeaturesPanel () { return this.$store.state.instance.showFeaturesPanel },
-    isMobileLayout () { return this.$store.state.interface.mobileLayout },
+    layout () { return console.log(this.$store.state.interface.layout) || this.$store.state.interface.layout },
+    isMobileLayout () { return this.$store.state.interface.layout === '1column' },
+    is3ColumnLayout () { return this.$store.state.interface.layout === '3column' },
     privateMode () { return this.$store.state.instance.private },
     sidebarAlign () {
       return {
@@ -80,12 +82,13 @@ export default {
     }
   },
   methods: {
-    updateMobileState () {
-      const mobileLayout = windowWidth() <= 800
+    updateLayoutState () {
+      const width = windowWidth()
+      const layout = getLayout(width)
       const layoutHeight = windowHeight()
-      const changed = mobileLayout !== this.isMobileLayout
+      const changed = layout !== this.layout
       if (changed) {
-        this.$store.dispatch('setMobileLayout', mobileLayout)
+        this.$store.dispatch('setLayout', layout)
       }
       this.$store.dispatch('setLayoutHeight', layoutHeight)
     }

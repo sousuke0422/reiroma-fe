@@ -15,7 +15,7 @@ const defaultState = {
       window.CSS.supports('-webkit-filter', 'drop-shadow(0 0)')
     )
   },
-  mobileLayout: false,
+  layout: false,
   globalNotices: [],
   layoutHeight: 0,
   lastTimeline: null
@@ -39,8 +39,8 @@ const interfaceMod = {
     setNotificationPermission (state, permission) {
       state.notificationPermission = permission
     },
-    setMobileLayout (state, value) {
-      state.mobileLayout = value
+    setLayout (state, value) {
+      state.layout = value
     },
     closeSettingsModal (state) {
       state.settingsModalState = 'hidden'
@@ -89,8 +89,8 @@ const interfaceMod = {
     setNotificationPermission ({ commit }, permission) {
       commit('setNotificationPermission', permission)
     },
-    setMobileLayout ({ commit }, value) {
-      commit('setMobileLayout', value)
+    setLayout ({ commit }, value) {
+      commit('setLayout', value)
     },
     closeSettingsModal ({ commit }) {
       commit('closeSettingsModal')
