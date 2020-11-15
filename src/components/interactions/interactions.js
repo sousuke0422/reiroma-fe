@@ -4,6 +4,8 @@ const tabModeDict = {
   mentions: ['mention'],
   'likes+repeats': ['repeat', 'like'],
   follows: ['follow'],
+  reactions: ['pleroma:emoji_reaction'],
+  reports: ['pleroma:report'],
   moves: ['move']
 }
 
