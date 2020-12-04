@@ -61,6 +61,7 @@ const fetchNotifications = ({ store, args, older }) => {
         messageArgs: [error.message],
         timeout: 5000
       })
+      console.error(error)
     })
 }
 

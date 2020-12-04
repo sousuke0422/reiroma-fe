@@ -376,7 +376,7 @@ export const parseNotification = (data) => {
     if (data.report) {
       output.report = data.report
       output.report.content = data.report.content
-      output.report.acct = parseUser(data.report.acct)
+      output.report.acct = parseUser(data.report.account)
       output.report.actor = parseUser(data.report.actor)
       output.report.statuses = data.report.statuses.map(parseStatus)
     }
