@@ -330,6 +330,7 @@
     "max_thumbnails": "Maximum amount of thumbnails per post",
     "hide_isp": "Hide instance-specific panel",
     "show_third_column": "Move Notifications to a seperate column",
+    "hide_wallpaper": "Hide instance wallpaper",
     "preload_images": "Preload images",
     "use_one_click_nsfw": "Open NSFW attachments with just one click",
     "hide_post_stats": "Hide post statistics (e.g. the number of favorites)",
@@ -517,6 +518,7 @@
         "inputs": "Input fields",
         "faint_text": "Faded text",
         "underlay": "Underlay",
+        "wallpaper": "Wallpaper",
         "poll": "Poll graph",
         "icons": "Icons",
         "highlight": "Highlighted elements",
@@ -663,6 +665,7 @@
     "unmute_conversation": "Unmute conversation",
     "status_unavailable": "Status unavailable",
     "copy_link": "Copy link to status",
+    "external_source": "External source",
     "thread_muted": "Thread muted",
     "thread_muted_and_words": ", has words:",
     "show_full_subject": "Show full subject",
@@ -670,7 +673,8 @@
     "show_content": "Show content",
     "hide_content": "Hide content",
     "status_deleted": "This post was deleted",
-    "nsfw": "NSFW"
+    "nsfw": "NSFW",
+    "expand": "Expand"
   },
   "user_card": {
     "approve": "Approve",
@@ -760,6 +764,7 @@
   "upload": {
     "error": {
       "base": "Upload failed.",
+      "message": "Upload failed: {0}",
       "file_too_big": "File too big [{filesize}{filesizeunit} / {allowedsize}{allowedsizeunit}]",
       "default": "Try again later"
     },

@@ -16,6 +16,11 @@
             {{ $t('settings.show_third_column') }}
           </Checkbox>
         </li>
+        <li v-if="instanceWallpaperUsed">
+          <Checkbox v-model="hideInstanceWallpaper">
+            {{ $t('settings.hide_wallpaper') }}
+          </Checkbox>
+        </li>
       </ul>
     </div>
     <div class="setting-item">
