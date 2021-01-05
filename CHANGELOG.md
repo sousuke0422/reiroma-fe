@@ -5,10 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 
 ## [Unreleased]
+### Fixed
+- Follows/Followers tabs on user profiles now display the content properly.
+- Handle punycode in screen names
+
+## [2.2.2] - 2020-12-22
 ### Added
 - Mouseover titles for emojis in reaction picker
 - Support to input emoji into the search box in reaction picker
 - Added some missing unicode emoji
+- Added the upload limit to the Features panel in the About page
+- Support for solid color wallpaper, instance doesn't have to define a wallpaper anymore
 
 ### Fixed
 - Fixed the occasional bug where screen would scroll 1px when typing into a reply form
@@ -17,11 +24,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fixed custom emoji not working in profile field names
 - Fixed pinned statuses not appearing in user profiles
 - Fixed some elements not being keyboard navigation friendly
+- Fixed error handling when updating various profile images
 - Fixed your latest chat messages disappearing when closing chat view and opening it again during the same session
+- Fixed custom emoji not showing in poll options before voting
+- Fixed link color not applied to instance name in topbar
 
 ### Changed
 - Errors when fetching are now shown with popup errors instead of "Error fetching updates" in panel headers
 - Made reply/fav/repeat etc buttons easier to hit
+- Adjusted timeline menu clickable area to match the visible button
+- Moved external source link from status heading to the ellipsis menu
+- Disabled horizontal textarea resize
+- Wallpaper is now top-aligned, horizontally centered.
 
 
 ## [2.2.1] - 2020-11-11
