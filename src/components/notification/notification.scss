@@ -56,6 +56,34 @@
     margin: 0 0.1em;
   }
 
+  .report-content {
+    margin: 0.5em 0;
+  }
+
+  .reported-status {
+    border: 1px solid $fallback--faint;
+    border-color: var(--faint, $fallback--faint);
+    border-radius: $fallback--inputRadius;
+    border-radius: var(--inputRadius, $fallback--inputRadius);
+    color: $fallback--text;
+    color: var(--text, $fallback--text);
+    display: block;
+    padding: 0.5em;
+    margin: 0.5em 0;
+
+    .status-content {
+      pointer-events: none;
+    }
+
+    .reported-status-name {
+      font-weight: bold;
+    }
+
+    .reported-status-timeago {
+      float: right;
+    }
+  }
+
   &.-type--repeat .type-icon {
     color: $fallback--cGreen;
     color: var(--cGreen, $fallback--cGreen);

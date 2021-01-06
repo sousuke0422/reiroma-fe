@@ -106,6 +106,9 @@
                 </i18n>
               </small>
             </span>
+            <span v-if="notification.type === 'pleroma:report'">
+              <small>{{ $t('notifications.submitted_report') }}</small>
+            </span>
           </div>
           <div
             v-if="isStatusNotification"
@@ -179,6 +182,37 @@
           <router-link :to="targetUserProfileLink">
             @{{ notification.target.screen_name }}
           </router-link>
+        </div>
+        <div
+          v-else-if="notification.type === 'pleroma:report'"
+        >
+          <small>Reported user:</small>
+          <router-link :to="generateUserProfileLink(notification.report.acct)">
+            @{{ notification.report.acct.screen_name }}
+          </router-link>
+          <!-- eslint-disable vue/no-v-html -->
+          <div
+            class="report-content"
+            v-html="notification.report.content"
+          />
+          <div v-if="notification.report.statuses.length">
+            <small>Reported statuses:</small>
+            <!-- eslint-enable vue/no-v-html -->
+            <router-link
+              v-for="status in notification.report.statuses"
+              :key="status.id"
+              :to="{ name: 'conversation', params: { id: status.id } }"
+              class="reported-status"
+            >
+              <span class="reported-status-name">{{ status.user.name }}</span>
+              <Timeago
+                :time="status.created_at"
+                :auto-update="240"
+                class="reported-status-timeago faint"
+              />
+              <status-content :status="status" />
+            </router-link>
+          </div>
         </div>
         <template v-else>
           <status-content

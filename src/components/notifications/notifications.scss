@@ -60,8 +60,10 @@
       height: 32px;
     }
 
-    --link: var(--faintLink);
-    --text: var(--faint);
+    .faint {
+      --link: var(--faintLink);
+      --text: var(--faint);
+    }
   }
 
   .follow-request-accept {

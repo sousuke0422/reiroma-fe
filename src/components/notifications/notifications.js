@@ -66,6 +66,7 @@ const Notifications = {
       return this.$store.state.statuses.notifications.loading
     },
     notificationsToDisplay () {
+      console.log(this.notifications)
       return this.filteredNotifications.slice(0, this.unseenCount + this.seenToDisplayCount)
     },
     ...mapGetters(['unreadChatCount'])

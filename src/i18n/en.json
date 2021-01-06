@@ -141,7 +141,8 @@
     "repeated_you": "repeated your status",
     "no_more_notifications": "No more notifications",
     "migrated_to": "migrated to",
-    "reacted_with": "reacted with {0}"
+    "reacted_with": "reacted with {0}",
+    "submitted_report": "submitted a report"
   },
   "polls": {
     "add_poll": "Add Poll",

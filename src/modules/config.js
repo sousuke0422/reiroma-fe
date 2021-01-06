@@ -44,8 +44,9 @@ export const defaultState = {
     likes: true,
     repeats: true,
     moves: true,
-    emojiReactions: false,
+    emojiReactions: true,
     followRequest: true,
+    reports: true,
     chatMention: true
   },
   webPushNotifications: false,

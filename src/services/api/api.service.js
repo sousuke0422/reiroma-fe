@@ -488,8 +488,103 @@ const deleteUser = ({ credentials, user }) => {
     headers: headers
   })
 }
-
 /* eslint-disable */
+const mockStatus = {
+  "account": {
+    "acct": "reported_account",
+    "avatar": "https://develop.ilja.space/images/avi.png",
+    "avatar_static": "https://develop.ilja.space/images/avi.png",
+    "bot": false,
+    "created_at": "2020-09-03T14:18:21.000Z",
+    "display_name": "Reported Account",
+    "emojis": [],
+    "fields": [],
+    "followers_count": 0,
+    "following_count": 0,
+    "header": "https://develop.ilja.space/images/banner.png",
+    "header_static": "https://develop.ilja.space/images/banner.png",
+    "id": "A2xvLMMFLmqUQiZSqG",
+    "locked": false,
+    "note": "I&#39;m an account made for an example report notification. I&#39;m the one that will be reported.",
+    "pleroma": {
+      "accepts_chat_messages": true,
+      "ap_id": "https://develop.ilja.space/users/reported_account",
+      "background_image": null,
+      "confirmation_pending": false,
+      "favicon": null,
+      "hide_favorites": true,
+      "hide_followers": false,
+      "hide_followers_count": false,
+      "hide_follows": false,
+      "hide_follows_count": false,
+      "is_admin": false,
+      "is_moderator": false,
+      "relationship": {},
+      "skip_thread_containment": false,
+      "tags": []
+    },
+    "source": {
+      "fields": [],
+      "note": "",
+      "pleroma": {
+        "actor_type": "Person",
+        "discoverable": false
+      },
+      "sensitive": false
+    },
+    "statuses_count": 1,
+    "url": "https://develop.ilja.space/users/reported_account",
+    "username": "reported_account"
+  },
+  "application": {
+    "name": "Web",
+    "website": null
+  },
+  "bookmarked": false,
+  "card": null,
+  "content": "A post I made that will be included in the report",
+  "created_at": "2020-09-03T14:18:51.000Z",
+  "emojis": [],
+  "favourited": false,
+  "favourites_count": 0,
+  "id": "A2xvLMMFLmqUQiZSqG",
+  "in_reply_to_account_id": null,
+  "in_reply_to_id": null,
+  "language": null,
+  "media_attachments": [],
+  "mentions": [],
+  "muted": false,
+  "pinned": false,
+  "pleroma": {
+    "content": {
+      "text/plain": "A post I made that will be included in the report"
+    },
+    "conversation_id": 7,
+    "direct_conversation_id": null,
+    "emoji_reactions": [],
+    "expires_at": null,
+    "in_reply_to_account_acct": null,
+    "local": true,
+    "parent_visible": false,
+    "spoiler_text": {
+      "text/plain": ""
+    },
+    "thread_muted": false
+  },
+  "poll": null,
+  "reblog": null,
+  "reblogged": false,
+  "reblogs_count": 0,
+  "replies_count": 0,
+  "sensitive": false,
+  "spoiler_text": "",
+  "tags": [],
+  "text": null,
+  "uri": "https://develop.ilja.space/objects/8fe7611a-07e7-403a-ae08-f74580b6cc53",
+  "url": "https://develop.ilja.space/notice/9ymgJaQxAbTzDDZMJs",
+  "visibility": "public"
+}
+
 const report = {
   "account": {
     "acct": "reporting_account",
@@ -668,99 +763,12 @@ const report = {
     "state": "open",
     "statuses": [
       {
-        "account": {
-          "acct": "reported_account",
-          "avatar": "https://develop.ilja.space/images/avi.png",
-          "avatar_static": "https://develop.ilja.space/images/avi.png",
-          "bot": false,
-          "created_at": "2020-09-03T14:18:21.000Z",
-          "display_name": "Reported Account",
-          "emojis": [],
-          "fields": [],
-          "followers_count": 0,
-          "following_count": 0,
-          "header": "https://develop.ilja.space/images/banner.png",
-          "header_static": "https://develop.ilja.space/images/banner.png",
-          "id": "9ymgGklmHjZ2OpxVLM",
-          "locked": false,
-          "note": "I&#39;m an account made for an example report notification. I&#39;m the one that will be reported.",
-          "pleroma": {
-            "accepts_chat_messages": true,
-            "ap_id": "https://develop.ilja.space/users/reported_account",
-            "background_image": null,
-            "confirmation_pending": false,
-            "favicon": null,
-            "hide_favorites": true,
-            "hide_followers": false,
-            "hide_followers_count": false,
-            "hide_follows": false,
-            "hide_follows_count": false,
-            "is_admin": false,
-            "is_moderator": false,
-            "relationship": {},
-            "skip_thread_containment": false,
-            "tags": []
-          },
-          "source": {
-            "fields": [],
-            "note": "",
-            "pleroma": {
-              "actor_type": "Person",
-              "discoverable": false
-            },
-            "sensitive": false
-          },
-          "statuses_count": 1,
-          "url": "https://develop.ilja.space/users/reported_account",
-          "username": "reported_account"
-        },
-        "application": {
-          "name": "Web",
-          "website": null
-        },
-        "bookmarked": false,
-        "card": null,
-        "content": "A post I made that will be included in the report",
-        "created_at": "2020-09-03T14:18:51.000Z",
-        "emojis": [],
-        "favourited": false,
-        "favourites_count": 0,
-        "id": "9ymgJaQxAbTzDDZMJs",
-        "in_reply_to_account_id": null,
-        "in_reply_to_id": null,
-        "language": null,
-        "media_attachments": [],
-        "mentions": [],
-        "muted": false,
-        "pinned": false,
-        "pleroma": {
-          "content": {
-            "text/plain": "A post I made that will be included in the report"
-          },
-          "conversation_id": 7,
-          "direct_conversation_id": null,
-          "emoji_reactions": [],
-          "expires_at": null,
-          "in_reply_to_account_acct": null,
-          "local": true,
-          "parent_visible": false,
-          "spoiler_text": {
-            "text/plain": ""
-          },
-          "thread_muted": false
-        },
-        "poll": null,
-        "reblog": null,
-        "reblogged": false,
-        "reblogs_count": 0,
-        "replies_count": 0,
-        "sensitive": false,
-        "spoiler_text": "",
-        "tags": [],
-        "text": null,
-        "uri": "https://develop.ilja.space/objects/8fe7611a-07e7-403a-ae08-f74580b6cc53",
-        "url": "https://develop.ilja.space/notice/9ymgJaQxAbTzDDZMJs",
-        "visibility": "public"
+        ...mockStatus,
+      },
+      {
+        ...mockStatus,
+        content: 'This is another status that I created to be included in the report to test multiple statuses.',
+        id: '123'
       }
     ]
   },
@@ -848,6 +856,7 @@ const fetchTimeline = ({
         if (isNotifications) {
           return { data: [parseNotification(report)], pagination }
         }
+
         return { data: data.map(isNotifications ? parseNotification : parseStatus), pagination }
       } else {
         data.status = status
