@@ -240,8 +240,8 @@ const EmojiInput = {
        * them, masto seem to be rendering :emoji::emoji: correctly now so why not
        */
       const isSpaceRegex = /\s/
-      const spaceBefore = (surroundingSpace && !isSpaceRegex.exec(before.slice(-1)) && before.length && this.padEmoji > 0) ? ' ' : ''
-      const spaceAfter = (surroundingSpace && !isSpaceRegex.exec(after[0]) && this.padEmoji) ? ' ' : ''
+      const spaceBefore = (surroundingSpace && !isSpaceRegex.exec(before.slice(-1)) && before.length && this.padEmoji > 0) ? ' ' : '​'
+      const spaceAfter = (surroundingSpace && !isSpaceRegex.exec(after[0]) && this.padEmoji) ? ' ' : '​'
 
       const newValue = [
         before,
