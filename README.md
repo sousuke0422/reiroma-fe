@@ -4,6 +4,15 @@
 
 ![screenshot](/uploads/796c5ecf985ed1e2b0943ee0df131ed0/DJVqSJ0.png)
 
+# Changes in this Fork
+
+* script tag in index.html for [pleroma-mod-loader](https://git.pleroma.social/absturztaube/pleroma-mod-loader)
+* ability to move notifications to a seperate column
+* insert zero width space when padding of emojis is disabled
+* add custom language "English (Nyan)"
+* pointing version links to my gitlab repos
+* 
+
 # For Translators
 
 To translate Pleroma-FE, add your language to [src/i18n/messages.js](https://git.pleroma.social/pleroma/pleroma-fe/blob/develop/src/i18n/messages.js). Pleroma-FE will set your language by your browser locale, but you can temporarily force it in the code by changing the locale in main.js.
