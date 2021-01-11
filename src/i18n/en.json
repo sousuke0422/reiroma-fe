@@ -237,6 +237,16 @@
     "searching_for": "Searching for",
     "error": "Not found."
   },
+  "report": {
+    "reporter": "Reporter:",
+    "reported_user": "Reported user:",
+    "reported_statuses": "Reported statuses:",
+    "notes": "Notes:",
+    "state": "State:",
+    "state_open": "Open",
+    "state_closed": "Closed",
+    "state_resolved": "Resolved"
+  },
   "selectable_list": {
     "select_all": "Select all"
   },

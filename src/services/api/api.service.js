@@ -87,6 +87,7 @@ const PLEROMA_CHAT_URL = id => `/api/v1/pleroma/chats/by-account-id/${id}`
 const PLEROMA_CHAT_MESSAGES_URL = id => `/api/v1/pleroma/chats/${id}/messages`
 const PLEROMA_CHAT_READ_URL = id => `/api/v1/pleroma/chats/${id}/read`
 const PLEROMA_DELETE_CHAT_MESSAGE_URL = (chatId, messageId) => `/api/v1/pleroma/chats/${chatId}/messages/${messageId}`
+const PLEROMA_ADMIN_REPORTS = '/api/pleroma/admin/reports'
 
 const oldfetch = window.fetch
 
@@ -759,7 +760,18 @@ const report = {
     "content": "This is the report created by &quot;reporting_account&quot;. It reports &quot;reported_account&quot;.",
     "created_at": "2020-09-03T14:22:59.000Z",
     "id": "9ymggNcUyfIW8Cq1zM",
-    "notes": [],
+    "notes": [
+      {
+        "content": "Some note left here.",
+        "created_at": "2020-09-03T14:22:59.000Z",
+        "id": "1"
+      },
+      {
+        "content": "Some other note that is much much much longer than the previous note left here.",
+        "created_at": "2020-09-03T14:23:59.000Z",
+        "id": "2"
+      }
+    ],
     "state": "open",
     "statuses": [
       {
@@ -1553,6 +1565,21 @@ const deleteChatMessage = ({ chatId, messageId, credentials }) => {
   })
 }
 
+const setReportState = ({ id, state, credentials }) => {
+  return promisedRequest({
+    url: PLEROMA_ADMIN_REPORTS,
+    method: 'PATCH',
+    payload: {
+      'reports': [
+        {
+          id,
+          state
+        }
+      ]
+    }
+  })
+}
+
 const apiService = {
   verifyCredentials,
   fetchTimeline,
@@ -1638,7 +1665,8 @@ const apiService = {
   chatMessages,
   sendChatMessage,
   readChat,
-  deleteChatMessage
+  deleteChatMessage,
+  setReportState
 }
 
 export default apiService
