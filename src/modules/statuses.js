@@ -317,6 +317,10 @@ const addNewNotifications = (state, { dispatch, notifications, older, visibleNot
       notification.status = notification.status && addStatusToGlobalStorage(state, notification.status).item
     }
 
+    if (notification.type === 'pleroma:report') {
+      dispatch('addReport', notification.report)
+    }
+
     if (notification.type === 'pleroma:emoji_reaction') {
       dispatch('fetchEmojiReactionsBy', notification.status.id)
     }

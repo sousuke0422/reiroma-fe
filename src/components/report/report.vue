@@ -1,5 +1,29 @@
 <template>
   <div class="Report">
+    <div class="report-state">
+      <label
+        for="report-state"
+        class="select"
+      >
+        <select
+          id="report-state"
+          v-model="report.state"
+          class="form-control"
+        >
+          <option
+            v-for="state in ['open', 'closed', 'resolved']"
+            :key="state"
+            :value="report.state"
+          >
+            {{ $t('report.state_' + state) }}
+          </option>
+        </select>
+        <FAIcon
+          class="select-down-icon"
+          icon="chevron-down"
+        />
+      </label>
+    </div>
     <div class="reported-user">
       <span>{{ $t('report.reported_user') }}</span>
       <router-link :to="generateUserProfileLink(report.acct)">

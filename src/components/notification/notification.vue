@@ -185,7 +185,7 @@
         </div>
         <Report
           v-else-if="notification.type === 'pleroma:report'"
-          :report="notification.report"
+          :report-id="notification.report.id"
         />
         <template v-else>
           <status-content

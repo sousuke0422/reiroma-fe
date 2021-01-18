@@ -1,21 +1,31 @@
+import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
 import filter from 'lodash/filter'
 
 const reports = {
   state: {
-    userId: null,
-    statuses: [],
-    preTickedIds: [],
-    modalActivated: false
+    reportModal: {
+      userId: null,
+      statuses: [],
+      preTickedIds: [],
+      activated: false
+    },
+    reports: {}
   },
   mutations: {
     openUserReportingModal (state, { userId, statuses, preTickedIds }) {
-      state.userId = userId
-      state.statuses = statuses
-      state.preTickedIds = preTickedIds
-      state.modalActivated = true
+      state.reportModal.userId = userId
+      state.reportModal.statuses = statuses
+      state.reportModal.preTickedIds = preTickedIds
+      state.reportModal.activated = true
     },
     closeUserReportingModal (state) {
-      state.modalActivated = false
+      state.reportModal.modalActivated = false
+    },
+    setReportState (reportsState, { id, state }) {
+      reportsState.reports[id].state = state
+    },
+    addReport (state, report) {
+      state.reports[report.id] = report
     }
   },
   actions: {
@@ -31,6 +41,19 @@ const reports = {
     },
     closeUserReportingModal ({ commit }) {
       commit('closeUserReportingModal')
+    },
+    setReportState ({ commit, rootState }, { id, state }) {
+      const oldState = rootState.reports.reports[id].state
+      commit('setReportState', { id, state })
+      backendInteractorService.setReportState({ id, state }).then(report => {
+        console.log(report)
+      }).catch(e => {
+        console.error('Failed to set report state', e)
+        commit('setReportState', { id, oldState })
+      })
+    },
+    addReport ({ commit }, report) {
+      commit('addReport', report)
     }
   }
 }
