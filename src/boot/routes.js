@@ -22,11 +22,21 @@ import About from 'components/about/about.vue'
 import RemoteUserResolver from 'components/remote_user_resolver/remote_user_resolver.vue'
 
 export default (store) => {
+  const fallbackRoute = store.state.instance.private ? '/about' : '/main/all'
+
   const validateAuthenticatedRoute = (to, from, next) => {
     if (store.state.users.currentUser) {
       next()
     } else {
-      next(store.state.instance.redirectRootNoLogin || '/main/all')
+      next(store.state.instance.redirectRootNoLogin || fallbackRoute)
+    }
+  }
+
+  const validatePrivateRoute = (to, from, next) => {
+    if (store.state.users.currentUser || !store.state.instance.private) {
+      next()
+    } else {
+      next('/about')
     }
   }
 
@@ -36,15 +46,15 @@ export default (store) => {
       redirect: _to => {
         return (store.state.users.currentUser
           ? store.state.instance.redirectRootLogin
-          : store.state.instance.redirectRootNoLogin) || '/main/all'
+          : store.state.instance.redirectRootNoLogin) || fallbackRoute
       }
     },
-    { name: 'public-external-timeline', path: '/main/all', component: PublicAndExternalTimeline },
-    { name: 'public-timeline', path: '/main/public', component: PublicTimeline },
+    { name: 'public-external-timeline', path: '/main/all', component: PublicAndExternalTimeline, beforeEnter: validatePrivateRoute },
+    { name: 'public-timeline', path: '/main/public', component: PublicTimeline, beforeEnter: validatePrivateRoute },
     { name: 'friends', path: '/main/friends', component: FriendsTimeline, beforeEnter: validateAuthenticatedRoute },
-    { name: 'tag-timeline', path: '/tag/:tag', component: TagTimeline },
-    { name: 'bookmarks', path: '/bookmarks', component: BookmarkTimeline },
-    { name: 'conversation', path: '/notice/:id', component: ConversationPage, meta: { dontScroll: true } },
+    { name: 'tag-timeline', path: '/tag/:tag', component: TagTimeline, beforeEnter: validatePrivateRoute },
+    { name: 'bookmarks', path: '/bookmarks', component: BookmarkTimeline, beforeEnter: validateAuthenticatedRoute },
+    { name: 'conversation', path: '/notice/:id', component: ConversationPage, meta: { dontScroll: true }, beforeEnter: validatePrivateRoute },
     { name: 'remote-user-profile-acct',
       path: '/remote-users/(@?):username([^/@]+)@:hostname([^/@]+)',
       component: RemoteUserResolver,
@@ -55,7 +65,7 @@ export default (store) => {
       component: RemoteUserResolver,
       beforeEnter: validateAuthenticatedRoute
     },
-    { name: 'external-user-profile', path: '/users/:id', component: UserProfile },
+    { name: 'external-user-profile', path: '/users/:id', component: UserProfile, beforeEnter: validatePrivateRoute },
     { name: 'interactions', path: '/users/:username/interactions', component: Interactions, beforeEnter: validateAuthenticatedRoute },
     { name: 'dms', path: '/users/:username/dms', component: DMs, beforeEnter: validateAuthenticatedRoute },
     { name: 'registration', path: '/registration', component: Registration },
@@ -64,12 +74,12 @@ export default (store) => {
     { name: 'friend-requests', path: '/friend-requests', component: FollowRequests, beforeEnter: validateAuthenticatedRoute },
     { name: 'notifications', path: '/:username/notifications', component: Notifications, beforeEnter: validateAuthenticatedRoute },
     { name: 'login', path: '/login', component: AuthForm },
-    { name: 'chat-panel', path: '/chat-panel', component: ChatPanel, props: () => ({ floating: false }) },
+    { name: 'chat-panel', path: '/chat-panel', component: ChatPanel, props: () => ({ floating: false }), beforeEnter: validateAuthenticatedRoute },
     { name: 'oauth-callback', path: '/oauth-callback', component: OAuthCallback, props: (route) => ({ code: route.query.code }) },
-    { name: 'search', path: '/search', component: Search, props: (route) => ({ query: route.query.query }) },
+    { name: 'search', path: '/search', component: Search, props: (route) => ({ query: route.query.query }), beforeEnter: validatePrivateRoute },
     { name: 'who-to-follow', path: '/who-to-follow', component: WhoToFollow, beforeEnter: validateAuthenticatedRoute },
     { name: 'about', path: '/about', component: About },
-    { name: 'user-profile', path: '/(users/)?:name', component: UserProfile }
+    { name: 'user-profile', path: '/(users/)?:name', component: UserProfile, beforeEnter: validatePrivateRoute }
   ]
 
   if (store.state.instance.pleromaChatMessagesAvailable) {

@@ -49,7 +49,7 @@ const fetchAndUpdate = ({
 
   return apiService.fetchTimeline(args)
     .then(response => {
-      if (response.errors) {
+      if (response.error || response.errors) {
         throw new Error(`${response.status} ${response.statusText}`)
       }
 
