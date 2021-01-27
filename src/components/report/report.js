@@ -13,14 +13,19 @@ const Report = {
   computed: {
     report () {
       return this.$store.state.reports.reports[this.reportId] || {}
+    },
+    state: {
+      get: function () { return this.report.state },
+      set: function (val) { this.setReportState(val) }
     }
   },
   methods: {
     generateUserProfileLink (user) {
       return generateProfileLink(user.id, user.screen_name, this.$store.state.instance.restrictedNicknames)
     },
-    setReportState (id, state) {
-      return this.$store.dispatch('setReportState', { id, state })
+    setReportState (state) {
+      console.log('setting state', state)
+      return this.$store.dispatch('setReportState', { id: this.report.id, state })
     }
   }
 }

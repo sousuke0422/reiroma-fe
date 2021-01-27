@@ -1,4 +1,3 @@
-import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
 import filter from 'lodash/filter'
 
 const reports = {
@@ -44,12 +43,14 @@ const reports = {
     },
     setReportState ({ commit, rootState }, { id, state }) {
       const oldState = rootState.reports.reports[id].state
+      console.log(oldState, state)
       commit('setReportState', { id, state })
-      backendInteractorService.setReportState({ id, state }).then(report => {
+      rootState.api.backendInteractor.setReportState({ id, state }).then(report => {
         console.log(report)
       }).catch(e => {
         console.error('Failed to set report state', e)
-        commit('setReportState', { id, oldState })
+        commit('setReportState', { id, state: oldState })
+        console.log(oldState)
       })
     },
     addReport ({ commit }, report) {
