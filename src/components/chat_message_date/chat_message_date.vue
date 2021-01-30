@@ -18,7 +18,7 @@ export default {
       if (this.date.getTime() === today.getTime()) {
         return this.$t('display_date.today')
       } else {
-        return this.date.toLocaleDateString(localeService.internalToBrowserLocale(this.$i18n.locale), { day: 'numeric', month: 'long' })
+        return this.date.toLocaleDateString(localeService.internalToBrowserLocale(this.$i18n.locale.split('_')[0]), { day: 'numeric', month: 'long' })
       }
     }
   }

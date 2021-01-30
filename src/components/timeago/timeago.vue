@@ -22,7 +22,7 @@ export default {
   },
   computed: {
     localeDateString () {
-      const browserLocale = localeService.internalToBrowserLocale(this.$i18n.locale)
+      const browserLocale = localeService.internalToBrowserLocale(this.$i18n.locale).split('_')[0]
       return typeof this.time === 'string'
         ? new Date(Date.parse(this.time)).toLocaleString(browserLocale)
         : this.time.toLocaleString(browserLocale)

@@ -65,7 +65,7 @@ export default {
       }
       const languageName = specialLanguageNames[code] || ISO6391.getNativeName(code)
       const browserLocale = localeService.internalToBrowserLocale(code)
-      return languageName.charAt(0).toLocaleUpperCase(browserLocale) + languageName.slice(1)
+      return languageName.charAt(0).toLocaleUpperCase(browserLocale.split('_')[0]) + languageName.slice(1)
     }
   }
 }
