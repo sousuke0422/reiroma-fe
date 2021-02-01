@@ -563,11 +563,20 @@ const fetchTimeline = ({
       })
       return data
     })
-    .then((data) => data.json())
     .then((data) => {
-      if (data.error || data.errors) {
+      if (status >= 500) {
+        return { errors: ['Server error'] }
+      }
+      return data.json()
+    })
+    .then((data) => {
+      if (status >= 400) {
+        console.log(data.error, data.errors)
         data.status = status
         data.statusText = statusText
+        if (data.error) {
+          data.errors = [data.error]
+        }
         return data
       }
       return { data: data.map(isNotifications ? parseNotification : parseStatus), pagination }
