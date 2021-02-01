@@ -498,7 +498,8 @@ const fetchTimeline = ({
   userId = false,
   tag = false,
   withMuted = false,
-  replyVisibility = 'all'
+  replyVisibility = 'all',
+  includeTypes = []
 }) => {
   const timelineUrls = {
     public: MASTODON_PUBLIC_TIMELINE,
@@ -544,6 +545,11 @@ const fetchTimeline = ({
   }
   if (replyVisibility !== 'all') {
     params.push(['reply_visibility', replyVisibility])
+  }
+  if (includeTypes.length > 0) {
+    includeTypes.forEach(type => {
+      params.push(['include_types[]', type])
+    })
   }
 
   params.push(['limit', 20])

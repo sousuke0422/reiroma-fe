@@ -18,7 +18,7 @@ const reports = {
       state.reportModal.activated = true
     },
     closeUserReportingModal (state) {
-      state.reportModal.modalActivated = false
+      state.reportModal.activated = false
     },
     setReportState (reportsState, { id, state }) {
       reportsState.reports[id].state = state

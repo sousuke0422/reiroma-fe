@@ -1,6 +1,18 @@
 import apiService from '../api/api.service.js'
 import { promiseInterval } from '../promise_interval/promise_interval.js'
 
+// For using include_types when fetching notifications.
+// Note: chat_mention excluded as pleroma-fe polls them separately
+const mastoApiNotificationTypes = [
+  'mention',
+  'favourite',
+  'reblog',
+  'follow',
+  'move',
+  'pleroma:emoji_reaction',
+  'pleroma:report'
+]
+
 const update = ({ store, notifications, older }) => {
   store.dispatch('addNewNotifications', { notifications, older })
 }
@@ -12,6 +24,9 @@ const fetchAndUpdate = ({ store, credentials, older = false }) => {
   const timelineData = rootState.statuses.notifications
   const hideMutedPosts = getters.mergedConfig.hideMutedPosts
 
+  if (rootState.users.currentUser.role === 'admin') {
+    args['includeTypes'] = mastoApiNotificationTypes
+  }
   args['withMuted'] = !hideMutedPosts
 
   args['timeline'] = 'notifications'
