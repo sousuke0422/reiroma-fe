@@ -78,9 +78,6 @@ const Notification = {
           this.$store.dispatch('dismissNotificationLocal', { id: this.notification.id })
           this.$store.dispatch('removeFollowRequest', this.user)
         })
-    },
-    testlog (a) {
-      console.log(a)
     }
   },
   computed: {

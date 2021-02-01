@@ -24,7 +24,6 @@ const Report = {
       return generateProfileLink(user.id, user.screen_name, this.$store.state.instance.restrictedNicknames)
     },
     setReportState (state) {
-      console.log('setting state', state)
       return this.$store.dispatch('setReportState', { id: this.report.id, state })
     }
   }
