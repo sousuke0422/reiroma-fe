@@ -9,11 +9,12 @@ localVue.use(VueRouter)
 
 const store = new Vuex.Store({
   state: {
-    instance: {}
+    instance: { private: false },
+    users: {}
   }
 })
 
-describe('routes', () => {
+describe.only('routes', () => {
   const router = new VueRouter({
     mode: 'abstract',
     routes: routes(store)
