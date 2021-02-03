@@ -41,7 +41,7 @@ const reports = {
     closeUserReportingModal ({ commit }) {
       commit('closeUserReportingModal')
     },
-    setReportState ({ commit, rootState }, { id, state }) {
+    setReportState ({ commit, dispatch, rootState }, { id, state }) {
       const oldState = rootState.reports.reports[id].state
       console.log(oldState, state)
       commit('setReportState', { id, state })
@@ -49,8 +49,13 @@ const reports = {
         console.log(report)
       }).catch(e => {
         console.error('Failed to set report state', e)
+        dispatch('pushGlobalNotice', {
+          level: 'error',
+          messageKey: 'general.generic_error_message',
+          messageArgs: [e.message],
+          timeout: 5000
+        })
         commit('setReportState', { id, state: oldState })
-        console.log(oldState)
       })
     },
     addReport ({ commit }, report) {

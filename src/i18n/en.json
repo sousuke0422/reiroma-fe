@@ -63,6 +63,7 @@
     "more": "More",
     "loading": "Loading…",
     "generic_error": "An error occured",
+    "generic_error_message": "An error occured: {0}",
     "error_retry": "Please try again",
     "retry": "Try again",
     "optional": "optional",

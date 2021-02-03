@@ -1270,18 +1270,34 @@ const deleteChatMessage = ({ chatId, messageId, credentials }) => {
 }
 
 const setReportState = ({ id, state, credentials }) => {
-  return promisedRequest({
-    url: PLEROMA_ADMIN_REPORTS,
+  // Can't use promisedRequest because on OK this does not return json
+  return fetch(PLEROMA_ADMIN_REPORTS, {
+    headers: {
+      ...authHeaders(credentials),
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
     method: 'PATCH',
-    payload: {
-      'reports': [
-        {
-          id,
-          state
-        }
-      ]
-    }
+    body: JSON.stringify({
+      reports: [{
+        id,
+        state
+      }]
+    })
   })
+    .then(data => {
+      if (data.status >= 500) {
+        throw Error(data.statusText)
+      } else if (data.status >= 400) {
+        return data.json()
+      }
+      return data
+    })
+    .then(data => {
+      if (data.errors) {
+        throw Error(data.errors[0].message)
+      }
+    })
 }
 
 const apiService = {
