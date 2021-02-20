@@ -12,9 +12,9 @@
           </BooleanSetting>
         </li>
         <li>
-          <Checkbox v-model="showThirdColumn">
+          <BooleanSetting path="showThirdColumn">
             {{ $t('settings.show_third_column') }}
-          </Checkbox>
+          </BooleanSetting>
         </li>
         <li v-if="instanceWallpaperUsed">
           <BooleanSetting path="hideInstanceWallpaper">
