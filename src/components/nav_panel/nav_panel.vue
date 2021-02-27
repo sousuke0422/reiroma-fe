@@ -1,5 +1,8 @@
 <template>
-  <div class="NavPanel">
+  <div
+    class="NavPanel"
+    :class="{ compact: compactNavPanel }"
+  >
     <div class="panel panel-default">
       <ul>
         <li v-if="currentUser || !privateMode">
@@ -154,6 +157,73 @@
     position: absolute;
     right: 0.6rem;
     top: 1.25em;
+  }
+
+  &.compact {
+    .panel {
+      height: 40px;
+
+      ul > li:hover > a:not(.router-link-active) > .button-icon {
+        color: var(--selectedMenuText,#b9b9ba);
+      }
+
+      ul > li > .router-link-active > .button-icon {
+        color: var(--selectedMenuLightText);
+      }
+
+      ul {
+        display: flex;
+        height: 100%;
+        padding: 0;
+      }
+
+      li {
+        width: -moz-available;
+        width: -webkit-fill-available;
+        border-bottom: none;
+
+        a {
+          border-radius: 0 !important;
+        }
+      }
+
+      a {
+        font-size: 0;
+        height: 100%;
+        display: flex;
+        position: relative;
+      }
+
+      .button-icon, svg.svg-inline--fa {
+        margin: auto;
+        font-size: 20px;
+        color: var(--link,#d8a070);
+      }
+
+      .badge {
+        position: absolute;
+        right: 0;
+        background-color: red;
+        background-color: var(--badgeNotification,red);
+        color: #fff;
+        color: var(--badgeNotificationText,#fff);
+
+        // remove layout
+        padding: 0;
+        margin: 0;
+        box-shadow: black 0 1px 5px;
+        display: inline-block;
+        border-radius: 99px;
+        min-width: 22px;
+        line-height: 22px;
+        min-height: 22px;
+        max-height: 22px;
+        font-size: 14px;
+        font-weight: normal;
+        font-style: normal;
+        font-family: inherit;
+      }
+    }
   }
 }
 </style>

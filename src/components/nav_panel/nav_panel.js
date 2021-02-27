@@ -34,6 +34,9 @@ const NavPanel = {
     onTimelineRoute () {
       return !!timelineNames()[this.$route.name]
     },
+    compactNavPanel () {
+      return this.$store.getters.mergedConfig.compactNavPanel || false
+    },
     timelinesRoute () {
       if (this.$store.state.interface.lastTimeline) {
         return this.$store.state.interface.lastTimeline

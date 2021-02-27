@@ -21,6 +21,11 @@
             {{ $t('settings.hide_wallpaper') }}
           </BooleanSetting>
         </li>
+        <li>
+          <BooleanSetting path="compactNavPanel">
+            {{ $t('settings.compact_nav_panel') }}
+          </BooleanSetting>
+        </li>
       </ul>
     </div>
     <div class="setting-item">
