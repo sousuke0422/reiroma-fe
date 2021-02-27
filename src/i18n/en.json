@@ -338,6 +338,7 @@
     "hide_isp": "Hide instance-specific panel",
     "show_third_column": "Move Notifications to a seperate column",
     "compact_nav_panel": "Compact navigation panel",
+    "compact_user_panel": "Compact user panel",
     "hide_wallpaper": "Hide instance wallpaper",
     "preload_images": "Preload images",
     "use_one_click_nsfw": "Open NSFW attachments with just one click",

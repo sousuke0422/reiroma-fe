@@ -26,6 +26,11 @@
             {{ $t('settings.compact_nav_panel') }}
           </BooleanSetting>
         </li>
+        <li>
+          <BooleanSetting path="compactUserPanel">
+            {{ $t('settings.compact_user_panel') }}
+          </BooleanSetting>
+        </li>
       </ul>
     </div>
     <div class="setting-item">

@@ -6,6 +6,9 @@ import { mapState } from 'vuex'
 const UserPanel = {
   computed: {
     signedIn () { return this.user },
+    compactUserPanel () {
+      return this.$store.getters.mergedConfig.compactUserPanel || false
+    },
     ...mapState({ user: state => state.users.currentUser })
   },
   components: {

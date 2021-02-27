@@ -20,6 +20,7 @@ export const defaultState = {
   customTheme: undefined,
   showThirdColumn: false,
   compactNavPanel: false,
+  compactUserPanel: false,
   customThemeSource: undefined,
   hideISP: false,
   hideInstanceWallpaper: false,
