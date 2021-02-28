@@ -11,6 +11,7 @@
 * insert zero width space when padding of emojis is disabled
 * add custom language "English (Nyan)"
 * pointing version links to my gitlab repos
+* optional compact styles provided by craftplacer
 
 # For Translators
 
