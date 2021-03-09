@@ -73,17 +73,17 @@
             <div class="bottom-line">
               <router-link
                 class="user-screen-name"
-                :title="user.screen_name"
+                :title="user.screen_name_ui"
                 :to="userProfileLink(user)"
               >
-                @{{ user.screen_name }}
+                @{{ user.screen_name_ui }}
               </router-link>
               <template v-if="!hideBio">
                 <span
                   v-if="!!visibleRole"
                   class="alert user-role"
                 >
-                  {{ $t(`user_card.roles.${visibleRole}`) }}
+                  {{ $t(`general.role.${visibleRole}`) }}
                 </span>
                 <span
                   v-if="user.bot"
@@ -141,10 +141,10 @@
                 v-model="userHighlightType"
                 class="userHighlightSel"
               >
-                <option value="disabled">No highlight</option>
-                <option value="solid">Solid bg</option>
-                <option value="striped">Striped bg</option>
-                <option value="side">Side stripe</option>
+                <option value="disabled">{{ $t('user_card.highlight.disabled') }}</option>
+                <option value="solid">{{ $t('user_card.highlight.solid') }}</option>
+                <option value="striped">{{ $t('user_card.highlight.striped') }}</option>
+                <option value="side">{{ $t('user_card.highlight.side') }}</option>
               </select>
               <FAIcon
                 class="select-down-icon"

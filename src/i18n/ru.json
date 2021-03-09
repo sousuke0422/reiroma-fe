@@ -24,7 +24,11 @@
     "retry": "Попробуйте еще раз",
     "error_retry": "Пожалуйста попробуйте еще раз",
     "close": "Закрыть",
-    "loading": "Загрузка…"
+    "loading": "Загрузка…",
+    "role": {
+      "moderator": "Модератор",
+      "admin": "Администратор"
+    }
   },
   "login": {
     "login": "Войти",
@@ -541,11 +545,7 @@
     "mention": "Упомянуть",
     "show_repeats": "Показывать повторы",
     "hide_repeats": "Скрыть повторы",
-    "report": "Пожаловаться",
-    "roles": {
-      "moderator": "Модератор",
-      "admin": "Администратор"
-    }
+    "report": "Пожаловаться"
   },
   "user_profile": {
     "timeline_title": "Лента пользователя"
@@ -615,7 +615,8 @@
     "gopher": "Gopher",
     "who_to_follow": "Предложения кого читать",
     "pleroma_chat_messages": "Pleroma Чат",
-    "upload_limit": "Наибольший размер загружаемого файла"
+    "upload_limit": "Наибольший размер загружаемого файла",
+    "scope_options": "Настраиваемая видимость статусов"
   },
   "tool_tip": {
     "accept_follow_request": "Принять запрос на чтение",
