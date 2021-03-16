@@ -237,6 +237,7 @@
 
       .timelines-background {
         position: absolute;
+        z-index: 10000;
       }
 
       a, button {
