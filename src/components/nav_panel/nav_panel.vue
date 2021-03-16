@@ -6,19 +6,33 @@
     <div class="panel panel-default">
       <ul>
         <li v-if="currentUser || !privateMode">
-          <router-link
-            :to="{ name: timelinesRoute }"
-            :class="onTimelineRoute && 'router-link-active'"
+          <button
+            class="button-unstyled menu-item"
+            @click="toggleTimelines"
           >
             <FAIcon
               fixed-width
               class="fa-scale-110"
-              icon="home"
+              icon="stream"
             />{{ $t("nav.timelines") }}
-          </router-link>
+            <FAIcon
+              class="timelines-chevron"
+              fixed-width
+              :icon="showTimelines ? 'chevron-up' : 'chevron-down'"
+            />
+          </button>
+          <div
+            v-show="showTimelines"
+            class="timelines-background"
+          >
+            <TimelineMenuContent class="timelines" />
+          </div>
         </li>
         <li v-if="currentUser">
-          <router-link :to="{ name: 'interactions', params: { username: currentUser.screen_name } }">
+          <router-link
+            class="menu-item"
+            :to="{ name: 'interactions', params: { username: currentUser.screen_name } }"
+          >
             <FAIcon
               fixed-width
               class="fa-scale-110"
@@ -27,7 +41,10 @@
           </router-link>
         </li>
         <li v-if="currentUser && pleromaChatMessagesAvailable">
-          <router-link :to="{ name: 'chats', params: { username: currentUser.screen_name } }">
+          <router-link
+            class="menu-item"
+            :to="{ name: 'chats', params: { username: currentUser.screen_name } }"
+          >
             <div
               v-if="unreadChatCount"
               class="badge badge-notification"
@@ -42,7 +59,10 @@
           </router-link>
         </li>
         <li v-if="currentUser && currentUser.locked">
-          <router-link :to="{ name: 'friend-requests' }">
+          <router-link
+            class="menu-item"
+            :to="{ name: 'friend-requests' }"
+          >
             <FAIcon
               fixed-width
               class="fa-scale-110"
@@ -57,7 +77,10 @@
           </router-link>
         </li>
         <li>
-          <router-link :to="{ name: 'about' }">
+          <router-link
+            class="menu-item"
+            :to="{ name: 'about' }"
+          >
             <FAIcon
               fixed-width
               class="fa-scale-110"
@@ -94,14 +117,14 @@
     border-color: var(--border, $fallback--border);
     padding: 0;
 
-    &:first-child a {
+    &:first-child .menu-item {
       border-top-right-radius: $fallback--panelRadius;
       border-top-right-radius: var(--panelRadius, $fallback--panelRadius);
       border-top-left-radius: $fallback--panelRadius;
       border-top-left-radius: var(--panelRadius, $fallback--panelRadius);
     }
 
-    &:last-child a {
+    &:last-child .menu-item {
       border-bottom-right-radius: $fallback--panelRadius;
       border-bottom-right-radius: var(--panelRadius, $fallback--panelRadius);
       border-bottom-left-radius: $fallback--panelRadius;
@@ -113,13 +136,15 @@
     border: none;
   }
 
-  a {
+  .menu-item {
     display: block;
     box-sizing: border-box;
-    align-items: stretch;
     height: 3.5em;
     line-height: 3.5em;
     padding: 0 1em;
+    width: 100%;
+    color: $fallback--link;
+    color: var(--link, $fallback--link);
 
     &:hover {
       background-color: $fallback--lightBg;
@@ -149,6 +174,25 @@
     }
   }
 
+  .timelines-chevron {
+    margin-left: 0.8em;
+    font-size: 1.1em;
+  }
+
+  .timelines-background {
+    padding: 0 0 0 0.6em;
+    background-color: $fallback--lightBg;
+    background-color: var(--selectedMenu, $fallback--lightBg);
+    border-top: 1px solid;
+    border-color: $fallback--border;
+    border-color: var(--border, $fallback--border);
+  }
+
+  .timelines {
+    background-color: $fallback--bg;
+    background-color: var(--bg, $fallback--bg);
+  }
+
   .fa-scale-110 {
     margin-right: 0.8em;
   }
@@ -161,7 +205,7 @@
 
   &.compact {
     .panel {
-      height: 40px;
+      overflow: visible;
 
       ul > li:hover > a:not(.router-link-active) > .button-icon {
         color: var(--selectedMenuText,#b9b9ba);
@@ -187,11 +231,21 @@
         }
       }
 
-      a {
+      .timelines-chevron {
+        display: none;
+      }
+
+      .timelines-background {
+        position: absolute;
+      }
+
+      a, button {
         font-size: 0;
         height: 100%;
         display: flex;
         position: relative;
+        padding-top: 7px;
+        padding-bottom: 7px;
       }
 
       .button-icon, svg.svg-inline--fa {
