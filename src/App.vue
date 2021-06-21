@@ -51,7 +51,6 @@
       <div
         v-if="thirdColumnEnabled"
         class="sidebar-flexer mobile-hidden"
-        :style="sidebarAlign"
       >
         <div class="sidebar-bounds">
           <div class="sidebar-scroller">
