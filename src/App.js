@@ -4,8 +4,7 @@ import Notifications from './components/notifications/notifications.vue'
 import InstanceSpecificPanel from './components/instance_specific_panel/instance_specific_panel.vue'
 import FeaturesPanel from './components/features_panel/features_panel.vue'
 import WhoToFollowPanel from './components/who_to_follow_panel/who_to_follow_panel.vue'
-import ChatList from './components/chat_list/chat_list.vue'
-import ChatPanel from './components/chat_panel/chat_panel.vue'
+import ShoutPanel from './components/shout_panel/shout_panel.vue'
 import SettingsModal from './components/settings_modal/settings_modal.vue'
 import MediaModal from './components/media_modal/media_modal.vue'
 import SideDrawer from './components/side_drawer/side_drawer.vue'
@@ -27,8 +26,7 @@ export default {
     InstanceSpecificPanel,
     FeaturesPanel,
     WhoToFollowPanel,
-    ChatPanel,
-    ChatList,
+    ShoutPanel,
     MediaModal,
     SideDrawer,
     MobilePostStatusButton,
@@ -67,7 +65,7 @@ export default {
         }
       }
     },
-    chat () { return this.$store.state.chat.channel.state === 'joined' },
+    shout () { return this.$store.state.shout.channel.state === 'joined' },
     suggestionsEnabled () { return this.$store.state.instance.suggestionsEnabled },
     showInstanceSpecificPanel () {
       return this.$store.state.instance.showInstanceSpecificPanel &&
@@ -78,11 +76,14 @@ export default {
       return this.$store.getters.mergedConfig.showThirdColumn || false
     },
     showFeaturesPanel () { return this.$store.state.instance.showFeaturesPanel },
+    hideShoutbox () {
+      return this.$store.getters.mergedConfig.hideShoutbox
+    },
     isMobileLayout () { return this.$store.state.interface.mobileLayout },
     privateMode () { return this.$store.state.instance.private },
     sidebarAlign () {
       return {
-        'order': this.$store.state.instance.sidebarRight ? 99 : 0
+        'order': this.$store.getters.mergedConfig.sidebarRight ? 99 : 0
       }
     },
     thirdColumnLayout () {

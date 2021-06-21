@@ -79,7 +79,10 @@
     "role": {
       "admin": "Admin",
       "moderator": "Moderator"
-    }
+    },
+    "flash_content": "Click to show Flash content using Ruffle (Experimental, may not work).",
+    "flash_security": "Note that this can be potentially dangerous since Flash content is still arbitrary code.",
+    "flash_fail": "Failed to load flash content, see console for details."
   },
   "image_cropper": {
     "crop_picture": "Crop picture",
@@ -348,6 +351,8 @@
     "show_third_column": "Move Notifications to a seperate column",
     "compact_nav_panel": "Compact navigation panel",
     "compact_user_panel": "Compact user panel",
+    "hide_shoutbox": "Hide instance shoutbox",
+    "right_sidebar": "Show sidebar on the right side",
     "hide_wallpaper": "Hide instance wallpaper",
     "preload_images": "Preload images",
     "use_one_click_nsfw": "Open NSFW attachments with just one click",
