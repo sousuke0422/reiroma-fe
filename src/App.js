@@ -86,6 +86,11 @@ export default {
         'order': this.$store.getters.mergedConfig.sidebarRight ? 99 : 0
       }
     },
+    thirdColumnAlign () {
+      return {
+        'order': this.$store.getters.mergedConfig.sidebarRight ? 0 : 99
+      }
+    },
     thirdColumnLayout () {
       return {
         'max-width': this.$store.getters.mergedConfig.showThirdColumn ? '1400px' : '980px'

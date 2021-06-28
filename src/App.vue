@@ -50,6 +50,7 @@
       </div>
       <div
         v-if="thirdColumnEnabled"
+        :style="thirdColumnAlign"
         class="sidebar-flexer mobile-hidden"
       >
         <div class="sidebar-bounds">
