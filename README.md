@@ -12,6 +12,7 @@
 * add custom language "English (Nyan)"
 * pointing version links to my gitlab repos
 * optional compact styles provided by craftplacer
+* tags as buttons bellow a post
 
 # For Translators
 
