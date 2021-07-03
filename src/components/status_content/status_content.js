@@ -90,6 +90,17 @@ const StatusContent = {
       }
       return true
     },
+    tagsSorted () {
+      return this.status.tags.sort((a, b) => {
+        if (a.name < b.name) {
+          return -1
+        }
+        if (a.name > b.name) {
+          return 1
+        }
+        return 0
+      })
+    },
     attachmentSize () {
       if ((this.mergedConfig.hideAttachments && !this.inConversation) ||
         (this.mergedConfig.hideAttachmentsInConv && this.inConversation) ||

@@ -87,6 +87,17 @@
       </button>
     </div>
 
+    <div v-if="status.tags.length !== 0">
+      <a
+        v-for="tag in tagsSorted"
+        :key="tag.name"
+        :href="tag.url"
+        class="btn button-default status-tag"
+      >
+        {{ tag.name }}
+      </a>
+    </div>
+
     <div v-if="status.poll && status.poll.options && !hideSubjectStatus">
       <poll :base-poll="status.poll" />
     </div>
@@ -139,6 +150,11 @@ $status-margin: 0.75em;
 .StatusContent {
   flex: 1;
   min-width: 0;
+
+  .status-tag {
+    padding: 2px;
+    margin: 2px;
+  }
 
   .status-content-wrapper {
     display: flex;
