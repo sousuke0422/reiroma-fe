@@ -89,7 +89,7 @@
 
     <div v-if="status.tags.length !== 0">
       <a
-        v-for="tag in tagsSorted"
+        v-for="tag in status.tags"
         :key="tag.name"
         :href="tag.url"
         class="btn button-default status-tag"
