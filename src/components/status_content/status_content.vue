@@ -87,7 +87,7 @@
       </button>
     </div>
 
-    <div v-if="status.tags.length !== 0">
+    <div v-if="status.tags && status.tags.length !== 0">
       <a
         v-for="tag in status.tags"
         :key="tag.name"
